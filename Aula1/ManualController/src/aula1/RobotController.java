@@ -34,7 +34,7 @@ public class RobotController {
                 World.createFood(0, 250, 210);
                 mCreature = proxy.createCreature(100,450,0);
                 mCreature.start();
-                WorldPoint mPosition = mCreature.getPosition();
+                mPosition = mCreature.getPosition();
                 double pitch = mCreature.getPitch();
                 double fuel = mCreature.getFuel();
                 //c.moveto(1, 200, 200);            
