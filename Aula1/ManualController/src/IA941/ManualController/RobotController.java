@@ -17,6 +17,10 @@ import ws3dproxy.model.WorldPoint;
  */
 public class RobotController {
     
+        private static final double MOVE_SPEED = 2.0f;
+        private static final double TURN_SPEED = 90.0f;
+        private static final int THREAD_SLEEP = 300;
+        
         private Creature mCreature;
         private WorldPoint mPosition;
     
@@ -33,7 +37,7 @@ public class RobotController {
                 World.createFood(0, 100, 220);
                 World.createFood(0, 250, 210);
                 mCreature = proxy.createCreature(100,450,0);
-                //mCreature.start();
+                mCreature.start();
                 mPosition = mCreature.getPosition();
                 double pitch = mCreature.getPitch();
                 double fuel = mCreature.getFuel();
@@ -46,20 +50,14 @@ public class RobotController {
         public void moveForward() {
             try{
                 
-            // Get current position and pitch (direction)
-            double x, y, pitch, newX, newY;
-            x = mPosition.getX();
-            y = mPosition.getY();
-            pitch = mCreature.getPitch();
-            
-            // New coordinates after moving forward
-            newX = x + Math.cos(pitch);
-            newY = y + Math.sin(pitch);
-            
-            // Move to the new position, with velocity = 1.
-            mCreature.moveto(1, newX, newY);
+            mCreature.start();
+            mCreature.move(MOVE_SPEED, MOVE_SPEED, 0);
+            Thread.sleep(THREAD_SLEEP);
+            mCreature.stop();
             
             } catch (CommandExecException e) {
+                System.out.println("Erro capturado"); 
+            } catch (InterruptedException ex) {
                 System.out.println("Erro capturado"); 
             }
         }
@@ -67,19 +65,44 @@ public class RobotController {
         public void moveBackwards() {
             try{
                 
-            // Get current position and pitch (direction)
-            double x, y, pitch, newX, newY;
-            x = mPosition.getX();
-            y = mPosition.getY();
-            pitch = mCreature.getPitch();
+            mCreature.start();
+            mCreature.move(-MOVE_SPEED, -MOVE_SPEED, 0);
+            Thread.sleep(THREAD_SLEEP);
+            mCreature.stop();
             
-            // New coordinates after moving forward
-            newX = x - Math.cos(pitch);
-            newY = y - Math.sin(pitch);
-            
-            // Move to the new position, with velocity = 1.
-            mCreature.moveto(1, newX, newY);
             } catch (CommandExecException e) {
+                System.out.println("Erro capturado"); 
+            } catch (InterruptedException ex) {
+                System.out.println("Erro capturado"); 
+            }
+        }
+        
+        public void turnRight() {
+            try{
+                
+            mCreature.start();
+            mCreature.move(0, 0, Math.toRadians(TURN_SPEED));
+            Thread.sleep(THREAD_SLEEP);
+            mCreature.stop();
+            
+            } catch (CommandExecException e) {
+                System.out.println("Erro capturado"); 
+            } catch (InterruptedException ex) {
+                System.out.println("Erro capturado"); 
+            }
+        }
+        
+        public void turnLeft() {
+            try{
+                
+            mCreature.start();
+            mCreature.move(0, 0, Math.toRadians(TURN_SPEED));
+            Thread.sleep(THREAD_SLEEP);
+            mCreature.stop();
+            
+            } catch (CommandExecException e) {
+                System.out.println("Erro capturado"); 
+            } catch (InterruptedException ex) {
                 System.out.println("Erro capturado"); 
             }
         }
