@@ -12,16 +12,20 @@ public class Aula1 {
      */
     public static void main(String[] args) {
      
+        // Create Robot Controller
+        RobotController controller = new RobotController();
+        controller.createWorld();
+        
         // Create window to capture the user input.
         /* Create and display the form */
+        ControllerUI ui = new ControllerUI();
+        
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new ControllerUI().setVisible(true);
+                ui.setVisible(true);
             }
         });  
-        
-        RobotController controller = new RobotController();
-        controller.createWorld();           
+        ui.setController(controller);
     }
 
 }

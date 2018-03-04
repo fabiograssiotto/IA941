@@ -1,7 +1,7 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * IA941 - Laboratório de Arquiteturas Cognitivas
+ * 1S2018 - FEEC - Unicamp
+ * Autor: Fabio Grassiotto - RA 890441
  */
 package IA941.ManualController;
 
@@ -33,7 +33,7 @@ public class RobotController {
                 World.createFood(0, 100, 220);
                 World.createFood(0, 250, 210);
                 mCreature = proxy.createCreature(100,450,0);
-                mCreature.start();
+                //mCreature.start();
                 mPosition = mCreature.getPosition();
                 double pitch = mCreature.getPitch();
                 double fuel = mCreature.getFuel();
@@ -46,10 +46,41 @@ public class RobotController {
         public void moveForward() {
             try{
                 
-            mCreature.moveto(mPosition.getX()+1, mPosition.getY(), 0);
+            // Get current position and pitch (direction)
+            double x, y, pitch, newX, newY;
+            x = mPosition.getX();
+            y = mPosition.getY();
+            pitch = mCreature.getPitch();
+            
+            // New coordinates after moving forward
+            newX = x + Math.cos(pitch);
+            newY = y + Math.sin(pitch);
+            
+            // Move to the new position, with velocity = 1.
+            mCreature.moveto(1, newX, newY);
+            
             } catch (CommandExecException e) {
                 System.out.println("Erro capturado"); 
             }
         }
         
+        public void moveBackwards() {
+            try{
+                
+            // Get current position and pitch (direction)
+            double x, y, pitch, newX, newY;
+            x = mPosition.getX();
+            y = mPosition.getY();
+            pitch = mCreature.getPitch();
+            
+            // New coordinates after moving forward
+            newX = x - Math.cos(pitch);
+            newY = y - Math.sin(pitch);
+            
+            // Move to the new position, with velocity = 1.
+            mCreature.moveto(1, newX, newY);
+            } catch (CommandExecException e) {
+                System.out.println("Erro capturado"); 
+            }
+        }
 }
