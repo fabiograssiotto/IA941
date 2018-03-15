@@ -4,10 +4,9 @@
 # one, write that the problem has been solved and halt.
 sp {water-jug*detect*goal*achieved
    (state <s> ^name water-jug
-              ^desired.jug <dj>
               ^jug <j>)
-   (<dj> ^volume <v> ^contents <c>)
-   (<j> ^volume <v> ^contents <c>)
+   (<j> ^volume 3
+        ^contents 1)
 -->
    (write (crlf) |The problem has been solved.|)
    (halt)

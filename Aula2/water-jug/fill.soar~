@@ -13,7 +13,7 @@ sp {water-jug*propose*fill
 }
 
 # water-jug*apply*fill
-# If the task is water-jug amd the fill operator is selected for a given jug,
+# If the task is water-jug and the fill operator is selected for a given jug,
 # then set that jug's contents to be its volume.
 sp {water-jug*apply*fill
    (state <s> ^name water-jug
