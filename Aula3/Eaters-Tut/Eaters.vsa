@@ -1,0 +1,8 @@
+VERSION 4
+/Eaters/Eaters.dm
+0	ROOT Eaters Eaters 1
+1	0	FOLDER all all 4
+2	0	FOLDER elaborations elaborations 2
+3	0	OPERATOR move-atividade-3 move-atividade-3.soar 9
+4	0	OPERATOR move-to-food-new move-to-food-new.soar 8
+END

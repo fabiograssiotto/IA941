@@ -1,0 +1,3 @@
+pushd Eaters-Agent
+source Eaters-Agent_source.soar
+popd
