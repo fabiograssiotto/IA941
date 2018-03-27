@@ -1,0 +1,23 @@
+## Radar-off operator proposal
+# If the radar is on but no energy, health, missiles and tanks visible,
+# then propose the radar off operator.
+sp {propose*radar*off
+   (state <s> ^name tanksoar
+              ^io.input-link <i>)
+   (<i> ^radar-status on
+       -^radar.<< health energy missiles tank >>)
+-->
+   (<s> ^operator <o> +)
+   (<o> ^name radar-off
+        ^actions.radar.switch off)}
+
+## Radar-off search control
+# If radar-off is proposed, then prefer it to move and turn.
+sp {select*radar-off*move
+   (state <s> ^name tanksoar
+              ^operator <o1> +
+              ^operator <o2> +)
+   (<o1> ^name radar-off)
+   (<o2> ^name << turn move >>)
+-->
+   (<s> ^operator <o1> > <o2>)}

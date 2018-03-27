@@ -1,0 +1,28 @@
+## Turn operator proposal
+# If the tank is blocked in the forward direction, and not blocked in the right
+# or left directions, then propose the turn operator for the unblocked
+# direction. Also create an indifferent preference for the operator.
+# This operator will also turn on the radar and set the radar power to 13.
+# If the tank is blocked in the forward direction, and in both the right or
+# left directions, then propose the turn operator left.
+sp {propose*turn
+   (state <s> ^name tanksoar
+              ^io.input-link.blocked <b>)
+   (<b> ^forward yes
+        ^ { << left right >> <direction> } no)
+-->
+   (<s> ^operator <o> + =)
+   (<o> ^name turn
+        ^actions <a>)
+   (<a> ^rotate.direction <direction>
+        ^radar.switch on
+        ^radar-power.setting 13)}
+
+sp {propose*turn*backward
+   (state <s> ^name tanksoar
+              ^io.input-link.blocked <b>)
+   (<b> ^forward yes ^left yes ^right yes)
+-->
+   (<s> ^operator <o> +)
+   (<o> ^name turn
+        ^actions.rotate.direction left)}

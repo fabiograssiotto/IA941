@@ -23,9 +23,25 @@ sp {propose*move-to-food
                  { <content> <> wall })
 -->
    (<s> ^operator <o> + =)
-   (<o> ^name move-to-food
+   (<o> ^name move
         ^direction <dir>
         ^content <content>)}
+
+# Select*move*bonusfood-better-than-normalfood
+# If there is a proposed operator to move to a cell with bonusfood and
+# there is a second proposed operator to move to a cell that is empty or
+# has normalfood or another eater
+# prefer the first operator.
+sp {select*move*bonusfood-better-than-normalfood-empty-eater
+   (state <s> ^operator <o1> +
+              ^operator <o2> +)
+   (<o1> ^name move
+         ^content bonusfood)
+   (<o2> ^name move
+         ^content << normalfood empty eater >>)
+-->
+   (<s> ^operator <o1> > <o2>) }
+   
 
 sp {propose*move-no-backward
    (state <s> ^io.input-link.my-location.<dir>.content
@@ -39,7 +55,11 @@ sp {propose*move-no-backward
    (<o> ^name move
         ^direction <dir>
         ^content <co>)}
-   
+
+# Select*move*reject*backward
+# If there is a proposed operator to move in the direction
+# opposite the last move,
+# reject that operator. 
 sp {select*move*reject*backward
    (state <s> ^operator <o> +
               ^directions <d>
@@ -57,7 +77,7 @@ sp {select*move*reject*backward
 sp {apply-move-to-food
    (state <s> ^io.output-link <out>
               ^operator <o>)
-   (<o> ^name move-to-food
+   (<o> ^name move
         ^direction <dir>)
 -->
    (<out> ^move.direction <dir>)}
@@ -76,7 +96,7 @@ sp {apply*move-to-food*remove-move
 
 sp {monitor*move-to-food
    (state <s> ^operator <o>)
-   (<o> ^name move-to-food
+   (<o> ^name move
         ^direction <direction>)
 -->
    (write |Direction: | <direction>)}

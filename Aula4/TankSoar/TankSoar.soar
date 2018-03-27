@@ -1,0 +1,3 @@
+pushd TankSoar
+source TankSoar_source.soar
+popd
