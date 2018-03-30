@@ -1,0 +1,17 @@
+VERSION 4
+/Tank-Subgoals/Tank-Subgoals.dm
+0	ROOT Tank-Subgoals Tank-Subgoals 1
+1	0	FOPERATOR _firstload _firstload.soar 2
+2	0	FOLDER all all 3
+3	2	FOPERATOR output output.soar 4
+4	0	FOLDER elaborations elaborations 5
+5	4	FOPERATOR _all _all.soar 6
+6	4	FOPERATOR retreat-elab retreat-elab.soar 13
+7	4	FOPERATOR shields shields.soar 14
+8	4	FOPERATOR top-state top-state.soar 7
+9	0	OPERATOR attack attack.soar 11
+10	0	OPERATOR chase chase.soar 10
+11	0	OPERATOR initialize-tanksoar initialize-tanksoar.soar 8
+12	0	OPERATOR retreat retreat.soar 12
+13	0	OPERATOR wander wander.soar 9
+END

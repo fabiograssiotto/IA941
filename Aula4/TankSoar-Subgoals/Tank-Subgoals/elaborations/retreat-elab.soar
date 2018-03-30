@@ -1,0 +1,37 @@
+## Retreat Operator Elaboration
+## If there is a retreat state and there is a sound coming in a given direction, record that direction.
+## If there is a retreat state and there is radar contact with a tank, record forward direction.
+## If there is a retreat state and there is an incoming, record the direction.
+## If there is a retreat state and there is radar contact with a tank that is not in the center, record
+## that direction as a direction to avoid moving.
+sp {elaborate*retreat*sound*direction
+   (state <s> ^name retreat
+              ^io.input-link.sound { <> silent <direction> })
+-->
+   (<s> ^direction <direction>)}
+
+sp {elaborate*retreat*radar*front
+   (state <s> ^name retreat
+              ^io.input-link.radar.tank)
+-->
+   (<s> ^direction forward)}
+
+sp {elaborate*retreat*incoming*direction
+   (state <s> ^name retreat
+              ^io.input-link.incoming.<dir> yes)
+-->
+   (<s> ^direction <dir>)}
+
+sp {elaborate*retreat*radar*direction
+   (state <s> ^name retreat
+              ^io.input-link.radar.tank.position { <dir> <> center })
+-->
+   (<s> ^avoid-direction <dir>)}
+
+
+sp {elaborate*sidestep-directions
+   (state <s> ^name tanksoar)
+-->
+   (<s> ^side-direction <sd>)
+   (<sd> ^forward right left ^backward right left
+         ^right forward backward ^left forward backward)}

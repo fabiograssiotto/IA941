@@ -1,0 +1,15 @@
+sp {propose*initialize-tanksoar
+   (state <s> ^superstate nil
+             -^name)
+-->
+   (<s> ^operator <o> +)
+   (<o> ^name initialize-tanksoar)
+}
+
+sp {apply*initialize-tanksoar
+   (state <s> ^operator <op>)
+   (<op> ^name initialize-tanksoar)
+-->
+   (<s> ^name tanksoar)
+}
+

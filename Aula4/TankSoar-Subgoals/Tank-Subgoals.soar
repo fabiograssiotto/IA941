@@ -1,0 +1,3 @@
+pushd Tank-Subgoals
+source Tank-Subgoals_source.soar
+popd

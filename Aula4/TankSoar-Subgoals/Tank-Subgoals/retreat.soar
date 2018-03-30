@@ -1,0 +1,62 @@
+## Propose Retreat Operator
+# If the state is tanksoar and the sound sensor is not silent or there
+# is an incoming missile, and health is low or the energy is low, then
+# propose the retreat operator.
+sp {propose*retreat*sound
+   (state <s> ^name tanksoar
+              ^missiles-energy low
+              ^io.input-link.sound {<direction> <> silent})
+-->
+   (<s> ^operator <o> + =)
+   (<o> ^name retreat)}
+
+sp {propose*retreat*radar
+   (state <s> ^name tanksoar
+              ^missiles-energy low
+              ^io.input-link.radar.tank)
+-->
+   (<s> ^operator <o> + =)
+   (<o> ^name retreat)}
+
+sp {propose*retreat*incoming
+   (state <s> ^name tanksoar
+              ^missiles-energy low
+              ^io.input-link.incoming.<dir> yes)
+-->
+   (<s> ^operator <o> + =)
+   (<o> ^name retreat)}
+
+
+## Propose Retreat Operator
+# If the state is tanksoar and the tank is under attack but cannot not directly
+# sense the other tank, then propose the retreat operator.
+sp {propose*retreat*incoming*not-sensed
+   (state <s> ^name tanksoar
+              ^io.input-link <io>)
+   (<io> ^incoming.<dir> yes
+        -^radar.tank
+         ^sound silent)
+-->
+   (<s> ^operator <o> + =)
+   (<o> ^name retreat)}
+
+
+## Propose Move Sidestep Operator
+## If the state is named retreat then propose sidestep from the direction of a detected enemy, as
+## long as that direction is not blocked, is not the direction of another enemy or is a 
+## direction to avoid.
+sp {retreat*propose*move
+   (state <s> ^name retreat
+              ^direction <dir>
+              ^superstate.side-direction.<dir> <ndir>
+             -^direction <ndir>
+             -^avoid-direction <ndir>
+              ^io.input-link.blocked.<ndir> no)
+-->
+  (<s> ^operator <o> + =)
+  (<o> ^name move
+       ^actions.move.direction <ndir>)}
+
+## Propose Wait
+## If the state is named retreat then propose wait, and make a worst preference for it.
+

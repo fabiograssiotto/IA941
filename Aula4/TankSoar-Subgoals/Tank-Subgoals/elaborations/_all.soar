@@ -1,0 +1,56 @@
+sp {elaborate*state*name
+  (state <s> ^superstate.operator.name <name>)
+-->
+  (<s> ^name <name>)
+}
+
+sp {elaborate*state*top-state
+  (state <s> ^superstate.top-state <ts>)
+-->
+  (<s> ^top-state <ts>)
+}
+
+sp {elaborate*state*io
+   (state <s> ^superstate.io <io>)
+-->
+   (<s> ^io <io>)}
+
+#### Propose wait for a state-no-change
+sp {top-state*propose*wait
+   (state <s> ^attribute state
+              ^choices none
+             -^operator.name wait)
+-->
+   (<s> ^operator <o> +)
+   (<o> ^name wait)}
+
+sp {apply*operator*create-action-command
+   (state <s> ^operator <o>
+              ^io.output-link <out>)
+   (<o> ^actions <act>)
+   (<act> ^<att> <value>)
+   (<value> ^<att2> <value2>)
+-->
+   (<out> ^<att> <value3>)
+   (<value3> ^<att2> <value2>)}
+
+sp {apply*operator*remove-command
+   (state <s> ^operator.actions
+              ^io.output-link <out>)
+   (<out> ^<att> <value>)
+   (<value> ^status complete)
+-->
+   (<out> ^<att> <value> -)}
+
+sp {elaborate*state*missiles*low
+   (state <s> ^name tanksoar
+              ^io.input-link.missiles 0)
+-->
+   (<s> ^missiles-energy low)}
+
+sp {elaborate*state*energy*low
+   (state <s> ^name tanksoar
+              ^io.input-link.energy <= 200)
+-->
+   (<s> ^missiles-energy low)}
+

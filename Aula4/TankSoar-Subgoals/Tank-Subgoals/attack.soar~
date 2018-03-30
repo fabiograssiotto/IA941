@@ -1,0 +1,80 @@
+## Propose Attack Operator
+# If the state is tanksoar, and there is a tank on radar, and health and energy are not low, then
+# propose the attack operator.
+sp {propose*attack
+   (state <s> ^name tanksoar
+              ^io.input-link.radar.tank
+             -^missiles-energy low)
+-->
+   (<s> ^operator <o> + =)
+   (<o> ^name attack)}
+
+## Propose Fire-missile Operator
+# If the state is attack and there is a tank on radar in the center,
+# then propose the fire missile operator.
+sp {attack*propose*fire-missile
+   (state <s> ^name attack
+              ^io.input-link <il>)
+   (<il> ^radar.tank.position center
+         ^missiles > 0)
+-->
+   (<s> ^operator <o> + >)
+   (<o> ^name fire-missile
+        ^actions.fire.weapon missile)}
+
+## Propose Slide Operator
+# If the state is attack and there is a tank on radar that is not in the center, 
+# and there is not a tank in the center, and there is an open spot in the direction 
+# of the tank, then propose the slide operator in the direction of the tank.
+sp {attack*propose*slide
+    (state <s> ^name attack
+               ^io.input-link <input>)
+    (<input> ^blocked.<dir> no
+             ^radar <r>)
+    (<r> ^tank.position { << left right >> <dir> }
+        -^tank.position center)
+-->
+    (<s> ^operator <o> + =)
+    (<o> ^name slide
+         ^actions.move.direction <dir>)}
+
+##Propose Move-Forward Operator
+# If the state is attack and there is a tank on radar that is not in the center, and there is not a tank in the
+# center, and the tank is blocked in that direction then propose move-forward.
+sp {attack*propose*move-forward
+   (state <s> ^name attack
+              ^io.input-link <input>)
+   (<input> ^blocked.<dir> yes
+            ^radar <r>)
+   (<r> ^tank <t>
+       -^tank.position center)
+   (<t> ^position { << left right >> <dir> }
+        ^distance <> 0)
+-->
+   (<s> ^operator <o> + =)
+   (<o> ^name move-forward
+        ^actions.move.direction forward)}
+
+### Propose Turn Operator
+## If the state is attack and there is a tank on radar that right next to the tank, 
+# then propose turning in that direction and firing.
+sp {attack*propose*turn
+   (state <s> ^name attack
+              ^io.input-link.radar.tank <tank>)
+   (<tank> ^distance 0
+           ^position { << left right >> <dir> })
+-->
+   (<s> ^operator <o> + =)
+   (<o> ^name turn
+        ^actions <a>)
+   (<a> ^rotate.direction <dir>
+        ^fire.weapon missile)}
+
+
+
+
+
+
+
+
+
