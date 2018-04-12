@@ -8,6 +8,7 @@ package SoarBridge;
 import Simulation.Environment;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -27,6 +28,7 @@ import org.jsoar.util.commands.SoarCommands;
 import ws3dproxy.CommandExecException;
 import ws3dproxy.CommandUtility;
 import ws3dproxy.model.Creature;
+import ws3dproxy.model.Leaflet;
 import ws3dproxy.model.Thing;
 import ws3dproxy.util.Constants;
 
@@ -178,6 +180,22 @@ public class SoarBridge
                  CreateStringWME(entity, "NAME", t.getName());
                  CreateStringWME(entity, "COLOR",Constants.getColorName(t.getMaterial().getColor()));                                                    
                 }
+              // Create the creature leaflets.
+              List<Leaflet> leafletList = c.getLeaflets();
+              // Create Leaflets.
+              Identifier leaflet = CreateIdWME(creature, "LEAFLET");
+              for (Leaflet l: leafletList)
+                {  
+                 Identifier entity = CreateIdWME(leaflet, "LEAFLET_JEWELS");
+                 // Store in working memory the three jewel color targets.
+                 // Get what to collect from leaflet.
+                 HashMap<String, Integer> h = l.getWhatToCollect();
+                 for (String key: h.keySet())
+                  {
+                     CreateStringWME(entity, "JEWEL_COLOR", key);
+                  }
+                }
+              
             }
         }
         catch (Exception e)
