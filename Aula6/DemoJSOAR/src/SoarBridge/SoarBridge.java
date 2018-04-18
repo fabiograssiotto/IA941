@@ -56,6 +56,16 @@ public class SoarBridge
     public Creature c;
     public String input_link_string = "";
     public String output_link_string = "";
+    
+    // Fabio - added constants and variables for the target Jewels.
+    final private static String COLOR_RED = "Red";
+    final private static String COLOR_GREEN = "Green";
+    final private static String COLOR_BLUE = "Blue";
+    final private static String COLOR_YELLOW = "Yellow";
+    final private static String COLOR_MAGENTA = "Magenta";
+    final private static String COLOR_WHITE = "White";
+    private int targetRed = 0, targetGreen = 0, targetBlue = 0, targetYellow = 0,
+                targetMagenta = 0, targetWhite = 0;
 
     /**
      * Constructor class
@@ -180,22 +190,40 @@ public class SoarBridge
                  CreateStringWME(entity, "NAME", t.getName());
                  CreateStringWME(entity, "COLOR",Constants.getColorName(t.getMaterial().getColor()));                                                    
                 }
-              // Create the creature leaflets.
+              // Create the creature leaflets in the input link.
               List<Leaflet> leafletList = c.getLeaflets();
-              // Create Leaflets.
               Identifier leaflet = CreateIdWME(creature, "LEAFLET");
+              
               for (Leaflet l: leafletList)
                 {  
-                 Identifier entity = CreateIdWME(leaflet, "LEAFLET_JEWELS");
-                 // Store in working memory the three jewel color targets.
                  // Get what to collect from leaflet.
                  HashMap<String, Integer> h = l.getWhatToCollect();
                  for (String key: h.keySet())
                   {
-                     CreateStringWME(entity, "JEWEL_COLOR", key);
-                  }
+                     // Count all jewel ocurrences in the leaflets. 
+                     if (key.equals(COLOR_RED)) {
+                         targetRed++;
+                     } else if (key.equals(COLOR_GREEN)) {
+                         targetGreen++;
+                     } else if (key.equals(COLOR_BLUE)) {
+                         targetBlue++;
+                     } else if (key.equals(COLOR_YELLOW)) {
+                         targetYellow++;
+                     } else if (key.equals(COLOR_MAGENTA)) {
+                         targetMagenta++;
+                     } else {
+                         targetWhite++;
+                     }   
+                  } 
                 }
-              
+                // Create target in the inputlink. All three leaflets are summed up 
+                // as a single list of target colors.
+                CreateFloatWME(leaflet, COLOR_RED, targetRed);
+                CreateFloatWME(leaflet, COLOR_GREEN, targetGreen);
+                CreateFloatWME(leaflet, COLOR_BLUE, targetBlue);
+                CreateFloatWME(leaflet, COLOR_YELLOW, targetYellow);
+                CreateFloatWME(leaflet, COLOR_MAGENTA, targetMagenta);
+                CreateFloatWME(leaflet, COLOR_WHITE, targetWhite);
             }
         }
         catch (Exception e)
