@@ -56,7 +56,6 @@ public class SoarBridge
     public Creature c;
     public String input_link_string = "";
     public String output_link_string = "";
-    List <RuntimeLeaflet> mRuntimeLeaflets;
 
     /**
      * Constructor class
@@ -68,11 +67,6 @@ public class SoarBridge
     {
         env = _e;
         c = env.getCreature();
-        
-        // Fabio - add code to retrieve leaflets.
-        List<RuntimeLeaflet> leafletList = (List<RuntimeLeaflet>) c.getLeaflets();
-  
-        
         try
         {
             ThreadedAgent tag = ThreadedAgent.create();

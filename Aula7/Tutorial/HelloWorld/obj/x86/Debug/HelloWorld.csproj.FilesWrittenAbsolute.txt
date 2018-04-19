@@ -1,6 +1,0 @@
-/net/nfs1.fee.unicamp.br/export/vol1/home/feec/ra890441/IA941/Aula7/Tutorial/HelloWorld/obj/x86/Debug/.NETFramework,Version=v4.5.AssemblyAttribute.cs
-/net/nfs1.fee.unicamp.br/export/vol1/home/feec/ra890441/IA941/Aula7/Tutorial/HelloWorld/bin/Debug/ClarionLibrary.dll
-/net/nfs1.fee.unicamp.br/export/vol1/home/feec/ra890441/IA941/Aula7/Tutorial/HelloWorld/bin/Debug/HelloWorld.exe.mdb
-/net/nfs1.fee.unicamp.br/export/vol1/home/feec/ra890441/IA941/Aula7/Tutorial/HelloWorld/bin/Debug/HelloWorld.exe
-/net/nfs1.fee.unicamp.br/export/vol1/home/feec/ra890441/IA941/Aula7/Tutorial/HelloWorld/obj/x86/Debug/HelloWorld.exe
-/net/nfs1.fee.unicamp.br/export/vol1/home/feec/ra890441/IA941/Aula7/Tutorial/HelloWorld/obj/x86/Debug/HelloWorld.exe.mdb
