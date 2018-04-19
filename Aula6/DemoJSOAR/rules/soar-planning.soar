@@ -5,6 +5,10 @@ epmem --set learning off
 #smem --off
 #log --level error
 
+pushd rules/default
+source selection.soar
+popd
+
 #### Default rule for naming the state selection ####
 # In response to a impasse.
 sp {default*selection*elaborate*name

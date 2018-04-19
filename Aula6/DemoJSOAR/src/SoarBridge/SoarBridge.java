@@ -64,9 +64,7 @@ public class SoarBridge
     final private static String COLOR_YELLOW = "Yellow";
     final private static String COLOR_MAGENTA = "Magenta";
     final private static String COLOR_WHITE = "White";
-    private int targetRed = 0, targetGreen = 0, targetBlue = 0, targetYellow = 0,
-                targetMagenta = 0, targetWhite = 0;
-
+    
     /**
      * Constructor class
      * @param _e Environment
@@ -193,11 +191,15 @@ public class SoarBridge
               // Create the creature leaflets in the input link.
               List<Leaflet> leafletList = c.getLeaflets();
               Identifier leaflet = CreateIdWME(creature, "LEAFLET");
+              int targetRed = 0, targetGreen = 0, targetBlue = 0, targetYellow = 0,
+                  targetMagenta = 0, targetWhite = 0;
               
               for (Leaflet l: leafletList)
                 {  
                  // Get what to collect from leaflet.
                  HashMap<String, Integer> h = l.getWhatToCollect();
+
+
                  for (String key: h.keySet())
                   {
                      // Count all jewel ocurrences in the leaflets. 
