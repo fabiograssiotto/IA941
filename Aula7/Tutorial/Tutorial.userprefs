@@ -1,0 +1,14 @@
+﻿<Properties StartupItem="HelloWorld/HelloWorld.csproj">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="HelloWorld/HelloWorld - Simple.cs">
+    <Files>
+      <File FileName="HelloWorld/HelloWorld - Simple.cs" Line="12" Column="26" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore>
+      <Breakpoint file="/net/nfs1.fee.unicamp.br/export/vol1/home/feec/ra890441/IA941/Aula7/Tutorial/HelloWorld/HelloWorld - Simple.cs" line="92" column="1" />
+    </BreakpointStore>
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>
