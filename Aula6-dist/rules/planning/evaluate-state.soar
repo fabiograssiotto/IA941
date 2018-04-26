@@ -20,21 +20,20 @@ sp {evaluate*state*success
 sp {evaluate*state*failure*duplicate
    (state <s2> ^name planning
                ^superstate-set <s1>
-               ^knapsack <k1>
-               ^knapsack <k2> {<> <k1> <k2>}
+               ^knapsack <knapcontents1>
+               ^knapsack <knapcontents2>
                ^tried-tied-operator)
-   (<k1> ^Red <Red>
-         ^Green <Green>
-         ^Blue <Blue>
-         ^Yellow <Yellow>
-         ^Magenta <Magenta>
-         ^White <White>)
-   (<k2> ^Red <Red>
-         ^Green <Green>
-         ^Blue <Blue>
-         ^Yellow <Yellow>
-         ^Magenta <Magenta>
-         ^White <White>)
-  -(state <s3> ^superstate <s2>)
+   (<knapcontents1> ^Red <Red>
+                    ^Green <Green>
+                    ^Blue <Blue>
+                    ^Yellow <Yellow>
+                    ^Magenta <Magenta>
+                    ^White <White>)
+   (<knapcontents2> ^Red <Red>
+                    ^Green <Green>
+                    ^Blue <Blue>
+                    ^Yellow <Yellow>
+                    ^Magenta <Magenta>
+                    ^White <White>)
 -->
    (<s2> ^failure <d>)}

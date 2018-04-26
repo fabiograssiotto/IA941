@@ -1,0 +1,145 @@
+#############################  MOVE JEWEL  #####################################
+# This operator will make the agent go straight to the jewel
+
+# Propose*move*jewel:
+sp {propose*move*jewel
+   (state <s> ^name planning
+              ^io.input-link <il>)
+   (<il> ^CREATURE <creature>)
+   (<creature> ^MEMORY <memory>)
+   (<memory> ^ENTITY <entityInMemory>)
+   (<creature> ^POSITION <creaturePosition>)
+   (<creaturePosition> ^X <creaturePositionX>)
+   (<creaturePosition> ^Y <creaturePositionY>)
+   (<entityInMemory> ^TYPE JEWEL)
+   (<entityInMemory> ^X <entityInMemoryPositionX>)
+   (<entityInMemory> ^Y <entityInMemoryPositionY>)
+   (<entityInMemory> ^NAME <entityInMemoryName>)
+   (<entityInMemory> ^COLOR <entityInMemoryColor>)       
+-->
+   (<s> ^operator <o> +)
+   (<o> ^name moveJewel)
+   (<o> ^parameter <jewel>)
+   (<jewel> ^distance (sqrt (+ (* (- <creaturePositionX> <entityInMemoryPositionX>) (- <creaturePositionX> <entityInMemoryPositionX>)) (* (- <creaturePositionY> <entityInMemoryPositionY>) (- <creaturePositionY> <entityInMemoryPositionY>)))))
+   (<jewel> ^X <entityInMemoryPositionX>)
+   (<jewel> ^Y <entityInMemoryPositionY>)
+   (<jewel> ^NAME <entityInMemoryName>)
+   (<jewel> ^COLOR <entityInMemoryColor>)}
+   
+# Apply*move*jewel:
+# If the move operator is selected, then generate an output command to it 
+sp {apply*move*jewel
+   (state <s> ^operator <o>
+              ^io <io>)
+   (<io> ^input-link <il>)           
+   (<io> ^output-link <ol>)
+   (<o> ^name moveJewel)
+   (<o> ^parameter <jewel>)
+   (<jewel> ^X <x>)
+   (<jewel> ^Y <y>)
+   (<jewel> ^NAME <entityInMemoryName>)
+   (<il> ^CREATURE <creature>)
+   (<creature> ^MEMORY <memory>)
+   (<memory> ^ENTITY <entityInMemory>)
+   (<entityInMemory> ^NAME <entityInMemoryName>)
+-->
+   (<ol> ^MOVE <command>)
+   (<command> ^Vel 1)
+   (<command> ^VelR 1)
+   (<command> ^VelL 1)
+   (<command> ^X <x>)
+   (<command> ^Y <y>)
+   #(halt)
+}
+
+  
+# Apply*moveJewel*remove-move:
+# If the moveJewel operator is selected,
+# and there is a completed move command on the output link,
+# then remove that command.   
+sp {apply*moveJewel*remove-move
+(state <s> ^operator.name moveJewel
+           ^io.output-link <out>)
+(<out> ^MOVE <move>)
+(<move> ^status complete)
+-->
+(<out> ^MOVE <move> -)}   
+
+#Remove the jewel From memory because de jewel is not there 
+sp {apply*moveJewel*remove*jewel
+(state <s> ^operator <o>
+           ^io.input-link <il>)
+(<o> ^name moveJewel)
+(<o> ^parameter <jewel>)
+(<jewel> ^X <x>)
+(<jewel> ^Y <y>)
+(<il> ^CREATURE <creature>)
+(<creature> ^MEMORY <memory>)
+(<memory> ^ENTITY <entityInMemory>) 
+(<memory> ^COUNT <quantity>)
+(<entityInMemory> ^X <x>)
+(<entityInMemory> ^Y <y>)      
+-(<creature> ^SENSOR.VISUAL.ENTITY.X <entityX> <x>)
+-(<creature> ^SENSOR.VISUAL.ENTITY.Y <entityY> <y>)
+-->
+(<memory> ^ENTITY <entityInMemory> -)
+(<memory> ^COUNT <quantity> -
+          ^COUNT (- <quantity> 1))}   
+
+##############################  GET JEWEL  #####################################
+# This operator will make the agent get the jewel
+
+# Propose*get*jewel:
+sp {propose*get*jewel
+   (state <s> ^name planning
+              ^io.input-link <il>)
+   (<il> ^CREATURE <creature>)
+   (<creature> ^SENSOR.VISUAL.ENTITY <entity>)
+   (<entity> ^TYPE JEWEL) 
+   (<entity> ^DISTANCE <jewelDistance> < 30)
+   (<entity> ^NAME <jewelName>)
+   (<creature> ^MEMORY.ENTITY.NAME <memoryItemName> <jewelName>)     
+-->
+   (<s> ^operator <o> +)
+   (<o> ^name getJewel)
+   (<o> ^parameter <jewel>)
+   (<jewel> ^NAME <jewelName>)
+   (<jewel> ^DISTANCE <jewelDistance>)}
+   
+# Apply*get*jewel:
+# If the move operator is selected, then generate an output command to it 
+sp {apply*get*jewel
+   (state <s> ^operator <o>
+              ^io <io>)
+   (<io> ^input-link <il>)      
+   (<io> ^output-link <ol>)
+   (<o> ^name getJewel)
+   (<o> ^parameter.NAME <jewelName>)
+   (<il> ^CREATURE <creature>) 
+   (<creature> ^MEMORY <memory>)
+   (<memory> ^COUNT <quantity>)  
+   (<memory> ^ENTITY <memoryEntity>)
+   (<memoryEntity> ^NAME <memoryEntityName> <jewelName>)
+   - (<ol> ^GET <anything>)   # Colocado por Ricardo
+-->
+   (<ol> ^GET <command>)
+   (<command> ^Name <jewelName>)
+   (<memory> ^COUNT <quantity> -
+             ^COUNT (- <quantity> 1))
+   (<memory> ^ENTITY <memoryEntity> -)
+   #(halt)
+}
+  
+# Apply*get*remove-move:
+# If the getJewel operator is selected,
+# and there is a completed move command on the output link,
+# then remove that command.   
+sp {apply*getJewel*remove-get
+(state <s> ^operator <o>            
+           ^io.output-link <out>)
+(<o> ^name getJewel)
+(<o> ^parameter.name <jewelName>)
+(<out> ^GET <move>)
+(<move> ^status complete)
+-->
+(<out> ^GET <move> -)}   

@@ -1,0 +1,39 @@
+sp {evaluate*state*success
+   (state <s> ^desired <d>
+              ^problem-space.name planning
+              ^knapsack <k>)
+   (<d> ^Red <Red>
+        ^Green <Green>
+        ^Blue <Blue>
+        ^Yellow <Yellow>
+        ^Magenta <Magenta>
+        ^White <White>)        
+   (<k> ^Red <Red> 
+        ^Green <Green>
+        ^Blue <Blue>
+        ^Yellow <Yellow>
+        ^Magenta <Magenta>
+        ^White <White>)
+-->
+   (<s> ^success <d>)}
+
+sp {evaluate*state*failure*duplicate
+   (state <s2> ^name planning
+               ^superstate-set <s1>
+               ^knapsack <knapcontents1>
+               ^knapsack <knapcontents2>
+               ^tried-tied-operator)
+   (<knapcontents1> ^Red <Red>
+                    ^Green <Green>
+                    ^Blue <Blue>
+                    ^Yellow <Yellow>
+                    ^Magenta <Magenta>
+                    ^White <White>)
+   (<knapcontents2> ^Red <Red>
+                    ^Green <Green>
+                    ^Blue <Blue>
+                    ^Yellow <Yellow>
+                    ^Magenta <Magenta>
+                    ^White <White>)
+-->
+   (<s2> ^failure <d>)}

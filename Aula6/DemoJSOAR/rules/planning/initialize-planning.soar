@@ -1,6 +1,6 @@
 sp {propose*initialize-planning
    (state <s>
-#             ^superstate nil
+             ^superstate nil
              -^name
               ^io.input-link.CREATURE.LEAFLET <leaflet>)
 -->
