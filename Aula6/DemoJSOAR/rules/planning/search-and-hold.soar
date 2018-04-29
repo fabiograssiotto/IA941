@@ -1,0 +1,116 @@
+################ SEARCH AND HOLD ENTITIES ###################################
+# This operator will make the agent hold entities that are currently
+# in the visual field into memory. Entities that we are interested on are
+# Jewels and Food.
+# Only Jewels still needed for the target need to be considered in the
+# search operation, whereas all food counts.
+
+# Propose adding to memory jewels in the visual field.
+sp {propose*search*and*hold*jewel
+   (state <s> ^name planning
+              ^io.input-link <il>
+              ^target <target>)
+   (<il> ^CREATURE <creature>)
+# First condition is, is there a jewel in the visual field of the creature?
+   (<creature> ^SENSOR.VISUAL.ENTITY <entity>)     
+   (<entity> ^TYPE <type> JEWEL)   
+   (<entity> ^COLOR <color>)
+   (<entity> ^X <x>)
+   (<entity> ^Y <y>) 
+   (<entity> ^NAME <name>)
+# Second condition is, are there any entities in memory?
+# The strategy is to only keep one entity in memory per round of search-and-get.
+   (<creature> ^MEMORY <memory>)   
+   -(<memory> ^ENTITY)
+# Third condition is, do we still need to get a jewel of that color?
+   (<target>   ^<color> <tgtAmmount>)
+   (<target>   ^<color> { <tgtAmmount> > 0 })
+-->
+   (<s> ^operator <o> +)
+   (<o> ^name searchAndHoldJewel)
+   (<o> ^parameterEntity <newJewel>)
+   (<newJewel> ^Name <name>)
+   (<newJewel> ^Type <type>)
+   (<newJewel> ^X <x>)
+   (<newJewel> ^Y <y>)
+   (<newJewel> ^Color <color>)
+   (write (crlf) | propose*search*and*hold*jewel Target Jewel = | <name> )
+   (write (crlf) | target color = | <color> | ammount = | <tgtAmmount> )}
+
+   
+# Add to memory the jewel selected.
+sp {apply*search*and*hold*jewel
+   (state <s> ^operator <o>
+              ^io <io>)
+   (<io> ^input-link <il>)
+   (<il> ^CREATURE <creature>)
+   (<creature> ^MEMORY <memory>)
+   (<o> ^name searchAndHoldJewel)
+   (<o> ^parameterEntity <newJewel>)
+   (<newJewel> ^X <x>)
+   (<newJewel> ^Y <y>)
+   (<newJewel> ^Name <name>)
+   (<newJewel> ^Type <type>)
+   (<newJewel> ^Color <color>)
+-->
+   (<memory> ^ENTITY <memoryEntity>)
+   (<memoryEntity> ^X <x>)
+   (<memoryEntity> ^Y <y>)
+   (<memoryEntity> ^NAME <name>)
+   (<memoryEntity> ^TYPE <type>)
+   (<memoryEntity> ^COLOR <color>)
+   (write (crlf) | apply*search*and*hold*jewel name = | <name> )}
+
+sp {propose*search*and*hold*food
+   (state <s> ^name planning
+              ^io.input-link <il>)
+   (<il> ^CREATURE <creature>)
+# First condition is, is there any food in the visual field of the creature?
+   (<creature> ^SENSOR.VISUAL.ENTITY <entity>)     
+   (<entity> ^TYPE <type> FOOD)   
+   (<entity> ^COLOR <color>)
+   (<entity> ^X <x>)
+   (<entity> ^Y <y>) 
+   (<entity> ^NAME <name>)
+# Second condition is, are there any entities in memory?
+# The strategy is to only keep one entity in memory per round of search-and-get.
+   (<creature> ^MEMORY <memory>)   
+   -(<memory> ^ENTITY)
+# Third condition is, do we still need to get any food now?
+   (<creature> ^PARAMETERS.MINFUEL <minfuel>)
+   (<creature> ^SENSOR.FUEL.VALUE <fuel>)
+   (<creature> ^SENSOR.FUEL.VALUE { <VALUE> > <minfuel> })
+-->
+   (<s> ^operator <o> +)
+   (<o> ^name searchAndHoldFood)
+   (<o> ^parameterEntity <newFood>)
+   (<newFood> ^Name <name>)
+   (<newFood> ^Type <type>)
+   (<newFood> ^X <x>)
+   (<newFood> ^Y <y>)
+   (<newFood> ^Color <color>)
+   (write (crlf) | propose*search*and*hold*food name = | <name> )
+   (write (crlf) | current fuel = | <fuel> | minfuel = | <minfuel>)}
+   
+# Add to memory the food selected.
+sp {apply*search*and*hold*food
+   (state <s> ^operator <o>
+              ^io <io>)
+   (<io> ^input-link <il>)
+   (<il> ^CREATURE <creature>)
+   (<creature> ^MEMORY <memory>)
+   (<o> ^name searchAndHoldJewel)
+   (<o> ^parameterEntity <newEntity>)
+   (<newEntity> ^X <x>)
+   (<newEntity> ^Y <y>)
+   (<newEntity> ^Name <name>)
+   (<newEntity> ^Type <type>)
+   (<newEntity> ^Color <color>)
+-->
+   (<memory> ^ENTITY <memoryEntity>)
+   (<memoryEntity> ^X <x>)
+   (<memoryEntity> ^Y <y>)
+   (<memoryEntity> ^NAME <name>)
+   (<memoryEntity> ^TYPE <type>)
+   (<memoryEntity> ^COLOR <color>)
+   (write (crlf) | apply*search*and*hold*food name = | <name> )}

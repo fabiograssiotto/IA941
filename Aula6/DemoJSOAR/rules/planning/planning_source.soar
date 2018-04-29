@@ -11,6 +11,5 @@ pushd Impasse__Operator_Tie
 source Impasse__Operator_Tie_source.soar
 popd
 source initialize-planning.soar
-source jewel.soar
-source see-entity.soar
-source wander.soar
+source input.soar
+source search-and-hold.soar

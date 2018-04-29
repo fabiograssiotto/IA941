@@ -1,4 +1,4 @@
-28
+30
 SOAR_ID 0
 SOAR_ID 1
 SOAR_ID 2
@@ -21,13 +21,15 @@ ENUMERATION 18 1 save-to-memory
 SOAR_ID 19
 ENUMERATION 20 1 wander
 SOAR_ID 21
-ENUMERATION 22 1 see-entity
+ENUMERATION 22 1 search-and-hold
 SOAR_ID 23
 ENUMERATION 24 1 jewel
 SOAR_ID 25
 ENUMERATION 26 1 state
 ENUMERATION 27 1 Impasse__Operator_Tie
-29
+SOAR_ID 28
+ENUMERATION 29 1 input
+31
 0 io 1
 0 name 7
 0 operator 4
@@ -39,6 +41,7 @@ ENUMERATION 27 1 Impasse__Operator_Tie
 0 operator 19
 0 operator 21
 0 operator 23
+0 operator 28
 0 superstate 6
 0 top-state 0
 0 type 5
@@ -57,3 +60,4 @@ ENUMERATION 27 1 Impasse__Operator_Tie
 25 superstate 0
 25 top-state 0
 25 type 26
+28 name 29

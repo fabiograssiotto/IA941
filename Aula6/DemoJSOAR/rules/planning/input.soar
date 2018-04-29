@@ -1,0 +1,35 @@
+sp {propose*input-link
+   (state <s> ^superstate nil
+             -^name
+              ^io.input-link <il>)
+    -(<s> ^io.input-link.CREATURE)
+-->
+   (<s> ^operator <o> + =)
+   (<o> ^name input)}
+
+sp {apply*input-link
+   (state <s> ^operator.name input
+              ^io.input-link <il>)
+-->
+   (<il> ^CREATURE <cr>)
+   (<cr> ^LEAFLET <leafs> ^SENSOR <sensor> ^POSITION <pos> ^PARAMETERS <parms> ^MEMORY <memory>)
+   (<leafs> ^White 1.0
+            ^Magenta 0.0
+            ^Yellow 2.0
+            ^Blue 1.0
+            ^Green 2.0
+            ^Red 2.0)
+   (<sensor> ^VISUAL <visual> ^FUEL <fuel>)
+   (<visual> ^ENTITY <e18>
+             ^ENTITY <e17>
+             ^ENTITY <e16>
+             ^ENTITY <e13>)
+   (<e18>    ^COLOR White ^NAME Jewel_1525001679477 ^TYPE JEWEL ^Y2 12.060564499907418 ^X2 281.67568093278913 ^Y 0.06056449990741708 ^X 269.67568093278913 ^DISTANCE 191.11038613194208)
+   (<e17>    ^COLOR Magenta ^NAME Jewel_1525001679471 ^TYPE JEWEL ^Y2 100.38668658324723 ^X2 406.55142101026 ^Y 88.38668658324723 ^X 394.551421010261 ^DISTANCE 294.5514200653258)
+   (<e16>    ^COLOR Yellow ^NAME Jewel_1525001679457 ^TYPE JEWEL ^Y2 192.08595827363916 ^X2 590.9737510022352 ^Y 180.08595827363916 ^X 578.9737510022352 ^DISTANCE 485.6229247059904)
+   (<e13>    ^COLOR Green ^NAME NPFood_15250016794383 ^TYPE FOOD ^Y2 168.16305190194663 ^X2 696.9318769291037 ^Y 156.16305190194663 ^X 684.9318769291037 ^DISTANCE 587.621982017351)
+   (<fuel>   ^VALUE 1000.0)
+   (<pos>    ^Y 100.0 ^X 100.0)
+   (<parms>  ^TIMESTAMP 1.525001726413E12 ^MINFUEL 400.0)
+   (write (crlf) | Prepared Fake Input Link |)
+}

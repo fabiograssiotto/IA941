@@ -1,7 +1,8 @@
+
 sp {evaluate*state*success
    (state <s> ^desired <d>
               ^problem-space.name planning
-              ^knapsack <k>)
+              ^sack <k>)
    (<d> ^Red <Red>
         ^Green <Green>
         ^Blue <Blue>
