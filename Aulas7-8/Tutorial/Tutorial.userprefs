@@ -1,0 +1,12 @@
+﻿<Properties StartupItem="SimpleHelloWorld/SimpleHelloWorld.csproj">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="SimpleHelloWorld/SimpleHelloWorld.cs">
+    <Files>
+      <File FileName="SimpleHelloWorld/SimpleHelloWorld.cs" Line="37" Column="42" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>
