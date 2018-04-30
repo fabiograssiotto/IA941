@@ -11,7 +11,8 @@ VERSION 4
 8	0	OPERATOR evaluate-state evaluate-state.soar 9
 9	0	HLIOPERATOR Impasse__Operator_Tie Impasse__Operator_Tie.soar Impasse__Operator_Tie 25 10
 10	9	FOPERATOR elaborations elaborations.soar 11
-11	0	OPERATOR initialize-planning initialize-planning.soar 12
-12	0	OPERATOR input input.soar 14
-13	0	OPERATOR search-and-hold search-and-hold.soar 13
+11	0	OPERATOR go go.soar 15
+12	0	OPERATOR initialize-planning initialize-planning.soar 12
+13	0	OPERATOR input input.soar 14
+14	0	OPERATOR search-and-hold search-and-hold.soar 13
 END

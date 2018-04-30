@@ -10,6 +10,7 @@ source Impasse__Operator_Tie.soar
 pushd Impasse__Operator_Tie
 source Impasse__Operator_Tie_source.soar
 popd
+source go.soar
 source initialize-planning.soar
 source input.soar
 source search-and-hold.soar

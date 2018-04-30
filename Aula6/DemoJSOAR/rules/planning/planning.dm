@@ -1,4 +1,4 @@
-30
+32
 SOAR_ID 0
 SOAR_ID 1
 SOAR_ID 2
@@ -29,7 +29,9 @@ ENUMERATION 26 1 state
 ENUMERATION 27 1 Impasse__Operator_Tie
 SOAR_ID 28
 ENUMERATION 29 1 input
-31
+SOAR_ID 30
+ENUMERATION 31 1 go
+33
 0 io 1
 0 name 7
 0 operator 4
@@ -42,6 +44,7 @@ ENUMERATION 29 1 input
 0 operator 21
 0 operator 23
 0 operator 28
+0 operator 30
 0 superstate 6
 0 top-state 0
 0 type 5
@@ -61,3 +64,4 @@ ENUMERATION 29 1 input
 25 top-state 0
 25 type 26
 28 name 29
+30 name 31

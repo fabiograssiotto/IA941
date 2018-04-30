@@ -1,0 +1,47 @@
+################ GO TO ENTITIES ###################################
+# This operator will make the agent go towards the entities present in
+# memory.
+
+sp {propose*go*to*entity
+   (state <s> ^name planning
+              ^io.input-link <il>)
+   (<il> ^CREATURE.MEMORY <memory>)
+   (<memory> ^ENTITY <entity>)
+   (<entity> ^NAME <name>)
+-->
+   (<s> ^operator <o> +)
+   (<o> ^name goToEntity)
+   (<o> ^parameterEntity <entity>)
+   (write (crlf) | propose*go Target = | <name> )}
+   
+sp {apply*go*to*entity
+   (state <s> ^operator <o>
+              ^io <io>)
+   (<io> ^input-link <il>)
+   (<io> ^output-link <ol>)
+   (<il> ^CREATURE <creature>)
+   (<o> ^name goToEntity)
+   (<o> ^parameterEntity <newEntity>)
+   (<newEntity> ^X <x>)
+   (<newEntity> ^Y <y>)
+   (<newEntity> ^Name <name>)
+   (<newEntity> ^Type <type>)
+   (<newEntity> ^Color <color>)
+-->
+   (<ol> ^MOVE <command>)
+   (<command> ^Vel 2)
+   (<command> ^VelR 2)
+   (<command> ^VelL 2)
+   (<command> ^X <x>)
+   (<command> ^Y <y>)
+   (write (crlf) | apply*go*to*entity X = | <x> | Y = | <y>)}
+
+sp {apply*go*to*remove
+   (state <s> ^operator.name goToEntity
+              ^io.output-link <ol>)
+   (<ol> ^MOVE <move>)
+   (<move> ^status complete)
+-->
+   (<ol> ^MOVE <move> -)
+   (write (crlf) | apply*go*to*remove |)}
+   
