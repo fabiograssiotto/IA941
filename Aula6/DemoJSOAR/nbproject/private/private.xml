@@ -3,8 +3,11 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/E:/Development/Git/IA941/Aula6/DemoJSOAR/rules/planning/elaborations/update-distance.soar</file>
-            <file>file:/E:/Development/Git/IA941/Aula6/DemoJSOAR/rules/planning/go.soar</file>
+            <file>file:/home/fabiogr/Projects/IA941/Aula6/DemoJSOAR/src/SoarBridge/CommandGet.java</file>
+            <file>file:/home/fabiogr/Projects/IA941/Aula6/DemoJSOAR/src/SoarBridge/SoarBridge.java</file>
+            <file>file:/home/fabiogr/Projects/IA941/Aula6/DemoJSOAR/src/Simulation/Main.java</file>
+            <file>file:/home/fabiogr/Projects/IA941/Aula6/DemoJSOAR/src/SoarBridge/Command.java</file>
+            <file>file:/home/fabiogr/Projects/IA941/Aula6/DemoJSOAR/rules/planning/_firstload.soar</file>
         </group>
     </open-files>
 </project-private>

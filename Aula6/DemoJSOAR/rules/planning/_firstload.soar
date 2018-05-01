@@ -1,5 +1,1 @@
-pushd "../default"
-source selection.soar
-popd
-
-learn --on
+learn --off
