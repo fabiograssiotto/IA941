@@ -22,27 +22,28 @@ sp {apply*initialize-planning
 -->
    (<s> ^name planning
         ^deliverySpot <deliverySpot>
-        ^needed <needed>
-        ^knapsack <knapsack_contents>
-        ^desired <desired_jewels>
-        ^memory <memory>)
+        ^target <target>
+        ^sack <sack>
+        ^desired <desired>) # This is used by the selection operator.
    (<deliverySpot> ^X 0 ^Y 0)
-   (<knapsack_contents> ^Red 0
-                        ^Green 0
-                        ^Blue 0
-                        ^Yellow 0
-                        ^Magenta 0
-                        ^White 0)
-   (<desired_jewels> ^Red <RedAmmount>
-                     ^Green <GreenAmmount>
-                     ^Blue <BlueAmmount>
-                     ^Yellow <YellowAmmount>
-                     ^Magenta <MagentaAmmount>
-                     ^White <WhiteAmmount>)
-   (write (crlf) | Desired Red Jewels =| <RedAmmount>)
-   (write (crlf) | Desired Green Jewels =| <GreenAmmount>)
-   (write (crlf) | Desired Blue Jewels =| <BlueAmmount>)
-   (write (crlf) | Desired Yellow Jewels =| <YellowAmmount>)
-   (write (crlf) | Desired Magenta Jewels =| <MagentaAmmount>)
-   (write (crlf) | Desired White Jewels =| <WhiteAmmount>)
+   (<sack> ^Red 0
+           ^Green 0
+           ^Blue 0
+           ^Yellow 0
+           ^Magenta 0
+           ^White 0)
+   (<target> ^Red <RedAmmount>
+             ^Green <GreenAmmount>
+             ^Blue <BlueAmmount>
+             ^Yellow <YellowAmmount>
+             ^Magenta <MagentaAmmount>
+             ^White <WhiteAmmount>)
+   (<desired> ^Red <RedAmmount>
+             ^Green <GreenAmmount>
+             ^Blue <BlueAmmount>
+             ^Yellow <YellowAmmount>
+             ^Magenta <MagentaAmmount>
+             ^White <WhiteAmmount>)
+   (write (crlf) | Target Jewels = Red: | <RedAmmount> | Green: | <GreenAmmount> | Blue: | <BlueAmmount> )
+   (write (crlf) |                 Yellow: | <YellowAmmount> | Magenta: | <MagentaAmmount> | White: | <WhiteAmmount> )
 }

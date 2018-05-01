@@ -1,0 +1,17 @@
+sp {elaborate*update*distance
+   (state <s> ^name planning
+              ^io.input-link <il>)
+   (<il> ^CREATURE <creature>)
+   (<creature> ^POSITION <position>)
+   (<position> ^X <crX>)
+   (<position> ^Y <crY>)
+   (<creature> ^MEMORY <memory>)
+   (<memory> ^ENTITY <entity>)
+   (<entity> ^NAME <entityName>
+             ^X <x>
+             ^Y <y>)
+#             ^DISTANCE <prevDist>)
+-->
+   (<entity> ^DISTANCE <prevDist> -
+             ^DISTANCE (sqrt (+ (* (- <crX> <x>) (- <crX> <x>)) (* (- <crY> <y>) (- <crY> <y>)))))
+}
