@@ -1,40 +1,46 @@
+################ EVALUATIONS ###################################
+sp {selection*propose*evaluate-operator
+   :default
+   (state <s> ^name selection
+              ^item <i>)
+   -{(state <s> ^evaluation <e>)
+   (<e> ^operator <i>
+        ^value true)}
+-->
+   (<s> ^operator <o> +, =)
+   (<o> ^name evaluate-operator
+        ^operator <i>)}
 
 sp {evaluate*state*success
    (state <s> ^desired <d>
               ^problem-space.name planning
-              ^sack <k>)
-   (<d> ^Red <Red>
-        ^Green <Green>
-        ^Blue <Blue>
-        ^Yellow <Yellow>
-        ^Magenta <Magenta>
-        ^White <White>)        
-   (<k> ^Red <Red> 
-        ^Green <Green>
-        ^Blue <Blue>
-        ^Yellow <Yellow>
-        ^Magenta <Magenta>
-        ^White <White>)
+              ^sack <sack>
+              ^target <target>)
+   (<sack> ^Red <Red>
+           ^Green <Green>
+           ^Blue <Blue>
+           ^Yellow <Yellow>
+           ^Magenta <Magenta>
+           ^White <White>)        
+   (<target> ^Red <Red> 
+             ^Green <Green>
+             ^Blue <Blue>
+             ^Yellow <Yellow>
+             ^Magenta <Magenta>
+             ^White <White>)
 -->
    (<s> ^success <d>)}
 
-sp {evaluate*state*failure*duplicate
-   (state <s2> ^name planning
-               ^superstate-set <s1>
-               ^knapsack <knapcontents1>
-               ^knapsack <knapcontents2>
-               ^tried-tied-operator)
-   (<knapcontents1> ^Red <Red>
-                    ^Green <Green>
-                    ^Blue <Blue>
-                    ^Yellow <Yellow>
-                    ^Magenta <Magenta>
-                    ^White <White>)
-   (<knapcontents2> ^Red <Red>
-                    ^Green <Green>
-                    ^Blue <Blue>
-                    ^Yellow <Yellow>
-                    ^Magenta <Magenta>
-                    ^White <White>)
+# The most jewels in the sack indicate we are closer to finishing.
+sp {evaluate*state*numeric
+   (state <s> ^desired <desired>
+              ^sack <sack>
+              ^tried-tied-operator)
+   (<sack> ^Red <Red>
+           ^Green <Green>
+           ^Blue <Blue>
+           ^Yellow <Yellow>
+           ^Magenta <Magenta>
+           ^White <White>)
 -->
-   (<s2> ^failure <d>)}
+   (<s> ^numeric-value (+ <Red> <Green> <Blue> <Yellow> <Magenta> <White>))}

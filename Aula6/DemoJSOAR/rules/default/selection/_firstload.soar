@@ -4,17 +4,9 @@
 ## File            : default/selection.soar
 ## Author          : John Laird
 ## Created on      : Mon Feb 27 16:15:34 1989  
-## Last Modified On: January 24, 2017
+## Last Modified On: March 1, 2012
 ## 
-## Contents:     Default productions for selection problem space for Soar 9.6
-##
-##  Change made for Soar 9.6
-##   1. Added chunk singleton declarations for default rule structures. These should 
-##      improve chunking for Soar 9.6. Also added some multiattribute declaration.
-##      Added these to all/declarations.soar
-##   2. Modify evaluate-operator*propose*look-ahead to include require preference
-##      so chunks using add-osk don't include conditions for all proposals of all other operators. 
-##
+## Contents:     Default productions for selection problem space for Soar 9.3
 ###########################################################################
 ##  Change made for Soar 9.3
 ##   1. Added expected-value as a result - these get translated into numeric preferences

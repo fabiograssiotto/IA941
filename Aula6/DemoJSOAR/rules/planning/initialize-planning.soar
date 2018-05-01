@@ -38,6 +38,12 @@ sp {apply*initialize-planning
              ^Yellow <YellowAmmount>
              ^Magenta <MagentaAmmount>
              ^White <WhiteAmmount>)
+   (<desired> ^Red <RedAmmount>
+             ^Green <GreenAmmount>
+             ^Blue <BlueAmmount>
+             ^Yellow <YellowAmmount>
+             ^Magenta <MagentaAmmount>
+             ^White <WhiteAmmount>)
    (write (crlf) | Target Jewels = Red: | <RedAmmount> | Green: | <GreenAmmount> | Blue: | <BlueAmmount> )
    (write (crlf) |                 Yellow: | <YellowAmmount> | Magenta: | <MagentaAmmount> | White: | <WhiteAmmount> )
 }

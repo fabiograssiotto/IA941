@@ -11,6 +11,9 @@ sp {propose*search*and*hold*jewel
               ^io.input-link <il>
               ^target <target>)
    (<il> ^CREATURE <creature>)
+   (<creature> ^POSITION <position>)
+   (<position> ^X <crX>)
+   (<position> ^Y <crY>)
 # First condition is, is there a jewel in the visual field of the creature?
    (<creature> ^SENSOR.VISUAL.ENTITY <entity>)     
    (<entity> ^TYPE <type> JEWEL)   
@@ -34,7 +37,9 @@ sp {propose*search*and*hold*jewel
    (<newJewel> ^X <x>)
    (<newJewel> ^Y <y>)
    (<newJewel> ^Color <color>)
+   (<newJewel> ^Distance (sqrt (+ (* (- <crX> <x>) (- <crX> <x>)) (* (- <crY> <y>) (- <crY> <y>)))))
    (write (crlf) | propose*search*and*hold*jewel Target Jewel = | <name> )
+   (write (crlf) | Creature x: | <crX> | y: | <crY> | Jewel x: | <x> | y: | <y> )
    (write (crlf) | target color = | <color> | ammount = | <tgtAmmount> )}
 
    
@@ -44,6 +49,10 @@ sp {apply*search*and*hold*jewel
               ^io <io>)
    (<io> ^input-link <il>)
    (<il> ^CREATURE <creature>)
+   (<creature> ^POSITION <position>)
+   (<position> ^X <crX>)
+   (<position> ^Y <crY>)
+   (<creature> ^MEMORY <memory>)
    (<o> ^name searchAndHoldJewel)
    (<o> ^parameterEntity <newJewel>)
    (<newJewel> ^X <x>)
@@ -52,14 +61,15 @@ sp {apply*search*and*hold*jewel
    (<newJewel> ^Type <type>)
    (<newJewel> ^Color <color>)
 -->
-   (<creature> ^MEMORY <memory>)
    (<memory> ^ENTITY <memoryEntity>)
    (<memoryEntity> ^X <x>)
    (<memoryEntity> ^Y <y>)
    (<memoryEntity> ^NAME <name>)
    (<memoryEntity> ^TYPE <type>)
    (<memoryEntity> ^COLOR <color>)
-   (write (crlf) | apply*search*and*hold*jewel name = | <name> )}
+#   (<memoryEntity> ^DISTANCE (sqrt (+ (* (- <crX> <x>) (- <crX> <x>)) (* (- <crY> <y>) (- <crY> <y>)))))
+   (write (crlf) | apply*search*and*hold*jewel name = | <name> )
+   (write (crlf) | Creature x: | <crX> | y: | <crY> | Jewel x: | <x> | y: | <y> )}
 
 sp {propose*search*and*hold*food
    (state <s> ^name planning
@@ -98,7 +108,8 @@ sp {apply*search*and*hold*food
               ^io <io>)
    (<io> ^input-link <il>)
    (<il> ^CREATURE <creature>)
-   (<o> ^name searchAndHoldJewel)
+   (<creature> ^MEMORY <memory>)
+   (<o> ^name searchAndHoldFood)
    (<o> ^parameterEntity <newEntity>)
    (<newEntity> ^X <x>)
    (<newEntity> ^Y <y>)
@@ -106,7 +117,6 @@ sp {apply*search*and*hold*food
    (<newEntity> ^Type <type>)
    (<newEntity> ^Color <color>)
 -->
-   (<creature> ^MEMORY <memory>)
    (<memory> ^ENTITY <memoryEntity>)
    (<memoryEntity> ^X <x>)
    (<memoryEntity> ^Y <y>)

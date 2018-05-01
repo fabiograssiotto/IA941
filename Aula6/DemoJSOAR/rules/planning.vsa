@@ -8,11 +8,12 @@ VERSION 4
 5	3	FOPERATOR apply-command apply-command.soar 6
 6	3	FOPERATOR problem-space problem-space.soar 7
 7	3	FOPERATOR top-state top-state.soar 8
-8	0	OPERATOR evaluate-state evaluate-state.soar 9
-9	0	HLIOPERATOR Impasse__Operator_Tie Impasse__Operator_Tie.soar Impasse__Operator_Tie 25 10
-10	9	FOPERATOR elaborations elaborations.soar 11
-11	0	OPERATOR go go.soar 15
+8	3	FOPERATOR update-distance update-distance.soar 16
+9	0	OPERATOR collect collect.soar 9
+10	0	OPERATOR evaluate-state evaluate-state.soar 10
+11	0	OPERATOR go go.soar 11
 12	0	OPERATOR initialize-planning initialize-planning.soar 12
-13	0	OPERATOR input input.soar 14
-14	0	OPERATOR search-and-hold search-and-hold.soar 13
+13	0	OPERATOR input input.soar 13
+14	0	OPERATOR preferences preferences.soar 14
+15	0	OPERATOR search-and-hold search-and-hold.soar 15
 END

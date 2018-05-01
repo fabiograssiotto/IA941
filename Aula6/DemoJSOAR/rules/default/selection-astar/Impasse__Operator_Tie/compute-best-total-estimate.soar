@@ -34,7 +34,7 @@ sp {apply*compute-best-total-estimate
    (<e> ^total-estimated-cost <tes>)
   -{(<s> ^evaluation.total-estimated-cost < <tes>)}
 -->
-   (write (crlf) |  Best Total Estimate | <tes> | from | <e>)
+ ##(write (crlf) |  Best Total Estimate | <tes> | from | <e>)
    (<s> ^best-total-estimate <tes>)
 }
 
@@ -47,24 +47,22 @@ sp {apply*compute-best-total-estimate*remove-old
    (<e> ^total-estimated-cost { <> <bte> <tes> })
   -{(<s> ^evaluation.total-estimated-cost < <tes>)}
 -->
-   (write (crlf) |  Remove Best Total Estimate | <bte>)
+ ##(write (crlf) |  Remove Best Total Estimate | <bte>)
    (<s> ^best-total-estimate <bte> -)
 }
 
 sp {apply*compute-best-total-estimate*pass-back-super
    :default
    (state <s> ^operator <op>
-             # ^quiescence t
               ^superstate.superstate.operator.evaluation <se>
               ^evaluation <e>)
    (<op> ^name compute-best-total-estimate)
    (<e> ^total-estimated-cost <tes>
         ^superoperator <so>)
   -(<s> ^evaluation.total-estimated-cost < <tes>)
-   (<se> ^estimated-cost {< <tes> <sec> }
-        -^estimated-cost > <tes>)
+   (<se> ^estimated-cost {< <tes> <sec> })
 -->
-   (write (crlf) |!!!Updated superestimated cost. Replace | <sec> | with | <tes>)
+ ##(write (crlf) |!!!Updated superestimated cost. Replace | <sec> | with | <tes>)
    (<se> ^estimated-cost <sec> -
                          <tes>
          ^updated-estimate true)

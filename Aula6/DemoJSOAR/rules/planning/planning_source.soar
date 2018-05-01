@@ -5,12 +5,10 @@ popd
 pushd elaborations
 source elaborations_source.soar
 popd
+source collect.soar
 source evaluate-state.soar
-source Impasse__Operator_Tie.soar
-pushd Impasse__Operator_Tie
-source Impasse__Operator_Tie_source.soar
-popd
 source go.soar
 source initialize-planning.soar
 source input.soar
+source preferences.soar
 source search-and-hold.soar

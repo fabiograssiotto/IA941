@@ -5,18 +5,6 @@ sp {selection*learn
 -->
    (force-learn <s>)}
 
-
-sp {evaluate-operator*monitor
-   :default
-   (state <s> ^name selection
-              ^operator <op>)
-   (<op> ^name evaluate-operator
-         ^superoperator.next-waypoint.id <nx>)
--->
-  (write (crlf) |Next waypoint: | <nx>)
- 
-}
-
 sp {evaluate-operator*elaborate*forward*visited
    :default
    (state <s> ^name selection
@@ -91,7 +79,6 @@ sp {selection*elaborate*evaluation*final-cost
 -->
  ##(write (crlf) |Final Cost: | <pc> | : | <e>)
    (<e> ^final-cost <pc>
-        ^total-estimated-cost <pc>
         ^value true)
 }
 
@@ -113,12 +100,9 @@ sp {selection*elaborate*superstate*preferences*indifferent*better*final-cost
    (state <s> ^name selection
               ^evaluation <e1> { <e2> <> <e1> }
               ^superstate <ss>)
-  -{(<s> ^operator <o1> +)
-   (<o1> ^name compare-evaluations)}
    (<e1> ^superoperator <so1>
          ^final-cost <fc>)
    (<e2> ^superoperator <so2>
          ^symbolic-value indifferent)
 -->
-#   (<ss> ^operator <so1> > <so2>)}
-   (<ss> ^operator <so2> -)}
+   (<ss> ^operator <so1> > <so2>)}
