@@ -8,6 +8,8 @@ using System.Threading;
 using ClarionApp;
 using ClarionApp.Model;
 using ClarionApp.Exceptions;
+using Clarion;
+using Clarion.Framework;
 using Gtk;
 
 namespace ClarionApp
@@ -41,6 +43,17 @@ namespace ClarionApp
                     ws.NewBrick(4, 50, -4, 747, 47);
                     ws.NewBrick(4, 49, 562, 796, 599);
                     ws.NewBrick(4, -2, 6, 50, 599);
+
+					// Create a set of jewels in the environment, 50 should do it.
+					Random rnd = new Random();
+					for(int i = 0; i < 50; i++) {
+						// Randomly select color and position.
+						int color = rnd.Next(0, 5);
+						int x = rnd.Next(100, 800);
+						int y = rnd.Next(100, 600);
+						ws.NewJewel(color, x, y); 
+					}
+
 
                     if (!String.IsNullOrWhiteSpace(creatureId))
                     {

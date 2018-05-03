@@ -20,7 +20,9 @@ namespace ClarionApp
     {
         DO_NOTHING,
         ROTATE_CLOCKWISE,
-        GO_AHEAD
+        GO_AHEAD,
+		GET_JEWEL,
+		STOP
     }
 
     public class ClarionAgent
@@ -34,6 +36,10 @@ namespace ClarionApp
         /// Constant that represents that there is at least one wall ahead
         /// </summary>
         private String DIMENSION_WALL_AHEAD = "WallAhead";
+		/// <summary>
+		/// Constant that represents that there is at least one jewel ahead
+		/// </summary>
+		private String DIMENSION_JEWEL_AHEAD = "JewelAhead";
 		double prad = 0;
         #endregion
 
@@ -73,6 +79,14 @@ namespace ClarionApp
         /// Perception input to indicates a wall ahead
         /// </summary>
 		private DimensionValuePair inputWallAhead;
+		/// <summary>
+		/// Perception input to indicates a jewel ahead
+		/// </summary>
+		private DimensionValuePair inputJewelAhead;
+		/// <summary>
+		/// Perception input to indicate all leaflets have been collected.
+		/// </summary>
+		private DimensionValuePair inputAllLeafletsDone;
         #endregion
 
         #region Action Output
@@ -84,7 +98,18 @@ namespace ClarionApp
         /// Output action that makes the agent go ahead
         /// </summary>
 		private ExternalActionChunk outputGoAhead;
+		/// <summary>
+		/// Output action that makes the agent get a jewel
+		/// </summary>
+		private ExternalActionChunk outputGetJewel;
+		/// <summary>
+		/// Output action that makes the agent stop
+		/// </summary>
+		private ExternalActionChunk outputStop;
         #endregion
+
+		// List to specify jewel names to be collected.
+		private List<String> jewelNames;
 
         #endregion
 
@@ -101,10 +126,16 @@ namespace ClarionApp
 
             // Initialize Input Information
             inputWallAhead = World.NewDimensionValuePair(SENSOR_VISUAL_DIMENSION, DIMENSION_WALL_AHEAD);
+			inputJewelAhead = World.NewDimensionValuePair(SENSOR_VISUAL_DIMENSION, DIMENSION_JEWEL_AHEAD);
 
             // Initialize Output actions
             outputRotateClockwise = World.NewExternalActionChunk(CreatureActions.ROTATE_CLOCKWISE.ToString());
             outputGoAhead = World.NewExternalActionChunk(CreatureActions.GO_AHEAD.ToString());
+			outputGetJewel = World.NewExternalActionChunk(CreatureActions.GET_JEWEL.ToString());
+			outputStop = World.NewExternalActionChunk(CreatureActions.STOP.ToString());
+
+			// Initialize list of jewel names to collect
+			jewelNames = new List<string>();
 
             //Create thread to simulation
             runThread = new Thread(CognitiveCycle);
@@ -177,6 +208,16 @@ namespace ClarionApp
 				case CreatureActions.GO_AHEAD:
 					worldServer.SendSetAngle(creatureId, 1, 1, prad);
 					break;
+				case CreatureActions.GET_JEWEL:
+					foreach (string jewelToGet in jewelNames) {
+						worldServer.SendSackIt(creatureId, jewelToGet);
+					}
+					// reset list of jewels
+					jewelNames.Clear();
+					break;
+				case CreatureActions.STOP:
+					worldServer.SendStopCreature(creatureId);
+					break;
 				default:
 					break;
 				}
@@ -219,6 +260,20 @@ namespace ClarionApp
             // Commit this rule to Agent (in the ACS)
             CurrentAgent.Commit(ruleGoAhead);
 
+			// Create Rule To Get Jewel
+			SupportCalculator getJewelSupportCalculator = FixedRuleToGetJewel;
+			FixedRule ruleGetJewel = AgentInitializer.InitializeActionRule(CurrentAgent, FixedRule.Factory, outputGetJewel, getJewelSupportCalculator);
+
+			// Commit this rule to Agent (in the ACS)
+			CurrentAgent.Commit(ruleGetJewel);
+
+			// Create Rule To Stop after collecting all jewels.
+			SupportCalculator stopSupportCalculator = FixedRuleToStop;
+			FixedRule ruleStop = AgentInitializer.InitializeActionRule(CurrentAgent, FixedRule.Factory, outputStop, stopSupportCalculator);
+
+			// Commit this rule to Agent (in the ACS)
+			CurrentAgent.Commit(ruleStop);
+
             // Disable Rule Refinement
             CurrentAgent.ACS.Parameters.PERFORM_RER_REFINEMENT = false;
 
@@ -249,13 +304,42 @@ namespace ClarionApp
             Boolean wallAhead = listOfThings.Where(item => (item.CategoryId == Thing.CATEGORY_BRICK && item.DistanceToCreature <= 61)).Any();
             double wallAheadActivationValue = wallAhead ? CurrentAgent.Parameters.MAX_ACTIVATION : CurrentAgent.Parameters.MIN_ACTIVATION;
             si.Add(inputWallAhead, wallAheadActivationValue);
-			//Console.WriteLine(sensorialInformation);
+
+			// Detect if we have a jewel to be collected
+			Boolean jewelAhead = listOfThings.Where(item => (item.CategoryId == Thing.CATEGORY_JEWEL && item.DistanceToCreature <= 60)).Any();
+			if (jewelAhead) {
+				IEnumerable<Thing> jewels = listOfThings.Where (item => (item.CategoryId == Thing.CATEGORY_JEWEL && item.DistanceToCreature <= 60));
+				foreach (Thing jewel in jewels) {
+					jewelNames.Add(jewel.Name);
+				}
+			}
+			double jewelAheadActivationValue = jewelAhead ? CurrentAgent.Parameters.MAX_ACTIVATION : CurrentAgent.Parameters.MIN_ACTIVATION;
+			si.Add(inputJewelAhead, jewelAheadActivationValue);
+
 			Creature c = (Creature) listOfThings.Where(item => (item.CategoryId == Thing.CATEGORY_CREATURE)).First();
+
+			// Detect empty leaflets and set rule.
+			int missingJewels = 0;
+			foreach(Leaflet l in c.getLeaflets()) {
+				missingJewels += l.getRequired("Red");
+				missingJewels += l.getRequired("Green");
+				missingJewels += l.getRequired("Blue");
+				missingJewels += l.getRequired("Yellow");
+				missingJewels += l.getRequired("Magenta");
+				missingJewels += l.getRequired("White");
+			}
+			if (missingJewels == 0) {
+				si.Add (inputAllLeafletsDone, CurrentAgent.Parameters.MAX_ACTIVATION);
+			}
+
+			//Console.WriteLine(sensorialInformation);
+
 			int n = 0;
 			foreach(Leaflet l in c.getLeaflets()) {
 				mind.updateLeaflet(n,l);
 				n++;
 			}
+
             return si;
         }
         #endregion
@@ -272,6 +356,18 @@ namespace ClarionApp
             // Here we will make the logic to go ahead
             return ((currentInput.Contains(inputWallAhead, CurrentAgent.Parameters.MIN_ACTIVATION))) ? 1.0 : 0.0;
         }
+
+		private double FixedRuleToGetJewel(ActivationCollection currentInput, Rule target)
+		{
+			// Here we will make the logic to collect a jewel
+			return ((currentInput.Contains(inputJewelAhead, CurrentAgent.Parameters.MAX_ACTIVATION))) ? 1.0 : 0.0;
+		}
+
+		private double FixedRuleToStop(ActivationCollection currentInput, Rule target)
+		{
+			// Here we will make the logic to stop after collecting all jewels.
+			return ((currentInput.Contains(inputAllLeafletsDone, CurrentAgent.Parameters.MAX_ACTIVATION))) ? 1.0 : 0.0;
+		}
         #endregion
 
         #region Run Thread Method
