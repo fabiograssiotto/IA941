@@ -34,7 +34,7 @@ public class Main
 
             //Start enviroment data
             Environment e = new Environment(Boolean.FALSE);
-            SoarBridge soarBridge = new SoarBridge(e,soarRulesPath,false);
+            SoarBridge soarBridge = new SoarBridge(e,soarRulesPath,true);
             MindView mv = new MindView(soarBridge);
             mv.setVisible(true);
 

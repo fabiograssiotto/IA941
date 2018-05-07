@@ -4,8 +4,12 @@
 
 sp {propose*go*to*entity
    (state <s> ^name planning
-              ^io.input-link <il>
-              ^MEMORY <memory>)
+              ^io.input-link <il>)
+   (<il> ^CREATURE <creature>)
+   (<creature> ^POSITION <position>)
+   (<position> ^X <crX>)
+   (<position> ^Y <crY>)
+   (<il> ^CREATURE.MEMORY <memory>)
    (<memory> ^ENTITY <entity>)
    (<entity> ^NAME <name>)
    (<entity> ^X <entityX>)
@@ -14,16 +18,15 @@ sp {propose*go*to*entity
    (<s> ^operator <o> + =)
    (<o> ^name goToEntity)
    (<o> ^parameterEntity <entity>)
-   (<entity> ^NAME <name>)
-   (<entity> ^X <entityX>)
-   (<entity> ^Y <entityY>)
-   (write (crlf) | propose*go Target = | <name> )
-   (write (crlf) | X = | <entityX> | Y = | <entityY>)}
+   (write (crlf) | propose*go Target = | <name> )}
    
 sp {apply*go*to*entity
    (state <s> ^operator <o>
               ^io <io>)
+   (<io> ^input-link <il>)
    (<io> ^output-link <ol>)
+   (<il> ^CREATURE <creature>)
+   (<creature> ^POSITION <position>)
    (<o> ^name goToEntity)
    (<o> ^parameterEntity <newEntity>)
    (<newEntity> ^X <x>)

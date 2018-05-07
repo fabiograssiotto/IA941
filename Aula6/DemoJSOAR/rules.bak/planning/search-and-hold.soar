@@ -9,8 +9,7 @@
 sp {propose*search*and*hold*jewel
    (state <s> ^name planning
               ^io.input-link <il>
-              ^target <target>
-              ^MEMORY <memory>)
+              ^target <target>)
    (<il> ^CREATURE <creature>)
    (<creature> ^POSITION <position>)
    (<position> ^X <crX>)
@@ -24,7 +23,8 @@ sp {propose*search*and*hold*jewel
    (<entity> ^NAME <name>)
 # Second condition is, are there any entities in memory?
 # The strategy is to only keep one entity in memory per round of search-and-get.
-   -(<memory> ^ENTITY.NAME <name>)
+   (<creature> ^MEMORY <memory>)
+  -(<memory> ^ENTITY.NAME <name>)
 # Third condition is, do we still need to get a jewel of that color?
    (<target>   ^<color> <tgtAmmount>)
    (<target>   ^<color> { <tgtAmmount> > 0 })
@@ -46,9 +46,13 @@ sp {propose*search*and*hold*jewel
 # Add to memory the jewel selected.
 sp {apply*search*and*hold*jewel
    (state <s> ^operator <o>
-              ^io <io>
-              ^memory <memory>)
+              ^io <io>)
    (<io> ^input-link <il>)
+   (<il> ^CREATURE <creature>)
+   (<creature> ^POSITION <position>)
+   (<position> ^X <crX>)
+   (<position> ^Y <crY>)
+   (<creature> ^MEMORY <memory>)
    (<o> ^name searchAndHoldJewel)
    (<o> ^parameterEntity <newJewel>)
    (<newJewel> ^X <x>)
@@ -63,13 +67,13 @@ sp {apply*search*and*hold*jewel
    (<memoryEntity> ^NAME <name>)
    (<memoryEntity> ^TYPE <type>)
    (<memoryEntity> ^COLOR <color>)
+#   (<memoryEntity> ^DISTANCE (sqrt (+ (* (- <crX> <x>) (- <crX> <x>)) (* (- <crY> <y>) (- <crY> <y>)))))
    (write (crlf) | apply*search*and*hold*jewel name = | <name> )
-   (write (crlf) | Jewel x: | <x> | y: | <y> )}
+   (write (crlf) | Creature x: | <crX> | y: | <crY> | Jewel x: | <x> | y: | <y> )}
 
 sp {propose*search*and*hold*food
    (state <s> ^name planning
-              ^io.input-link <il>
-              ^MEMORY <memory>)
+              ^io.input-link <il>)
    (<il> ^CREATURE <creature>)
 # First condition is, is there any food in the visual field of the creature?
    (<creature> ^SENSOR.VISUAL.ENTITY <entity>)     
@@ -80,6 +84,7 @@ sp {propose*search*and*hold*food
    (<entity> ^NAME <name>)
 # Second condition is, are there any entities in memory?
 # The strategy is to only keep one entity in memory per round of search-and-get. 
+   (<creature> ^MEMORY <memory>)
   -(<memory> ^ENTITY.NAME <name>)
 # Third condition is, do we still need to get any food now?
    (<creature> ^PARAMETERS.MINFUEL <minfuel>)

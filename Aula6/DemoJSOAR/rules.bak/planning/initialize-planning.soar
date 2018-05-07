@@ -24,8 +24,7 @@ sp {apply*initialize-planning
         ^deliverySpot <deliverySpot>
         ^target <target>
         ^sack <sack>
-        ^desired <desired>
-        ^memory <memory>) # To hold the entity to be searched for.
+        ^desired <desired>) # This is used by the selection operator.
    (<deliverySpot> ^X 0 ^Y 0)
    (<sack> ^Red 0
            ^Green 0
