@@ -1,0 +1,56 @@
+# uncomment this production to simulate some input without the Java program
+sp {propose*simulate-input
+   (state <s> ^superstate nil
+             -^name)
+  -(<s> ^io.input-link.CREATURE)
+-->
+   (<s> ^operator <o> + =)
+   (<o> ^name simulate-input)
+}
+
+sp {apply*simulate-input
+   (state <s> ^operator.name simulate-input)
+-->
+   (<s> ^io.input-link.CREATURE <creature>)
+   (<creature> ^LEAFLET <leaflets> ^MEMORY <memory> ^PARAMETERS <parameters> ^POSITION <position> ^SENSOR <sensor>)
+   (<leaflets> ^White 2.0 ^Magenta 1.0 ^Yellow 0.0 ^Blue 2.0 ^Green 0.0 ^Red 2.0)
+   (<parameters> ^MINFUEL 400.0 ^TIMESTAMP 1.524399803163E12)
+   (<position> ^X 100.0 ^Y 100.0)
+   (<sensor> ^FUEL <fuel> ^VISUAL <visual>)
+   (<fuel> ^VALUE 1000.0)
+   (<visual>
+#        ^ENTITY <entity31>
+#        ^ENTITY <entity30>
+        ^ENTITY <entity29>
+        ^ENTITY <entity28>
+        ^ENTITY <entity27>
+        ^ENTITY <entity26>
+        ^ENTITY <entity25>
+        ^ENTITY <entity24> 
+        ^ENTITY <entity23>
+        ^ENTITY <entity22> 
+        ^ENTITY <entity21> 
+        ^ENTITY <entity20> 
+        ^ENTITY <entity19> 
+        ^ENTITY <entity18> 
+        ^ENTITY <entity17> 
+        ^ENTITY <entity16> 
+        ^ENTITY <entity15>)
+#   (<entity31> ^COLOR White ^DISTANCE 432.22 ^NAME Jewel_1524399791240 ^TYPE JEWEL ^X 233.0 ^|X2| 333.0 ^Y 742.0 ^|Y2| 654.0)
+#   (<entity30> ^COLOR Magenta ^DISTANCE 300.63 ^NAME Jewel_1524399791241 ^TYPE JEWEL ^X 401.0 ^|X2| 432.0 ^Y 632.0 ^|Y2| 634.0)
+   (<entity29> ^COLOR Magenta ^DISTANCE 298.32 ^NAME Jewel_1524399791242 ^TYPE JEWEL ^X 508.0 ^|X2| 657.0 ^Y 634.0 ^|Y2| 644.0)
+   (<entity28> ^COLOR Yellow ^DISTANCE 155.43 ^NAME Jewel_1524399791243 ^TYPE JEWEL ^X 432.0 ^|X2| 382.0 ^Y 734.0 ^|Y2| 223.0)
+   (<entity27> ^COLOR Yellow ^DISTANCE 201.32 ^NAME Jewel_1524399791244 ^TYPE JEWEL ^X 322.0 ^|X2| 594.0 ^Y 574.0 ^|Y2| 544.0)
+   (<entity26> ^COLOR Yellow ^DISTANCE 188.12 ^NAME Jewel_1524399791245 ^TYPE JEWEL ^X 187.0 ^|X2| 456.0 ^Y 764.0 ^|Y2| 243.0)
+   (<entity25> ^COLOR Blue ^DISTANCE 444.6706646496933 ^NAME Jewel_1524399791238 ^TYPE JEWEL ^X 524.0 ^|X2| 536.0 ^Y 234.0 ^|Y2| 246.0)
+   (<entity24> ^COLOR Blue ^DISTANCE 428.8029850642367 ^NAME Jewel_1524399791236 ^TYPE JEWEL ^X 524.0 ^|X2| 536.0 ^Y 164.0 ^|Y2| 176.0)
+   (<entity23> ^COLOR Blue ^DISTANCE 359.8777570231314 ^NAME Jewel_1524399791234 ^TYPE JEWEL ^X 434.0 ^|X2| 446.0 ^Y 234.0 ^|Y2| 246.0)
+   (<entity22> ^COLOR Blue ^DISTANCE 340.0764619905353 ^NAME Jewel_1524399791233 ^TYPE JEWEL ^X 434.0 ^|X2| 446.0 ^Y 164.0 ^|Y2| 176.0)
+   (<entity21> ^COLOR Blue ^DISTANCE 157.58172482873766 ^NAME Jewel_1524399791229 ^TYPE JEWEL ^X 244.0 ^|X2| 256.0 ^Y 164.0 ^|Y2| 176.0)
+   (<entity20> ^COLOR Green ^DISTANCE 495.16865813579113 ^NAME Jewel_1524399791225 ^TYPE JEWEL ^X 594.0 ^|X2| 606.0 ^Y 134.0 ^|Y2| 146.0)
+   (<entity19> ^COLOR Red ^DISTANCE 334.0538878684096 ^NAME Jewel_1524399791198 ^TYPE JEWEL ^X 414.0 ^|X2| 426.0 ^Y 214.0 ^|Y2| 226.0)
+   (<entity18> ^COLOR Red ^DISTANCE 314.0 ^NAME Jewel_1524399791196 ^TYPE JEWEL ^X 414.0 ^|X2| 426.0 ^Y 94.0 ^|Y2| 106.0)
+   (<entity17> ^COLOR Red ^DISTANCE 94.0 ^NAME Jewel_1524399791175 ^TYPE JEWEL ^X 194.0 ^|X2| 206.0 ^Y 94.0 ^|Y2| 106.0)
+   (<entity16> ^COLOR Magenta ^DISTANCE 53.0 ^NAME Brick_1524399791167 ^TYPE BRICK ^X 50.0 ^|X2| 747.0 ^Y -4.0 ^|Y2| 47.0)
+   (<entity15> ^COLOR Magenta ^DISTANCE 647.0 ^NAME Brick_1524399791164 ^TYPE BRICK ^X 747.0 ^|X2| 800.0 ^Y 2.0 ^|Y2| 567.0)
+}

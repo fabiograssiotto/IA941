@@ -13,3 +13,4 @@ source initialize-planning.soar
 source preferences.soar
 source search-and-hold.soar
 source simulation.soar
+source wander.soar

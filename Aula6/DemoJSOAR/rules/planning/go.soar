@@ -28,6 +28,7 @@ sp {apply*go*to*entity
    (<o> ^parameterEntity <newEntity>)
    (<newEntity> ^X <x>)
    (<newEntity> ^Y <y>)
+   (<newEntity> ^NAME <name>)
 -->
    (<ol> ^MOVE <command>)
    (<command> ^Vel 2)
@@ -35,7 +36,8 @@ sp {apply*go*to*entity
    (<command> ^VelL 2)
    (<command> ^X <x>)
    (<command> ^Y <y>)
-   (write (crlf) | apply*go*to*entity X = | <x> | Y = | <y>)}
+   (write (crlf) | apply*go*to*entity X = | <x> | Y = | <y>)
+   (write (crlf) | name = | <name>)}
 
 #sp {apply*go*to*remove
 # (state <s> ^operator.name goToEntity

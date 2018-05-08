@@ -41,26 +41,41 @@ sp {searchFood*vs*goto*Entity*pref
 -->
    (<s> ^operator <o> < <o2>)}
 
-sp {collect*vs*goto*Entity*pref
+sp {collect_fd*vs*goto*Entity*pref
    (state <s> ^operator <o> +
           <o2> +)
-   (<o> ^name collect)
+   (<o> ^name collect_fd)
    (<o2> ^name goToEntity)
 -->
    (<s> ^operator <o> > <o2>)}
 
-sp {collect*vs*searchAndHoldJewel*pref
+sp {collect_fd*vs*searchAndHoldJewel*pref
    (state <s> ^operator <o> +
           <o2> +)
-   (<o> ^name collect)
+   (<o> ^name collect_fd)
    (<o2> ^name searchAndHoldJewel)
 -->
    (<s> ^operator <o> > <o2>)}
 
-sp {collect*vs*searchAndHoldFood*pref
+sp {collect_fd*vs*searchAndHoldFood*pref
    (state <s> ^operator <o> +
           <o2> +)
-   (<o> ^name collect)
+   (<o> ^name collect_fd)
    (<o2> ^name searchAndHoldFood)
 -->
+   (<s> ^operator <o> > <o2>)} 
+
+sp {collect_tgt*vs*collect_jw*pref
+   (state <s> ^operator <o> +
+          <o2> +)
+   (<o> ^name collect_tgt)
+   (<o2> ^name collect_jw)
+-->
    (<s> ^operator <o> > <o2>)}
+
+sp {collect_tgt*vs*all*pref
+   (state <s> ^operator <o> +
+          <o2> +)
+   (<o> ^name collect_tgt)
+-->
+   (<s> ^operator <o> > <o2>)}   

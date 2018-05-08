@@ -8,15 +8,15 @@ sp {propose*collect*food
               ^io.input-link <il>)
 #   (<il> ^CREATURE.MEMORY <memory>)
 #   (<memory> ^ENTITY.NAME <entityName>)
-#   (<memory> ^ENTITY.DISTANCE <distance> < 60)
+#   (<memory> ^ENTITY.DISTANCE <distance> < 30)
    (<il> ^CREATURE.SENSOR <sensor>)
    (<sensor> ^VISUAL <visual>)
    (<visual> ^ENTITY.NAME <entityName>)
-   (<visual> ^ENTITY.DISTANCE <distance> < 60)
+   (<visual> ^ENTITY.DISTANCE <distance> < 30)
    (<visual> ^ENTITY.TYPE FOOD)
 -->
-   (<s> ^operator <o> +)
-   (<o> ^name collect)
+   (<s> ^operator <o> + )
+   (<o> ^name collect_fd)
    (<o> ^parameter <p>)
    (<p> ^NAME <entityName>)
    (write (crlf) | propose*collect*food: name = | <entityName> | distance = | <distance>)}
@@ -25,7 +25,7 @@ sp {apply*collect*food
    (state <s> ^operator <o>
               ^io.input-link <il>
               ^io.output-link <ol>)
-   (<o> ^name collect)
+   (<o> ^name collect_fd)
    (<o> ^parameter.NAME <entityName>)
    (<il> ^CREATURE <creature>)
    (<creature> ^SENSOR.VISUAL <visual>)
@@ -49,12 +49,12 @@ sp {propose*collect*any*jewel
    (<il> ^CREATURE.SENSOR <sensor>)
    (<sensor> ^VISUAL <visual>)
    (<visual> ^ENTITY.NAME <entityName>)
-   (<visual> ^ENTITY.DISTANCE <distance> < 60)
+   (<visual> ^ENTITY.DISTANCE <distance> < 30)
    (<visual> ^ENTITY.TYPE JEWEL)
    (<visual> ^ENTITY.COLOR <entityColor>)
 -->
-   (<s> ^operator <o> +)
-   (<o> ^name collect)
+   (<s> ^operator <o> + )
+   (<o> ^name collect_jw)
    (<o> ^parameter <p>)
    (<p> ^NAME <entityName>)
    (<p> ^COLOR <entityColor>)
@@ -69,7 +69,7 @@ sp {apply*collect*any*jewel
               ^sack <sack>
               ^target <target>
               ^memory <memory>)
-   (<o> ^name collect)
+   (<o> ^name collect_jw)
    (<o> ^parameter.NAME <entityName>)
    (<o> ^parameter.COLOR <entityColor>)
 #   (<il> ^CREATURE <creature>)
@@ -117,12 +117,12 @@ sp {propose*collect*target*jewel
    (<il> ^CREATURE.SENSOR <sensor>)
    (<sensor> ^VISUAL <visual>)
    (<visual> ^ENTITY.NAME <memoryName>)
-   (<visual> ^ENTITY.DISTANCE <distance> < 60)
+   (<visual> ^ENTITY.DISTANCE <distance> < 30)
    (<visual> ^ENTITY.TYPE JEWEL)
    (<visual> ^ENTITY.COLOR <entityColor>)
 -->
-   (<s> ^operator <o> +)
-   (<o> ^name collect)
+   (<s> ^operator <o> + )
+   (<o> ^name collect_tgt)
    (<o> ^parameter <p>)
    (<p> ^NAME <memoryName>)
    (<p> ^COLOR <entityColor>)
@@ -136,7 +136,7 @@ sp {apply*collect*target*jewel
               ^sack <sack>
               ^target <target>
               ^memory <memory>)
-   (<o> ^name collect)
+   (<o> ^name collect_tgt)
    (<o> ^parameter.NAME <entityName>)
    (<il> ^CREATURE <creature>)
    (<creature> ^SENSOR.VISUAL <visual>)
