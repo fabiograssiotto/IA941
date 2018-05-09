@@ -6,11 +6,9 @@ pushd elaborations
 source elaborations_source.soar
 popd
 source collect.soar
-source evaluate-state.soar
 source go.soar
 source initialize-planning.soar
-#source input.soar
 source preferences.soar
 source search-and-hold.soar
-source simulation.soar
 source wander.soar
+source go-delivery.soar

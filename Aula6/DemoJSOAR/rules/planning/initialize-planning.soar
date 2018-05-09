@@ -23,9 +23,7 @@ sp {apply*initialize-planning
    (<s> ^name planning
         ^deliverySpot <deliverySpot>
         ^target <target>
-        ^sack <sack>
-        ^desired <desired>
-        ^memory <memory>) # To hold the entity to be searched for.
+        ^sack <sack>)
    (<deliverySpot> ^X 0 ^Y 0)
    (<sack> ^Red 0
            ^Green 0
@@ -34,12 +32,6 @@ sp {apply*initialize-planning
            ^Magenta 0
            ^White 0)
    (<target> ^Red <RedAmmount>
-             ^Green <GreenAmmount>
-             ^Blue <BlueAmmount>
-             ^Yellow <YellowAmmount>
-             ^Magenta <MagentaAmmount>
-             ^White <WhiteAmmount>)
-   (<desired> ^Red <RedAmmount>
              ^Green <GreenAmmount>
              ^Blue <BlueAmmount>
              ^Yellow <YellowAmmount>
