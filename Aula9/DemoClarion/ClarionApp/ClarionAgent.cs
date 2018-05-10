@@ -253,7 +253,7 @@ namespace ClarionApp
             // Commit this rule to Agent (in the ACS)
             CurrentAgent.Commit(ruleAvoidCollisionWall);
 
-            // Create Colission To Go Ahead
+            // Create Colision To Go Ahead
             SupportCalculator goAheadSupportCalculator = FixedRuleToGoAhead;
             FixedRule ruleGoAhead = AgentInitializer.InitializeActionRule(CurrentAgent, FixedRule.Factory, outputGoAhead, goAheadSupportCalculator);
             
