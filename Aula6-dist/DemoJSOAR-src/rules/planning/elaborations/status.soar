@@ -1,0 +1,18 @@
+sp {elaborate*status
+   (state <s> ^sack <sack>
+              ^target <target>)
+   (<sack> ^Red <sRed>
+               ^Green <sGreen>
+               ^Blue <sBlue>
+               ^Yellow <sYellow>
+               ^Magenta <sMagenta>
+               ^White <sWhite>)
+   (<target> ^Red <tRed>
+               ^Green <tGreen>
+               ^Blue <tBlue>
+               ^Yellow <tYellow>
+               ^Magenta <tMagenta>
+               ^White <tWhite>)
+-->
+   (<s> ^sack_total (+ <sRed> <sGreen> <sBlue> <sYellow> <sMagenta> <sWhite>))
+   (<s> ^target_total (+ <tRed> <tGreen> <tBlue> <tYellow> <tMagenta> <tWhite>))}

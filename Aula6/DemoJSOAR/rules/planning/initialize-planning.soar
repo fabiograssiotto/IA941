@@ -1,10 +1,9 @@
 sp {propose*initialize-planning
    (state <s>
-             ^superstate nil
-             -^name
-              ^io.input-link.CREATURE.LEAFLET <leaflet>)
+              ^io.input-link.CREATURE.LEAFLET <leaflet>
+              -^init-done)
 -->
-   (<s> ^operator <o> + =)
+   (<s> ^operator <o> +)
    (<o> ^name init
         ^leaflet <leaflet>)
 }
@@ -20,10 +19,11 @@ sp {apply*initialize-planning
           ^Magenta <MagentaAmmount>
           ^White <WhiteAmmount>)
 -->
-   (<s> ^name planning
-        ^deliverySpot <deliverySpot>
-        ^target <target>
-        ^sack <sack>)
+    (<s> ^name planning
+         ^deliverySpot <deliverySpot>
+         ^target <target>
+         ^sack <sack>
+         ^init-done 1)
    (<deliverySpot> ^X 0 ^Y 0)
    (<sack> ^Red 0
            ^Green 0

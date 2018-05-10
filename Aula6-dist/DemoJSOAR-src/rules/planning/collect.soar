@@ -1,64 +1,64 @@
-################ COLLECT ENTITIES ###################################
-# This operator will make the agent collect the entities, either storing
-# to the knapsack or consuming food.
+################ COLLECT ENTITIES ##############################################
+# This operator will make the agent collect the entities, even if not in memory.
 sp {propose*collect
    (state <s> ^name planning
-              ^io.input-link <il>
-              ^io.output-link <ol>
-              ^target <target>
-              ^sack <sack>)
-   (<il> ^CREATURE.MEMORY <memory>)
-   (<memory> ^ENTITY.NAME <entityName>)
-   (<memory> ^ENTITY.DISTANCE <distance> < 60)
+              ^io.input-link <il>)
+   (<il> ^CREATURE.SENSOR <sensor>)
+   (<sensor> ^VISUAL <visual>)
+   (<visual> ^ENTITY <entity>)
+   (<entity> ^NAME <entityName>)
+   (<entity> ^DISTANCE <DISTANCE> < 60)
+   (<entity> ^COLOR <entityColor>)
+   (<entity> ^TYPE JEWEL)
 -->
    (<s> ^operator <o> +)
    (<o> ^name collect)
    (<o> ^parameter <p>)
    (<p> ^NAME <entityName>)
-   (write (crlf) | propose*collect: name = | <entityName> | distance = | <distance>)}
+   (<p> ^COLOR <entityColor>)
+   (<p> ^DISTANCE <DISTANCE>)
+   (write (crlf) | propose*collect: name = | <entityName> | distance = | <DISTANCE>)}
 
-sp {apply*collect   
+# Collect the entity
+sp {apply*collect
    (state <s> ^operator <o>
               ^io.input-link <il>
               ^io.output-link <ol>
               ^sack <sack>
               ^target <target>)
    (<o> ^name collect)
-   (<o> ^parameter.NAME <thingToGet>)
+   (<o> ^parameter.NAME <entityName>)
+   (<o> ^parameter.COLOR <entityColor>)
    (<il> ^CREATURE <creature>)
    (<creature> ^SENSOR.VISUAL <visual>)
-   (<creature> ^MEMORY <memory>)  
-   (<memory> ^ENTITY <memoryEntity>)
-   (<memoryEntity> ^COLOR <color>)
-   (<sack> ^<color> <sackQty>
+   (<visual> ^ENTITY <visualEntity>)
+   (<visualEntity> ^NAME <entityName>)
+   (<visualEntity> ^COLOR <entityColor>)
+   (<sack> ^<entityColor> <sackQty>
            ^Red <sRedAmmount>
            ^Green <sGreenAmmount>
            ^Blue <sBlueAmmount>
            ^Yellow <sYellowAmmount>
            ^Magenta <sMagentaAmmount>
            ^White <sWhiteAmmount>)
-   (<target> ^<color> <tgtQty> 
+   (<target> ^<entityColor> <tgtQty>
              ^Red <tRedAmmount>
              ^Green <tGreenAmmount>
              ^Blue <tBlueAmmount>
              ^Yellow <tYellowAmmount>
              ^Magenta <tMagentaAmmount>
              ^White <tWhiteAmmount>)
--->
+  -(<ol> ^GET <something>)
+--> 
+   (<sack> ^<entityColor> <sackQty> -)
+   (<sack> ^<entityColor>  (+ 1 <sackQty>))
+   (<target> ^<entityColor> <tgtQty> -) 
+   (<target> ^<entityColor> (- 1 <tgtQty>))
    (<ol> ^GET <command>)
-   (<command> ^Name <thingToGet>)
-   (<memory> ^ENTITY <memoryEntity> -) # Remove entity from memory
-   (<visual> ^ENTITY <visualEntity> -) # Remove entity from visual record
-   (<sack> ^<color> <sackQty> -) # Update knapsack quantity
-   (<sack> ^<color> (+ <sackQty> 1))
-   (<target> ^<color> <tgtQty> -)
-   (<target> ^<color> (- <tgtQty> 1))
+   (<command> ^Name <entityName>)
    (write (crlf) | apply*collect |)
-   (write (crlf) | thing to get: | <thingToGet>)
-   (write (crlf) | Target Jewels = Red: | <tRedAmmount> | Green: | <tGreenAmmount> | Blue: | <tBlueAmmount> )
-   (write (crlf) |                 Yellow: | <tYellowAmmount> | Magenta: | <tMagentaAmmount> | White: | <tWhiteAmmount> )
-   (write (crlf) | Sack Jewels = Red: | <sRedAmmount> | Green: | <sGreenAmmount> | Blue: | <sBlueAmmount> )
-   (write (crlf) |               Yellow: | <sYellowAmmount> | Magenta: | <sMagentaAmmount> | White: | <sWhiteAmmount> )}
+   (write (crlf) | thing to get: | <entityName>)
+   (write (crlf) | color to get: | <entityColor>)}
 
 
 # Apply*collect*remove:
@@ -74,7 +74,3 @@ sp {apply*collect*remove
     (<move> ^status complete)
 -->
     (<out> ^GET <move> -)}  
-
-
-
-

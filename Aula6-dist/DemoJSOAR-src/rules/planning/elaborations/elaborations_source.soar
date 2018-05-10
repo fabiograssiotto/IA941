@@ -1,5 +1,5 @@
 source _all.soar
 source apply-command.soar
-source problem-space.soar
+#source problem-space.soar
 source top-state.soar
-source update-distance.soar
+source status.soar

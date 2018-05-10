@@ -1,5 +1,5 @@
 # Add the closest Jewel to memory.
-sp {searchJewelvsSearchJewel*pref
+sp {searchJewel*vs*SearchJewel*pref
    (state <s> ^attribute operator 
               ^impasse tie
               ^item <o> {<> <o> <o2>}
@@ -13,13 +13,17 @@ sp {searchJewelvsSearchJewel*pref
 -->
    (<ss> ^operator <o> > <o2>)} 
 
-sp {searchJewel*vs*searchFood*pref
-   (state <s> ^operator <o> +
-          <o2> +)
-   (<o> ^name searchAndHoldJewel)
-   (<o2> ^name searchAndHoldFood)
+sp {findImpasses*pref
+   (state <s> ^attribute operator 
+              ^impasse tie
+              ^item <o> {<> <o> <o2>}
+              ^superstate <ss>)
+   (<ss> ^io.input-link <il>)
+   (<il> ^CREATURE <creature>)                 
+   (<o> ^name <name1>)
+   (<o2> ^name <name2>)
 -->
-   (<s> ^operator <o> > <o2>)}
+   (write (crlf) | op impasse: o1 = | <name1> | o2 = | <name2> )}
 
 # Best to go than to search again.
 # After all, we have a target.
@@ -31,15 +35,13 @@ sp {searchJewel*vs*goto*Entity*pref
 -->
    (<s> ^operator <o> < <o2>)}
 
-# Best to go than to search again.
-# After all, we have a target.
-sp {searchFood*vs*goto*Entity*pref
+sp {collect_mem*vs*collect*pref
    (state <s> ^operator <o> +
           <o2> +)
-   (<o> ^name searchAndHoldFood)
-   (<o2> ^name goToEntity)
+   (<o> ^name collect_mem)
+   (<o2> ^name collect)
 -->
-   (<s> ^operator <o> < <o2>)}
+   (<s> ^operator <o> > <o2>)}
 
 sp {collect*vs*goto*Entity*pref
    (state <s> ^operator <o> +
@@ -57,10 +59,66 @@ sp {collect*vs*searchAndHoldJewel*pref
 -->
    (<s> ^operator <o> > <o2>)}
 
-sp {collect*vs*searchAndHoldFood*pref
+sp {colllect*vs*collect*pref
+   (state <s> ^attribute operator 
+              ^impasse tie
+              ^item <o> {<> <o> <o2>}
+              ^superstate <ss>)
+   (<ss> ^io.input-link <il>)
+   (<il> ^CREATURE <creature>)                 
+   (<o> ^name collect)
+   (<o2> ^name collect)
+   (<o> ^parameter <p1>)
+   (<o2> ^parameter <p2>)
+   (<p2> ^distance <distance2>)
+   (<p1>  ^distance <distance> <= <distance2>)
+-->
+   (<ss> ^operator <o> > <o2>)} 
+
+sp {collect_mem*vs*goto*Entity*pref
    (state <s> ^operator <o> +
           <o2> +)
-   (<o> ^name collect)
-   (<o2> ^name searchAndHoldFood)
+   (<o> ^name collect_mem)
+   (<o2> ^name goToEntity)
+-->
+   (<s> ^operator <o> > <o2>)}
+
+sp {collect_mem*vs*searchAndHoldJewel*pref
+   (state <s> ^operator <o> +
+          <o2> +)
+   (<o> ^name collect_mem)
+   (<o2> ^name searchAndHoldJewel)
+-->
+   (<s> ^operator <o> > <o2>)}
+
+sp {colllect_mem*vs*collect_mem*pref
+   (state <s> ^attribute operator 
+              ^impasse tie
+              ^item <o> {<> <o> <o2>}
+              ^superstate <ss>)
+   (<ss> ^io.input-link <il>)
+   (<il> ^CREATURE <creature>)                 
+   (<o> ^name collect_mem)
+   (<o2> ^name collect_mem)
+   (<o> ^parameter <p1>)
+   (<o2> ^parameter <p2>)
+   (<p2> ^distance <distance2>)
+   (<p1>  ^distance <distance> <= <distance2>)
+-->
+   (<ss> ^operator <o> > <o2>)} 
+
+sp {eat*vs*goto*Entity*pref
+   (state <s> ^operator <o> +
+          <o2> +)
+   (<o> ^name eat)
+   (<o2> ^name goToEntity)
+-->
+   (<s> ^operator <o> > <o2>)}
+
+sp {eat*vs*searchAndHoldJewel*pref
+   (state <s> ^operator <o> +
+          <o2> +)
+   (<o> ^name eat)
+   (<o2> ^name searchAndHoldJewel)
 -->
    (<s> ^operator <o> > <o2>)}

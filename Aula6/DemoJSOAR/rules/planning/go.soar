@@ -39,12 +39,12 @@ sp {apply*go*to*entity
    (write (crlf) | apply*go*to*entity X = | <x> | Y = | <y>)
    (write (crlf) | name = | <name>)}
 
-#sp {apply*go*to*remove
-# (state <s> ^operator.name goToEntity
-#              ^io.output-link <ol>)
-#   (<ol> ^MOVE <move>)
-#   (<move> ^status complete)
-#-->
-#   (<ol> ^MOVE <move> -)
-#   (write (crlf) | apply*go*to*remove |)}
+sp {apply*go*to*remove
+ (state <s> ^operator.name goToEntity
+            ^io.output-link <ol>)
+   (<ol> ^MOVE <move>)
+   (<move> ^status complete)
+-->
+   (<ol> ^MOVE <move> -)
+   (write (crlf) | apply*go*to*remove |)}
    

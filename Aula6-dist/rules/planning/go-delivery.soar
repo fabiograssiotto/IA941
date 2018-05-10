@@ -1,0 +1,41 @@
+################ MONITOR OPERATOR ###################################
+# This operator will monitor if the agent has successfully collected
+# all entities, and send the creature to the deliverySpot.
+sp {propose*go*to*delivery
+	 (state <s> ^name planning
+              ^deliverySpot <deliverySpot>
+              ^io.input-link <il>
+              ^sack <sack>
+              ^target <target>)
+   (<deliverySpot> ^X <dX> ^Y <dY>)
+   (<target> ^Red <tRedAmmount> <= 0
+             ^Green <tGreenAmmount> <= 0
+             ^Blue <tBlueAmmount> <= 0
+             ^Yellow <tYellowAmmount> <= 0
+             ^Magenta <tMagentaAmmount> <= 0
+             ^White <tWhiteAmmount> <= 0)
+-->
+   (<s> ^operator <o> + =)
+   (<o> ^name goToDeliverySpot)
+   (<o> ^parameterDelivery <delivery>)
+   (<delivery> ^X <dX>)
+   (<delivery> ^Y <dY>)
+   (write (crlf) | propose*all*collected |)}
+
+sp {apply*go*to*delivery
+   (state <s> ^operator <o>
+              ^io <io>)
+   (<io> ^output-link <ol>)
+   (<o> ^name goToDeliverySpot)
+   (<o> ^parameterDelivery <delivery>)
+   (<delivery> ^X <x>)
+   (<delivery> ^Y <y>)
+-->
+   (<ol> ^MOVE <command>)
+   (<command> ^Vel 2)
+   (<command> ^VelR 2)
+   (<command> ^VelL 2)
+   (<command> ^X <x>)
+   (<command> ^Y <y>)
+   (write (crlf) | apply*all*collected |)
+   (halt)}

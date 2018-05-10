@@ -1,18 +1,15 @@
-################ COLLECT ENTITIES ###################################
-# This operator will make the agent collect the entities.
+################ COLLECT ENTITIES ##############################################
+# This operator will make the agent collect the entities, even if not in memory.
 sp {propose*collect
    (state <s> ^name planning
-              ^io.input-link <il>
-              ^MEMORY <memory>)
+              ^io.input-link <il>)
    (<il> ^CREATURE.SENSOR <sensor>)
    (<sensor> ^VISUAL <visual>)
    (<visual> ^ENTITY <entity>)
    (<entity> ^NAME <entityName>)
-   (<entity> ^DISTANCE <DISTANCE> < 30)
+   (<entity> ^DISTANCE <DISTANCE> < 60)
    (<entity> ^COLOR <entityColor>)
    (<entity> ^TYPE JEWEL)
-   (<memory> ^ENTITY <memEntity>)
-   (<memEntity> ^NAME <entityName>)
 -->
    (<s> ^operator <o> +)
    (<o> ^name collect)
@@ -22,14 +19,13 @@ sp {propose*collect
    (<p> ^DISTANCE <DISTANCE>)
    (write (crlf) | propose*collect: name = | <entityName> | distance = | <DISTANCE>)}
 
-# Collect the entity from memory
+# Collect the entity
 sp {apply*collect
    (state <s> ^operator <o>
               ^io.input-link <il>
               ^io.output-link <ol>
               ^sack <sack>
               ^target <target>)
-#              ^memory <memory>)
    (<o> ^name collect)
    (<o> ^parameter.NAME <entityName>)
    (<o> ^parameter.COLOR <entityColor>)
@@ -38,9 +34,6 @@ sp {apply*collect
    (<visual> ^ENTITY <visualEntity>)
    (<visualEntity> ^NAME <entityName>)
    (<visualEntity> ^COLOR <entityColor>)
-#   (<memory> ^ENTITY <memoryEntity>)
-#   (<memoryEntity> ^NAME <entityName>)
-#   (<memoryEntity> ^COLOR <entityColor>)
    (<sack> ^<entityColor> <sackQty>
            ^Red <sRedAmmount>
            ^Green <sGreenAmmount>
@@ -56,21 +49,16 @@ sp {apply*collect
              ^Magenta <tMagentaAmmount>
              ^White <tWhiteAmmount>)
   -(<ol> ^GET <something>)
--->
-#   (<visual> ^ENTITY <visualEntity> -) # Remove entity from visual record
-#   (<memory> ^ENTITY <memoryEntity> -) # Remove entity from memory
-    (<sack> ^<entityColor> <sackQty> - # Update knapsack quantity
-            ^<entityColor> (+ <sackQty> 1))
-    (<target> ^<entityColor> <tgtQty> -
-              ^<entityColor> (- <tgtQty> 1))
-    (<ol> ^GET <command>)
-    (<command> ^Name <entityName>)
-    (write (crlf) | apply*collect |)
-    (write (crlf) | thing to get: | <entityName>)
-    (write (crlf) | Target Jewels = Red: | <tRedAmmount> | Green: | <tGreenAmmount> | Blue: | <tBlueAmmount> )
-    (write (crlf) |                 Yellow: | <tYellowAmmount> | Magenta: | <tMagentaAmmount> | White: | <tWhiteAmmount> )
-    (write (crlf) | Sack Jewels = Red: | <sRedAmmount> | Green: | <sGreenAmmount> | Blue: | <sBlueAmmount> )
-    (write (crlf) |               Yellow: | <sYellowAmmount> | Magenta: | <sMagentaAmmount> | White: | <sWhiteAmmount> )}
+--> 
+   (<sack> ^<entityColor> <sackQty> -)
+   (<sack> ^<entityColor>  (+ 1 <sackQty>))
+   (<target> ^<entityColor> <tgtQty> -) 
+   (<target> ^<entityColor> (- 1 <tgtQty>))
+   (<ol> ^GET <command>)
+   (<command> ^Name <entityName>)
+   (write (crlf) | apply*collect |)
+   (write (crlf) | thing to get: | <entityName>)
+   (write (crlf) | color to get: | <entityColor>)}
 
 
 # Apply*collect*remove:
@@ -86,184 +74,3 @@ sp {apply*collect*remove
     (<move> ^status complete)
 -->
     (<out> ^GET <move> -)}  
-
-# Always collect food.
-#sp {propose*collect*food
-#   (state <s> ^name planning
-#              ^io.input-link <il>)
-#   (<il> ^CREATURE.MEMORY <memory>)
-#   (<memory> ^ENTITY.NAME <entityName>)
-#   (<memory> ^ENTITY.DISTANCE <distance> < 30)
-#   (<il> ^CREATURE.SENSOR <sensor>)
-#   (<sensor> ^VISUAL <visual>)
-#   (<visual> ^ENTITY.NAME <entityName>)
-#   (<visual> ^ENTITY.DISTANCE <distance> < 60)
-#   (<visual> ^ENTITY.TYPE FOOD)
-#-->
-#   (<s> ^operator <o> +)
-#   (<o> ^name collectFd)
-#   (<o> ^parameter <p>)
-#   (<p> ^NAME <entityName>)
-#   (<p> ^DISTANCE <distance>)
-#   (write (crlf) | propose*collect*food: name = | <entityName> | distance = | <distance>)}
-
-#sp {apply*collect*food   
-#   (state <s> ^operator <o>
-#              ^io.input-link <il>
-#              ^io.output-link <ol>)
-#   (<o> ^name collectFd)
-#   (<o> ^parameter.NAME <entityName>)
-#   (<il> ^CREATURE <creature>)
-#   (<creature> ^SENSOR.VISUAL <visual>)
-#-->
-#   (<ol> ^GET <command>)
-#   (<command> ^Name <entityName>)
-#   (<visual> ^ENTITY <visualEntity> -) # Remove entity from visual record (is this really necessary?)
-#   (write (crlf) | apply*collect*food |)
-#   (write (crlf) | thing to get: | <entityName>)}
-
-# Collect all jewels in path.
-#sp {propose*collect*any*jewel
-#   (state <s> ^name planning
-#              ^io.input-link <il>
-#              ^io.output-link <ol>
-#              ^target <target>
-#              ^sack <sack>)
-#   (<il> ^CREATURE.MEMORY <memory>)
-#   (<memory> ^ENTITY.NAME <entityName>)
-#   (<memory> ^ENTITY.DISTANCE <distance> < 60)
-#   (<il> ^CREATURE.SENSOR <sensor>)
-#   (<sensor> ^VISUAL <visual>)
-#   (<visual> ^ENTITY.NAME <entityName>)
-#   (<visual> ^ENTITY.DISTANCE <distance> < 60)
-#   (<visual> ^ENTITY.TYPE JEWEL)
-#   (<visual> ^ENTITY.COLOR <entityColor>)
-#-->
-#   (<s> ^operator <o> +)
-#   (<o> ^name collectJw)
-#   (<o> ^parameter <p>)
-#   (<p> ^NAME <entityName>)
-#   (<p> ^COLOR <entityColor>)
-#   (<p> ^DISTANCE <distance>)
-#   (write (crlf) | propose*collect*any*jewel: name = | <entityName> | distance = | <distance>)}
-
-# Always collect jewels, even if we already got 
-# the ammount required.
-#sp {apply*collect*any*jewel   
-#   (state <s> ^operator <o>
-#              ^io.input-link <il>
-#              ^io.output-link <ol>
-#              ^sack <sack>
-#              ^target <target>)
-              #^memory <memory>)
-#   (<o> ^name collectJw)
-#   (<o> ^parameter.NAME <entityName>)
-#   (<o> ^parameter.COLOR <entityColor>)
-#   (<il> ^CREATURE <creature>)
-#   (<creature> ^SENSOR.VISUAL <visual>)
-#   (<memory> ^ENTITY <memoryEntity>)
-#   (<memoryEntity> ^COLOR <color>)
-#   (<sack> ^<entityColor> <sackQty>
-#           ^Red <sRedAmmount>
-#           ^Green <sGreenAmmount>
-#           ^Blue <sBlueAmmount>
-#           ^Yellow <sYellowAmmount>
-#           ^Magenta <sMagentaAmmount>
-#           ^White <sWhiteAmmount>)
-#   (<target> ^<entityColor> <tgtQty> 
-#             ^Red <tRedAmmount>
-#             ^Green <tGreenAmmount>
-#             ^Blue <tBlueAmmount>
-#             ^Yellow <tYellowAmmount>
-#             ^Magenta <tMagentaAmmount>
-#             ^White <tWhiteAmmount>)
-#-->
-#   (<ol> ^GET <command>)
-#   (<command> ^Name <entityName>)
-#   (<visual> ^ENTITY <visualEntity> -) # Remove entity from visual record
-#   (<sack> ^<color> <sackQty> -) # Update knapsack quantity
-#   (<sack> ^<color> (+ <sackQty> 1))
-#   (<target> ^<color> <tgtQty> -)
-#   (<target> ^<color> (- <tgtQty> 1))
-#   (write (crlf) | apply*collect*any*jewel |)
-#   (write (crlf) | thing to get: | <entityName>)
-#   (write (crlf) | Target Jewels = Red: | <tRedAmmount> | Green: | <tGreenAmmount> | Blue: | <tBlueAmmount> )
-#   (write (crlf) |                 Yellow: | <tYellowAmmount> | Magenta: | <tMagentaAmmount> | White: | <tWhiteAmmount> )
-#   (write (crlf) | Sack Jewels = Red: | <sRedAmmount> | Green: | <sGreenAmmount> | Blue: | <sBlueAmmount> )
-#   (write (crlf) |               Yellow: | <sYellowAmmount> | Magenta: | <sMagentaAmmount> | White: | <sWhiteAmmount> )}
-
-# Collect the target jewel.
-#sp {propose*collect*target*jewel
-#   (state <s> ^name planning
-#              ^io.input-link <il>
-#              ^io.output-link <ol>
-#              ^target <target>
-#              ^sack <sack>
-#              ^memory <memory>)
-#   (<memory> ^ENTITY.NAME <memoryName>)
-#   (<il> ^CREATURE.SENSOR <sensor>)
-#   (<sensor> ^VISUAL <visual>)
-#   (<visual> ^ENTITY.NAME <memoryName>)
-#   (<visual> ^ENTITY.DISTANCE <distance> < 60)
-#   (<visual> ^ENTITY.TYPE JEWEL)
-#   (<visual> ^ENTITY.COLOR <entityColor>)
-#-->
-#   (<s> ^operator <o> + )
-#   (<o> ^name collectTgt)
-#   (<o> ^parameter <p>)
-#   (<p> ^NAME <memoryName>)
-#   (<p> ^COLOR <entityColor>)
-#   (<p> ^DISTANCE <distance>)
-#   (write (crlf) | propose*collect*target*jewel: name = | <memoryName> | distance = | <distance>)}
-
-# Collect the target jewel
-#sp {apply*collect*target*jewel   
-#   (state <s> ^operator <o>
-#              ^io.input-link <il>
-#              ^io.output-link <ol>
-#              ^sack <sack>
-#              ^target <target>
-#             ^memory <memory>)
-#   (<o> ^name collectTgt)
-#   (<o> ^parameter.NAME <entityName>)
-#   (<il> ^CREATURE <creature>)
-#   (<creature> ^SENSOR.VISUAL <visual>)
-#   (<visual> ^ENTITY.NAME <entityName>)
-#   (<memory> ^ENTITY <memoryEntity>)
-#   (<memoryEntity> ^COLOR <color>)
-#   (<sack> ^<color> <sackQty>
-#           ^Red <sRedAmmount>
-#           ^Green <sGreenAmmount>
-#           ^Blue <sBlueAmmount>
-#           ^Yellow <sYellowAmmount>
-#           ^Magenta <sMagentaAmmount>
-#           ^White <sWhiteAmmount>)
-#   (<target> ^<color> <tgtQty> 
-#             ^Red <tRedAmmount>
-#             ^Green <tGreenAmmount>
-#             ^Blue <tBlueAmmount>
-#             ^Yellow <tYellowAmmount>
-#             ^Magenta <tMagentaAmmount>
-#             ^White <tWhiteAmmount>)
-#-->
-#   (<ol> ^GET <command>)
-#   (<command> ^Name <entityName>)
-#   (<memory> ^ENTITY <memoryEntity> -) # Remove entity from memory
-#   (<visual> ^ENTITY <visualEntity> -) # Remove entity from visual record
-#   (<sack> ^<color> <sackQty> -) # Update knapsack quantity
-#   (<sack> ^<color> (+ <sackQty> 1))
-#   (<target> ^<color> <tgtQty> -)
-#   (<target> ^<color> (- <tgtQty> 1))
-#   (write (crlf) | apply*collect |)
-#   (write (crlf) | thing to get: | <entityName>)
-#   (write (crlf) | Target Jewels = Red: | <tRedAmmount> | Green: | <tGreenAmmount> | Blue: | <tBlueAmmount> )
-#   (write (crlf) |                 Yellow: | <tYellowAmmount> | Magenta: | <tMagentaAmmount> | White: | <tWhiteAmmount> )
-#   (write (crlf) | Sack Jewels = Red: | <sRedAmmount> | Green: | <sGreenAmmount> | Blue: | <sBlueAmmount> )
-#   (write (crlf) |               Yellow: | <sYellowAmmount> | Magenta: | <sMagentaAmmount> | White: | <sWhiteAmmount> )}
-
-
-
-
-
-
-

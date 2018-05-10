@@ -6,9 +6,12 @@ pushd elaborations
 source elaborations_source.soar
 popd
 source collect.soar
+source collect-memory.soar
 source go.soar
 source initialize-planning.soar
 source preferences.soar
 source search-and-hold.soar
 source wander.soar
 source go-delivery.soar
+source eat.soar
+source monitor.soar

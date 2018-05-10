@@ -1,0 +1,8 @@
+# For monitoring the current sack jewels.
+sp {monitor*sack*target
+   (state <s> ^sack_total <stotal>
+              ^target_total <ttotal>)
+--> 
+    (write (crlf) | monitor*sack*target |)
+    (write (crlf) | Sack Total = | <stotal>)
+    (write (crlf) | Target Total = | <ttotal>)}

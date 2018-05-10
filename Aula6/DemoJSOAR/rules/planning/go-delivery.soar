@@ -3,10 +3,10 @@
 # all entities, and send the creature to the deliverySpot.
 sp {propose*go*to*delivery
 	 (state <s> ^name planning
-             ^deliverySpot <deliverySpot>
-             ^io.input-link <il>
-             ^sack <sack>
-             ^target <target>)
+              ^deliverySpot <deliverySpot>
+              ^io.input-link <il>
+              ^sack <sack>
+              ^target <target>)
    (<deliverySpot> ^X <dX> ^Y <dY>)
    (<target> ^Red <tRedAmmount> <= 0
              ^Green <tGreenAmmount> <= 0
@@ -37,4 +37,5 @@ sp {apply*go*to*delivery
    (<command> ^VelL 2)
    (<command> ^X <x>)
    (<command> ^Y <y>)
-   (write (crlf) | apply*all*collected |)}
+   (write (crlf) | apply*all*collected |)
+   (halt)}
