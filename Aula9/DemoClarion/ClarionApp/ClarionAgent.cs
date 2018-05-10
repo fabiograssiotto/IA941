@@ -233,7 +233,8 @@ namespace ClarionApp
         private void SetupAgentInfraStructure()
         {
             // Setup the ACS Subsystem
-            SetupACS();                    
+            SetupACS();
+			SetupNACS ();
         }
 
         private void SetupMS()
@@ -289,6 +290,13 @@ namespace ClarionApp
             CurrentAgent.ACS.Parameters.FIXED_BL_LEVEL_SELECTION_MEASURE = 0;
             CurrentAgent.ACS.Parameters.FIXED_RER_LEVEL_SELECTION_MEASURE = 0;
         }
+
+		/// <summary>
+		/// Setup the NACS subsystem
+		/// </summary>
+		private void SetupNACS() {
+			
+		}
 
         /// <summary>
         /// Make the agent perception. In other words, translate the information that came from sensors to a new type that the agent can understand
@@ -393,6 +401,11 @@ namespace ClarionApp
                 // Get the selected action
                 String actionLabel = chosen.LabelAsIComparable.ToString();
                 CreatureActions actionType = (CreatureActions)Enum.Parse(typeof(CreatureActions), actionLabel, true);
+
+				// After selecting the action in the ACS, request reasoning to the NACS module.
+				// Reasoning is necessary to identify if the action selected makes sense to achieve
+				// the goal of getting all the jewels from the leaflet.
+				Console.WriteLine("Action type selected by ACS: " + actionType.ToString());
 
                 // Call the output event handler
 				processSelectedAction(actionType);
