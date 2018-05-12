@@ -7,7 +7,7 @@ sp {propose*collect
    (<sensor> ^VISUAL <visual>)
    (<visual> ^ENTITY <entity>)
    (<entity> ^NAME <entityName>)
-   (<entity> ^DISTANCE <DISTANCE> < 50)
+   (<entity> ^DISTANCE <DISTANCE> < 30)
    (<entity> ^COLOR <entityColor>)
    (<entity> ^TYPE JEWEL)
 -->

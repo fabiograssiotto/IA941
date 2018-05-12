@@ -1,52 +1,63 @@
-################ COLLECT ENTITIES ##############################################
-# This operator will make the agent collect the entities, even if not in memory.
-sp {propose*collect
+################ COLLECT ENTITIES ###################################
+# This operator will make the agent collect the entities in memory.
+sp {propose*collect*memory
    (state <s> ^name planning
               ^io.input-link <il>)
    (<il> ^CREATURE.SENSOR <sensor>)
    (<sensor> ^VISUAL <visual>)
    (<visual> ^ENTITY <entity>)
    (<entity> ^NAME <entityName>)
-   (<entity> ^DISTANCE <DISTANCE> < 50)
+   (<entity> ^DISTANCE <DISTANCE> < 30)
    (<entity> ^COLOR <entityColor>)
    (<entity> ^TYPE JEWEL)
+   (<il> ^CREATURE.MEMORY <memory>)
+   (<memory> ^ENTITY <memEntity>)
+   (<memEntity> ^NAME <entityName>)
 -->
-   (<s> ^operator <o> +)
-   (<o> ^name collect)
+   (<s> ^operator <o> + =)
+   (<o> ^name collect_mem)
    (<o> ^parameter <p>)
    (<p> ^NAME <entityName>)
    (<p> ^COLOR <entityColor>)
    (<p> ^DISTANCE <DISTANCE>)
-   (write (crlf) | propose*collect: name = | <entityName> | distance = | <DISTANCE>)}
+   (write (crlf) | propose*collect*memory: name = | <entityName> | distance = | <DISTANCE>)}
 
-# Collect the entity
-sp {apply*collect
+# Collect the entity from memory
+sp {apply*collect*memory
    (state <s> ^operator <o>
               ^io.input-link <il>
               ^io.output-link <ol>)
-   (<o> ^name collect)
+   (<o> ^name collect_mem)
    (<o> ^parameter.NAME <entityName>)
    (<o> ^parameter.COLOR <entityColor>)
    (<il> ^CREATURE <creature>)
-   (<creature> ^SENSOR.VISUAL <visual>)
-   (<visual> ^ENTITY <visualEntity>)
-   (<visualEntity> ^NAME <entityName>)
-   (<visualEntity> ^COLOR <entityColor>)
+#   (<creature> ^SENSOR.VISUAL <visual>)
+#   (<visual> ^ENTITY <visualEntity>)
+#   (<visualEntity> ^NAME <entityName>)
+#   (<visualEntity> ^COLOR <entityColor>)
+   (<creature> ^MEMORY <memory>)
+#   (<memory> ^ENTITY <memoryEntity>)
+#   (<memoryEntity> ^NAME <entityName>)
+#   (<memoryEntity> ^COLOR <entityColor>)
+   (<sack> ^<entityColor> <sackQty>)
+   (<target> ^<entityColor> <tgtQty>)
   -(<ol> ^GET <something>)
---> 
+  -(<ol> ^REMOVE_MEM <something>)
+-->
+   (<memory> ^ENTITY <entity> -)
    (<ol> ^GET <command>)
    (<command> ^Name <entityName>)
    (<command> ^Color <entityColor>)
-   (write (crlf) | apply*collect |)
+   (<ol> ^REMOVE_MEM <entityName>) # Remove entity from memory
+   (write (crlf) | apply*collect*memory |)
    (write (crlf) | thing to get: | <entityName>)
    (write (crlf) | color to get: | <entityColor>)}
-
 
 # Apply*collect*remove:
 # If the collect operator is selected,
 # and there is a completed get command on the output link,
 # then remove that command.   
-sp {apply*collect*remove
+sp {apply*collect*memory*remove
     (state <s> ^operator <o>            
                ^io.output-link <out>)
     (<o> ^name collect)

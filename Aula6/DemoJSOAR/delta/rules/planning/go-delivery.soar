@@ -29,7 +29,6 @@ sp {apply*go*to*delivery
    (<o> ^parameterDelivery <delivery>)
    (<delivery> ^X <x>)
    (<delivery> ^Y <y>)
-  -(<ol> ^MOVE <somewhere>)
 -->
    (<ol> ^MOVE <command>)
    (<command> ^Vel 2)
@@ -38,12 +37,3 @@ sp {apply*go*to*delivery
    (<command> ^X <x>)
    (<command> ^Y <y>)
    (write (crlf) | apply*all*collected |)}
-
-   sp {apply*go*to*delivery*remove
-   (state <s> ^operator.name goToDeliverySpot
-            ^io.output-link <ol>)
-   (<ol> ^MOVE <move>)
-   (<move> ^status complete)
--->
-   (<ol> ^MOVE <move> -)
-   (write (crlf) | apply*go*to*delivery*remove |)}

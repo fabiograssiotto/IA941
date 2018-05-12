@@ -7,7 +7,7 @@ sp {propose*eat
    (<sensor> ^VISUAL <visual>)
    (<visual> ^ENTITY <entity>)
    (<entity> ^NAME <entityName>)
-   (<entity> ^DISTANCE <DISTANCE> < 50)
+   (<entity> ^DISTANCE <DISTANCE> < 30)
    (<entity> ^TYPE FOOD)
 -->
    (<s> ^operator <o> +)

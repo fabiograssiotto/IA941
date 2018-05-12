@@ -2,19 +2,19 @@
 # This operator will make the agent collect the entities in memory.
 sp {propose*collect*memory
    (state <s> ^name planning
-              ^io.input-link <il>
-              ^MEMORY <memory>)
+              ^io.input-link <il>)
    (<il> ^CREATURE.SENSOR <sensor>)
    (<sensor> ^VISUAL <visual>)
    (<visual> ^ENTITY <entity>)
    (<entity> ^NAME <entityName>)
-   (<entity> ^DISTANCE <DISTANCE> < 60)
+   (<entity> ^DISTANCE <DISTANCE> < 50)
    (<entity> ^COLOR <entityColor>)
    (<entity> ^TYPE JEWEL)
+   (<il> ^CREATURE.MEMORY <memory>)
    (<memory> ^ENTITY <memEntity>)
    (<memEntity> ^NAME <entityName>)
 -->
-   (<s> ^operator <o> +)
+   (<s> ^operator <o> + =)
    (<o> ^name collect_mem)
    (<o> ^parameter <p>)
    (<p> ^NAME <entityName>)
@@ -26,31 +26,21 @@ sp {propose*collect*memory
 sp {apply*collect*memory
    (state <s> ^operator <o>
               ^io.input-link <il>
-              ^io.output-link <ol>
-              ^sack <sack>
-              ^target <target>
-              ^MEMORY <memory>)
+              ^io.output-link <ol>)
    (<o> ^name collect_mem)
    (<o> ^parameter.NAME <entityName>)
    (<o> ^parameter.COLOR <entityColor>)
    (<il> ^CREATURE <creature>)
-   (<creature> ^SENSOR.VISUAL <visual>)
-   (<visual> ^ENTITY <visualEntity>)
-   (<visualEntity> ^NAME <entityName>)
-   (<visualEntity> ^COLOR <entityColor>)
-   (<memory> ^ENTITY <memoryEntity>)
-   (<memoryEntity> ^NAME <entityName>)
-   (<memoryEntity> ^COLOR <entityColor>)
-   (<sack> ^<entityColor> <sackQty>)
-   (<target> ^<entityColor> <tgtQty>)
+   (<creature> ^MEMORY <memory>)
+   (<memory> ^ENTITY <entity>)
   -(<ol> ^GET <something>)
+  -(<ol> ^REMOVE_MEM <something>)
 -->
-   (<sack> ^<entityColor> <sackQty> -)
-   (<sack> ^<entityColor>  (+ 1 <sackQty>))
-   (<target> ^<entityColor> <tgtQty> -) 
-   (<target> ^<entityColor> (- 1 <tgtQty>))
+   (<memory> ^ENTITY <entity> -)
    (<ol> ^GET <command>)
    (<command> ^Name <entityName>)
+   (<command> ^Color <entityColor>)
+   (<ol> ^REMOVE_MEM <entityName>) # Remove entity from memory
    (write (crlf) | apply*collect*memory |)
    (write (crlf) | thing to get: | <entityName>)
    (write (crlf) | color to get: | <entityColor>)}
