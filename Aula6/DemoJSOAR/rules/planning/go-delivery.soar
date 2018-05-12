@@ -3,8 +3,8 @@
 # all entities, and send the creature to the deliverySpot.
 sp {propose*go*to*delivery
 	 (state <s> ^name planning
-             ^deliverySpot <deliverySpot>
-             ^io.input-link <il>)
+              ^deliverySpot <deliverySpot>
+              ^io.input-link <il>)
    (<deliverySpot> ^X <dX> ^Y <dY>)
    (<il> ^CREATURE.TARGET <target>)
    (<target> ^Red <tRedAmmount> <= 0
@@ -14,7 +14,7 @@ sp {propose*go*to*delivery
              ^Magenta <tMagentaAmmount> <= 0
              ^White <tWhiteAmmount> <= 0)
 -->
-   (<s> ^operator <o> + =)
+   (<s> ^operator <o> +)
    (<o> ^name goToDeliverySpot)
    (<o> ^parameterDelivery <delivery>)
    (<delivery> ^X <dX>)
@@ -31,13 +31,15 @@ sp {apply*go*to*delivery
    (<delivery> ^Y <y>)
   -(<ol> ^MOVE <somewhere>)
 -->
+   (<s> ^name delivery)
    (<ol> ^MOVE <command>)
    (<command> ^Vel 2)
    (<command> ^VelR 2)
    (<command> ^VelL 2)
    (<command> ^X <x>)
    (<command> ^Y <y>)
-   (write (crlf) | apply*all*collected |)}
+   (write (crlf) | apply*all*collected |)
+   (write (crlf) | All Jewels Collected!!!!! |)}
 
    sp {apply*go*to*delivery*remove
    (state <s> ^operator.name goToDeliverySpot

@@ -126,3 +126,19 @@ sp {eat*vs*searchAndHoldJewel*pref
    (<o2> ^name searchAndHoldJewel)
 -->
    (<s> ^operator <o> > <o2>)}
+
+   sp {eat*vs*goToDeliverySpot*pref
+   (state <s> ^operator <o> +
+          <o2> +)
+   (<o> ^name eat)
+   (<o2> ^name goToDeliverySpot)
+-->
+   (<s> ^operator <o> > <o2>)}
+
+   sp {collect*vs*goToDeliverySpot*pref
+   (state <s> ^operator <o> +
+          <o2> +)
+   (<o> ^name collect)
+   (<o2> ^name goToDeliverySpot)
+-->
+   (<s> ^operator <o> > <o2>)}
