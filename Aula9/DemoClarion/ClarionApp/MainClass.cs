@@ -12,6 +12,7 @@ using ClarionApp.Exceptions;
 using Clarion;
 using Clarion.Framework;
 using Gtk;
+using System.Threading.Tasks;
 
 namespace ClarionApp
 {
@@ -36,33 +37,18 @@ namespace ClarionApp
 
                 if (ws != null && ws.IsConnected)
                 {
-                    Console.Out.WriteLine ("[SUCCESS] " + message + "\n");
-					ws.SendWorldReset();
+                    Console.Out.WriteLine("[SUCCESS] " + message + "\n");
+                    ws.SendWorldReset();
                     ws.NewCreature(400, 200, 0, out creatureId, out creatureName);
-					ws.SendCreateLeaflet();
-                    ws.NewBrick(4, 747, 2, 800, 567);
-                    ws.NewBrick(4, 50, -4, 747, 47);
-                    ws.NewBrick(4, 49, 562, 796, 599);
-                    ws.NewBrick(4, -2, 6, 50, 599);
+                    
+                    ws.SendCreateLeaflet();
+                    //ws.NewBrick(4, 799, 1, 800, 600);
+                    //ws.NewBrick(4, 50, -4, 747, 47);
+                    //ws.NewBrick(4, 49, 562, 796, 599);
+                    //ws.NewBrick(4, -2, 6, 50, 599);
 
-					// Create a set of jewels in the environment, 50 should do it.
-					Random rnd = new Random();
-					for(int i = 0; i < 50; i++) {
-						// Randomly select color and position.
-						int color = rnd.Next(0, 5);
-						int x = rnd.Next(100, 800);
-						int y = rnd.Next(100, 600);
-						ws.NewJewel(color, x, y); 
-					}
-
-                    // Create a set of 10 food items in the environment
-                    //Random rndFood = new Random();
-                    for (int i = 0; i < 10; i++) {
-                        int food = rnd.Next(0, 1);
-                        int x = rnd.Next(100, 800);
-                        int y = rnd.Next(100, 600);
-                        ws.NewFood(food, x, y);
-                    }
+                    // Create entities continuously.
+                    Task.Delay(0).ContinueWith(t => CreateEntities());
 
                     if (!String.IsNullOrWhiteSpace(creatureId))
                     {
@@ -71,11 +57,11 @@ namespace ClarionApp
                     }
 
                     Console.Out.WriteLine("Creature created with name: " + creatureId + "\n");
-					agent = new ClarionAgent(ws,creatureId,creatureName);
+                    agent = new ClarionAgent(ws, creatureId, creatureName);
                     agent.Run();
-					Console.Out.WriteLine("Running Simulation ...\n");
+                    Console.Out.WriteLine("Running Simulation ...\n");
                 }
-				else {
+                else {
 					Console.Out.WriteLine("The WorldServer3D engine was not found ! You must start WorldServer3D before running this application !");
 					System.Environment.Exit(1);
 				}
@@ -94,6 +80,32 @@ namespace ClarionApp
             }
 			Application.Run();
 		}
+
+        private void CreateEntities()
+        {
+            // Create a set of jewels in the environment
+            Random rnd = new Random();
+            for (int i = 0; i < 20; i++)
+            {
+                // Randomly select color and position.
+                int color = rnd.Next(0, 6);
+                int x = rnd.Next(100, 800);
+                int y = rnd.Next(100, 600);
+                ws.NewJewel(color, x, y);
+            }
+
+            // Create a set of 10 food items in the environment
+            for (int i = 0; i < 10; i++)
+            {
+                int food = rnd.Next(0, 1);
+                int x = rnd.Next(100, 800);
+                int y = rnd.Next(100, 600);
+                ws.NewFood(food, x, y);
+            }
+
+            Task.Delay(30000).ContinueWith(t => CreateEntities());
+        }
+
         #endregion
 
         #region Methods
