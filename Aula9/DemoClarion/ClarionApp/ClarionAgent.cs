@@ -24,7 +24,8 @@ namespace ClarionApp
         GO_TO_JEWEL,
         GO_TO_FOOD,
 		GET_JEWEL,
-        GET_FOOD
+        GET_FOOD,
+        WANDER
     }
 
     public class ClarionAgent
@@ -59,8 +60,8 @@ namespace ClarionApp
         /// Activation Levels for the sensory information
         /// </summary>
         private double JEWEL_AHEAD_ACT_VAL = 1.0;
+        private double JEWEL_AWAY_ACT_VAL = 0.9;
         private double FOOD_AHEAD_ACT_VAL = 0.8;
-        private double JEWEL_AWAY_ACT_VAL = 0.7;
         private double FOOD_AWAY_ACT_VAL = 0.6;
         private double WALL_AHEAD_ACT_VAL = 0.3;
         private double MIN_ACT_VAL = 0.0;
@@ -148,6 +149,10 @@ namespace ClarionApp
         /// Output action that makes the agent go towards a food item
         /// </summary>
         private ExternalActionChunk outputGoToFood;
+        /// <summary>
+        /// Output action that makes the agent wander
+        /// </summary>
+        private ExternalActionChunk outputWander;
         #endregion
 
         // Target jewels/food items
@@ -183,6 +188,7 @@ namespace ClarionApp
             outputGetFood = World.NewExternalActionChunk(CreatureActions.GET_FOOD.ToString());
             outputGoToJewel = World.NewExternalActionChunk(CreatureActions.GO_TO_JEWEL.ToString());
             outputGoToFood = World.NewExternalActionChunk(CreatureActions.GO_TO_FOOD.ToString());
+            outputWander = World.NewExternalActionChunk(CreatureActions.WANDER.ToString());
 
             //Create thread to simulation
             runThread = new Thread(CognitiveCycle);
@@ -269,6 +275,9 @@ namespace ClarionApp
                     worldServer.SendSetAngle(creatureId, 0, 0, prad);
                     worldServer.SendSetGoTo(creatureId, 1, 1, foodToGoTo.X1, foodToGoTo.Y1);
                     break;
+                case CreatureActions.WANDER:
+                    worldServer.SendSetAngle(creatureId, 2, -2, 2);
+                    break;
                 default:
 					break;
 				}
@@ -313,8 +322,15 @@ namespace ClarionApp
             // Commit this rule to Agent (in the ACS)
             CurrentAgent.Commit(ruleGoAhead);
 
-			// Create Rule To Get Jewel(s)
-			SupportCalculator getJewelSupportCalculator = FixedRuleToGetJewel;
+            // Create Colision To Go Ahead
+            SupportCalculator wanderSupportCalculator = FixedRuleToWander;
+            FixedRule ruleWander = AgentInitializer.InitializeActionRule(CurrentAgent, FixedRule.Factory, outputWander, wanderSupportCalculator);
+
+            // Commit this rule to Agent (in the ACS)
+            CurrentAgent.Commit(ruleGoAhead);
+
+            // Create Rule To Get Jewel(s)
+            SupportCalculator getJewelSupportCalculator = FixedRuleToGetJewel;
 			FixedRule ruleGetJewel = AgentInitializer.InitializeActionRule(CurrentAgent, FixedRule.Factory, outputGetJewel, getJewelSupportCalculator);
 
 			// Commit this rule to Agent (in the ACS)
@@ -334,7 +350,7 @@ namespace ClarionApp
             // Commit this rule to Agent (in the ACS)
             CurrentAgent.Commit(ruleGoToJewel);
 
-            // Create Rule To Get Food(s)
+            // Create Rule To Go To Food(s)
             SupportCalculator goToFoodSupportCalculator = FixedRuleToGoToFood;
             FixedRule ruleGoToFood = AgentInitializer.InitializeActionRule(CurrentAgent, FixedRule.Factory, outputGoToFood, goToFoodSupportCalculator);
 
@@ -490,7 +506,13 @@ namespace ClarionApp
             return ((currentInput.Contains(inputWallAhead, MIN_ACT_VAL))) ? 1.0 : 0.0;
         }
 
-		private double FixedRuleToGetJewel(ActivationCollection currentInput, Rule target)
+        private double FixedRuleToWander(ActivationCollection currentInput, Rule target)
+        {
+            // Here we will make the logic to go ahead
+            return ((currentInput.Contains(inputWallAhead, MIN_ACT_VAL))) ? 1.0 : 0.0;
+        }
+
+        private double FixedRuleToGetJewel(ActivationCollection currentInput, Rule target)
 		{
 			// Here we will make the logic to collect a jewel
 			return ((currentInput.Contains(inputJewelAhead, JEWEL_AHEAD_ACT_VAL))) ? 1.0 : 0.0;
