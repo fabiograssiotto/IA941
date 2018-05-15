@@ -164,7 +164,6 @@ namespace ClarionApp
 
         // To indicate we are done.
         Boolean allJewelsCollected = false;
-
         #endregion
 
         #region Constructor
@@ -467,7 +466,8 @@ namespace ClarionApp
                     }
                 }
 
-                if (!foundJewel)
+                
+                if (!foundJewel && !GlobalVars.competitionMode)
                 {
                     Console.WriteLine("No more jewels to collect!!!");
                     Console.WriteLine("targetRed = " + targetRed);

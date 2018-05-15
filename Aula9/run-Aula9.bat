@@ -1,5 +1,8 @@
+@echo off
 rem Script to launch WordServer3d
-start java -jar ws3d/WorldServer3D.jar
+start java -jar ws3d\WorldServer3D.jar
 sleep 5
 rem Script to launch ClarionApp
-start mono DemoClarion\ClarionApp\bin\Debug\ClarionApp.exe
+start DemoClarion\ClarionApp\bin\Release\ClarionApp.exe
+rem Script to launch DemoSoar
+start java -jar DemoJSOAR\DemoJSOAR.jar

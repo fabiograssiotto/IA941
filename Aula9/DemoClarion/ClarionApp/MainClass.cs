@@ -38,17 +38,25 @@ namespace ClarionApp
                 if (ws != null && ws.IsConnected)
                 {
                     Console.Out.WriteLine("[SUCCESS] " + message + "\n");
-                    ws.SendWorldReset();
+                    if (!GlobalVars.competitionMode)
+                    {
+                        // Only reset the environment if not on competition mode.
+                        ws.SendWorldReset();
+                    }
                     ws.NewCreature(400, 200, 0, out creatureId, out creatureName);
                     
                     ws.SendCreateLeaflet();
-                    //ws.NewBrick(4, 799, 1, 800, 600);
-                    //ws.NewBrick(4, 50, -4, 747, 47);
-                    //ws.NewBrick(4, 49, 562, 796, 599);
-                    //ws.NewBrick(4, -2, 6, 50, 599);
+                    
 
                     // Create entities continuously.
-                    Task.Delay(0).ContinueWith(t => CreateEntities());
+                    if (!GlobalVars.competitionMode)
+                    {
+                        ws.NewBrick(4, 799, 1, 800, 600);
+                        ws.NewBrick(4, 50, -4, 747, 47);
+                        ws.NewBrick(4, 49, 562, 796, 599);
+                        ws.NewBrick(4, -2, 6, 50, 599);
+                        Task.Delay(0).ContinueWith(t => CreateEntities());
+                    }
 
                     if (!String.IsNullOrWhiteSpace(creatureId))
                     {
