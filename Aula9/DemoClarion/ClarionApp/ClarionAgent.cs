@@ -272,7 +272,8 @@ namespace ClarionApp
                     worldServer.SendSackIt(creatureId, jewelToGet.Name);
 					break;
                 case CreatureActions.GET_FOOD:
-                    worldServer.SendSackIt(creatureId, foodToGet.Name);
+                    worldServer.SendEatIt(creatureId, foodToGet.Name);
+                    //worldServer.SendSackIt(creatureId, foodToGet.Name);
                     break;
                 case CreatureActions.GO_TO_JEWEL:
                     worldServer.SendSetAngle(creatureId, 0, 0, prad);
@@ -366,8 +367,7 @@ namespace ClarionApp
                                                                                    goToDeliverySpotSupportCalculator);
 
             // Commit this rule to Agent (in the ACS)
-            CurrentAgent.Commit(ruleGoToFood);
-
+            CurrentAgent.Commit(ruleGoToDeliverySpot);
 
             // Disable Rule Refinement
             CurrentAgent.ACS.Parameters.PERFORM_RER_REFINEMENT = false;
