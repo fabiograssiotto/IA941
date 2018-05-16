@@ -6,7 +6,7 @@ Aula 9 – Clarion: Controlando o WorldServer3D
 
 Objetivo
 
-Utilizar a arquitetura cognitiva Clarion para controlar a aplicação WordServer3D (WS3D) através de implementação de um aplicativo utilizando linguagem de programação C# para execução em ambiente .Net ou Mono.
+Utilizar a arquitetura cognitiva Clarion para controlar uma criatura artificial no ambiente virtual WordServer3D (WS3D) através de implementação de um aplicativo utilizando linguagem de programação C# para execução em ambiente .Net ou Mono.
 Serão implementados dois testes:
 * Teste 1: Através da Clarion, será criada de uma criatura no WS3D que irá executar a coleta de jóias no ambiente de simulação de acordo com uma especificação prévia de quantidades e cores. Ao final do processo de coleta a criatura será deslocada para um posição determinada de entrega das jóias (Delivery Spot), convencionada na origem do ambiente (0,0).
 * Teste 2: Será executada uma competição entre a criatura descrita acima e uma segunda criatura controlada pela arquitetura cognitiva Soar.
@@ -19,18 +19,20 @@ Descrição da implementação
 
 Esta seção do relatório visa descrever as principais alterações necessárias ao código fonte do DemoClarion.
 
-A estratégia para implementação seguiu o modelo do ClarionDemo, utilizando a descrição de regras condicionais no top level do ACS com uso de níveis de ativação diferentes para os inputs do ambiente.
-O algoritmo utilizado para a busca das jóias foi o seguinte:
-* No caso da presença de jóias ou comidas próximas à criatura (distância menor de 31 unidades), executar a ação de coleta.
-* Computar a quantidade de jóias-objetivo de acordo com a entrada do leaflet menos a quantidade de jóias no knapsack.
-* Caso jóias distantes façam parte do objetivo, direcionar a criatura para a jóia.
-* Caso a criatura esteja com a quantidade de combustível abaixo de 40 unidades e um ítem de comida esteja presente no campo visual, direcionar a criatura para a comida.
+A estratégia para implementação seguiu o modelo do ClarionDemo. Regras condicionais no top level do ACS foram definidas, com o uso de níveis de ativação diferentes para os inputs do ambiente.
+O algoritmo empregado para a busca das jóias implementa as seguintes regras:
+* Computar inicialmente a quantidade de jóias-objetivo de acordo com a entrada do leaflet menos a quantidade de jóias no knapsack para posterior processamento.
+* Examinar o ambiente próximo à posição da criatura. Se for percebida a presença de jóias ou comidas próximas à criatura (distância menor de 31 unidades), executar a ação de coleta.
+* Examinar o ambiente distante da criatura. Caso jóias distantes façam parte do objetivo, direcionar a criatura para a jóia.
+* Caso a criatura esteja com a quantidade de combustível abaixo de 40 unidades e um ítem de comida esteja presente no campo visual distante, direcionar a criatura para a comida.
+* Caso nenhuma das situações acima ocorra, instruir a criatura a permanecer parada  girando no próprio eixo até que apareçam novas entidades em seu campo visual.
+* Quando o objetivo final de jóias coletadas for atingido, direcionar a criatura para as coordenadas do delivery spot (por convenção em (0,0)).
 
 Foram assim realizadas as seguintes alterações no código da classe ClarionAgent, no arquivo ClarionAgent.cs:
 
 1. Adição de novas ações para a criatura:
 
-Foram adicionadas as ações 
+Foram adicionadas as ações de direcionamento até entidades (GO_TO), coleta (GET), busca no ambiente (WANDER) e entrega das jóias (DELIVER).
 public enum CreatureActions
 {
 DO_NOTHING,
@@ -207,7 +209,7 @@ allJewelsCollected = true;
 
 Resultados
 
-Como resultado, foi possível simular a coleta das jóias com sucesso pela criatura controlada pela Clarion, assim como executar uma competição entre a Clarion e o SOAR.
+Foi possível simular a coleta das jóias com sucesso pela criatura controlada pela Clarion, assim como executar uma competição entre a Clarion e o SOAR.
 
 Dificuldades Encontradas
 
@@ -215,11 +217,10 @@ Algumas dificuldades foram encontradas ao longo da implementação do código:
 
 * Execução no ambiente Windows não é trivial, necessitando alterar segmentos da classe principal para carregar DLLs em caminhos apropriados.
 * Instabilidade da comunicação com WS3D, provocando alguns crashes no ambiente Windows.
-* Falta de documentação nos tutorials do top level do ACS.
 
 Futuras Melhorias
 
 Algumas melhorias na implementação poderiam ser realizadas, tais como:
 
-* Adição de detecção de proximidade de outras criaturas, para as situações de competição.
-* Ocorrem por vezes a falta de detecção de entidades próximas à criatura, provavelmente devido ao ângulo de visão da criatura, criando situações de travamento de movimentação.
+* Detecção de proximidade de outras criaturas, para as situações de competição.
+* Ocorre por vezes a falta de detecção de entidades próximas à criatura, provavelmente devido ao ângulo de visão da criatura, criando situações de travamento de movimentação.
