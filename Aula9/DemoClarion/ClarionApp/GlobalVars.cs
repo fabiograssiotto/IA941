@@ -9,6 +9,6 @@ namespace ClarionApp {
 
         // Variable to configure whether we are running in competition mode
         // with other cognitive architectures.
-        public const Boolean competitionMode = true;
+        static public Boolean competitionMode = false;
     }
 }

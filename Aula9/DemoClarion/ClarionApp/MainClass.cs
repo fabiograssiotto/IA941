@@ -47,15 +47,10 @@ namespace ClarionApp
                     
                     ws.SendCreateLeaflet();
 
-
-                    // Create entities continuously
+                    // Create entities 
                     if (!GlobalVars.competitionMode)
                     {
-                        ws.NewBrick(4, 799, 1, 800, 600);
-                        ws.NewBrick(4, 50, -4, 747, 47);
-                        ws.NewBrick(4, 49, 562, 796, 599);
-                        ws.NewBrick(4, -2, 6, 50, 599);
-                        Task.Delay(0).ContinueWith(t => CreateEntities());
+                        CreateEntities();
                     }
 
                     if (!String.IsNullOrWhiteSpace(creatureId))
@@ -93,7 +88,7 @@ namespace ClarionApp
         {
             // Create a set of jewels in the environment
             Random rnd = new Random();
-            for (int i = 0; i < 20; i++)
+            for (int i = 0; i < 50; i++)
             {
                 // Randomly select color and position.
                 int color = rnd.Next(0, 6);
@@ -110,8 +105,6 @@ namespace ClarionApp
                 int y = rnd.Next(100, 600);
                 ws.NewFood(food, x, y);
             }
-
-            //Task.Delay(30000).ContinueWith(t => CreateEntities());
         }
 
         #endregion
@@ -121,7 +114,14 @@ namespace ClarionApp
         {
             if (!IsUnixBased)      //for Windows Run-Time Engines only..
                 CheckWindowsGtk(); // Fixes GTK library find issues
-
+            
+            if (args.Length == 1 && args[0].Equals("vs"))
+            {
+                GlobalVars.competitionMode = true;
+            } else
+            {
+                GlobalVars.competitionMode = false;
+            }
             new MainClass();
         }
 
