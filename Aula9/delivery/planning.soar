@@ -1,3 +1,0 @@
-pushd planning
-source planning_source.soar
-popd
