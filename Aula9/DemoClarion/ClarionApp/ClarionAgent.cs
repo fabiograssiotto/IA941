@@ -404,8 +404,8 @@ namespace ClarionApp
             int targetRed = 0, targetGreen = 0, targetBlue = 0, targetYellow = 0, targetMagenta = 0, targetWhite = 0;
             Creature c = (Creature)listOfThings.Where(item => (item.CategoryId == Thing.CATEGORY_CREATURE)).First();
 
-            //updateSackAndTarget(listOfThings, c, out targetRed, out targetGreen, out targetBlue, 
-             //                   out targetYellow, out targetMagenta, out targetWhite);
+            updateSackAndTarget(listOfThings, c, out targetRed, out targetGreen, out targetBlue, 
+                                out targetYellow, out targetMagenta, out targetWhite);
 
             // Set up initial activation levels.
             double wallAheadActivationValue = MIN_ACT_VAL;

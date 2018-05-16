@@ -51,10 +51,10 @@ namespace ClarionApp
                     // Create entities continuously.
                     if (!GlobalVars.competitionMode)
                     {
-                        ws.NewBrick(4, 799, 1, 800, 600);
-                        ws.NewBrick(4, 50, -4, 747, 47);
-                        ws.NewBrick(4, 49, 562, 796, 599);
-                        ws.NewBrick(4, -2, 6, 50, 599);
+                        //ws.NewBrick(4, 799, 1, 800, 600);
+                        //ws.NewBrick(4, 50, -4, 747, 47);
+                        //ws.NewBrick(4, 49, 562, 796, 599);
+                        //ws.NewBrick(4, -2, 6, 50, 599);
                         Task.Delay(0).ContinueWith(t => CreateEntities());
                     }
 
