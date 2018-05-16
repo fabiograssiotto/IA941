@@ -1,20 +1,36 @@
 Nome: Fabio Grassiotto
 RA: 890441
-Disciplina: IA941A, 1∫ S 2018
+Disciplina: IA941A, 1¬∫ S 2018
 
-Aula 9 ñ Clarion: Controlando o WorldServer3D
+Aula 9 ‚Äì Clarion: Controlando o WorldServer3D
+
 Objetivo
-Utilizar a arquitetura cognitiva Clarion para controlar a aplicaÁ„o WordServer3D (WS3D) atravÈs de implementaÁ„o de um aplicativo utilizando linguagem de programaÁ„o C# para execuÁ„o em ambiente .Net ou Mono.
-Ser„o implementados dois testes:
-* Teste 1: AtravÈs da Clarion, ser· criada de uma criatura no WS3D que ir· executar a coleta de jÛias no ambiente de simulaÁ„o de acordo com uma especificaÁ„o prÈvia de quantidades e cores. Ao final do processo de coleta a criatura ser· deslocada para um posiÁ„o determinada de entrega das jÛias (Delivery Spot), convencionada na origem do ambiente (0,0).
-* Teste 2: Ser· executada uma competiÁ„o entre a criatura descrita acima e uma segunda criatura controlada pela arquitetura cognitiva Soar.
-Para execuÁ„o dos dois testes, ser„o providos scripts nos sistemas operacionais Linux e Windows:
+
+Utilizar a arquitetura cognitiva Clarion para controlar a aplica√ß√£o WordServer3D (WS3D) atrav√©s de implementa√ß√£o de um aplicativo utilizando linguagem de programa√ß√£o C# para execu√ß√£o em ambiente .Net ou Mono.
+Ser√£o implementados dois testes:
+* Teste 1: Atrav√©s da Clarion, ser√° criada de uma criatura no WS3D que ir√° executar a coleta de j√≥ias no ambiente de simula√ß√£o de acordo com uma especifica√ß√£o pr√©via de quantidades e cores. Ao final do processo de coleta a criatura ser√° deslocada para um posi√ß√£o determinada de entrega das j√≥ias (Delivery Spot), convencionada na origem do ambiente (0,0).
+* Teste 2: Ser√° executada uma competi√ß√£o entre a criatura descrita acima e uma segunda criatura controlada pela arquitetura cognitiva Soar.
+
+Para execu√ß√£o dos dois testes, ser√£o providos scripts nos sistemas operacionais Linux e Windows:
 run-test1.sh / run-test1.bat
 run-test2.sh / run-test2.bat
-DescriÁ„o da implementaÁ„o
-A estratÈgia para implementaÁ„o seguiu o modelo do ClarioDemo, utilizando a descriÁ„o de regras condicionais no top level do ACS com uso de nÌveis de ativaÁ„o diferentes para as ...
-Foram assim realizadas as seguintes alteraÁıes no cÛdigo da classe ClarionAgent, no arquivo ClarionAgent.cs:
-1. AdiÁ„o de novas aÁıes para a criatura:
+
+Descri√ß√£o da implementa√ß√£o
+
+Esta se√ß√£o do relat√≥rio visa descrever as principais altera√ß√µes necess√°rias ao c√≥digo fonte do DemoClarion.
+
+A estrat√©gia para implementa√ß√£o seguiu o modelo do ClarionDemo, utilizando a descri√ß√£o de regras condicionais no top level do ACS com uso de n√≠veis de ativa√ß√£o diferentes para os inputs do ambiente.
+O algoritmo utilizado para a busca das j√≥ias foi o seguinte:
+* No caso da presen√ßa de j√≥ias ou comidas pr√≥ximas √† criatura (dist√¢ncia menor de 31 unidades), executar a a√ß√£o de coleta.
+* Computar a quantidade de j√≥ias-objetivo de acordo com a entrada do leaflet menos a quantidade de j√≥ias no knapsack.
+* Caso j√≥ias distantes fa√ßam parte do objetivo, direcionar a criatura para a j√≥ia.
+* Caso a criatura esteja com a quantidade de combust√≠vel abaixo de 40 unidades e um √≠tem de comida esteja presente no campo visual, direcionar a criatura para a comida.
+
+Foram assim realizadas as seguintes altera√ß√µes no c√≥digo da classe ClarionAgent, no arquivo ClarionAgent.cs:
+
+1. Adi√ß√£o de novas a√ß√µes para a criatura:
+
+Foram adicionadas as a√ß√µes 
 public enum CreatureActions
 {
 DO_NOTHING,
@@ -26,26 +42,32 @@ GET_FOOD,
 WANDER,
 DELIVER
 }
-2. AdiÁ„o de novas dimens
-         private String DIMENSION_JEWEL_AHEAD = "JewelAhead";
+
+2. Adi√ß√£o de novas constantes para valores nos pares de dimens√£o-valor:
+
+private String DIMENSION_JEWEL_AHEAD = "JewelAhead";
 private String DIMENSION_JEWEL_AWAY = "JewelAway";
-         private String DIMENSION_FOOD_AHEAD = "FoodAhead";
-         private String DIMENSION_FOOD_AWAY = "FoodAway";
-3. DescriÁ„o de nÌveis de ativaÁ„o:
+private String DIMENSION_FOOD_AHEAD = "FoodAhead";
+private String DIMENSION_FOOD_AWAY = "FoodAway";
+
+3. Adi√ß√£o de constantes para os n√≠veis de ativa√ß√£o das entradas:
+
      private double JEWEL_AHEAD_ACT_VAL = 1.0;
      private double JEWEL_AWAY_ACT_VAL = 0.9;
      private double FOOD_AHEAD_ACT_VAL = 0.8;
      private double FOOD_AWAY_ACT_VAL = 0.6;
      private double WALL_AHEAD_ACT_VAL = 0.3;
      private double MIN_ACT_VAL = 0.0;
-4. AdiÁ„o de pares de dimens„o-valor para descrer os objetos do ambiente
-Para a simulaÁ„o do WS3D, os pares relevantes s„o a presenÁa de jÛias e comidas na proximidade ou ‡ dist‚ncia da criatura.
+     
+4. Adi√ß√£o de pares de dimens√£o-valor para descrever os objetos do ambiente
+
+Para a simula√ß√£o do WS3D, os pares relevantes s√£o a presen√ßa de j√≥ias e comidas na proximidade ou √† dist√¢ncia da criatura.
      private DimensionValuePair inputJewelAhead;
      private DimensionValuePair inputFoodAhead;
      private DimensionValuePair inputJewelAway;
      private DimensionValuePair inputFoodAway;
      
-5. 
+5. Adi√ß√£o de a√ß√µes sobre o ambiente a serem executados pela criatura:
 
 private ExternalActionChunk outputGetJewel;
 private ExternalActionChunk outputGetFood;
@@ -53,7 +75,9 @@ private ExternalActionChunk outputGoToJewel;
 private ExternalActionChunk outputGoToFood;
 private ExternalActionChunk outputWander;
 private ExternalActionChunk outputGoToDeliverySpot;
-processSelectedActions():
+
+6. Adi√ß√£o de interfaces com o WS3D para execu√ß√£o de a√ß√µes externas no m√©todo processSelectedActions()
+
 case CreatureActions.GET_JEWEL:
          worldServer.SendSackIt(creatureId, jewelToGet.Name);
          break;
@@ -77,17 +101,125 @@ case CreatureActions.DELIVER:
        worldServer.SendSetGoTo(creatureId, 1, 1, deliverySpot.X1, deliverySpot.Y1);
        break;
 
-6. AlteraÁıes no mÈtodo prepareSensoryInformation()
-Este È o mÈtodo principal para a implementaÁ„o da lÛgica de nÌveis de ativaÁ„o, seguindo o algoritmo abaixo:
-* No caso da presenÁa de jÛias ou comidas prÛximas ‡ criatura, configurar o nÌvel de ativaÁ„o para as entradas.
-* Computar a quantidade de jÛias-objetivo de acordo com a entrada do leaflet menos a quantidade de jÛias no knapsack.
-* Caso jÛias distantes faÁam parte do objetivo, configurar o nÌvel de ativaÁ„o para a entrada.
+7. Altera√ß√µes no m√©todo prepareSensoryInformation()
 
+Este √© o m√©todo principal para a implementa√ß√£o da l√≥gica de n√≠veis de ativa√ß√£o. As seguintes altera√ß√µes foram implementadas:
+
+- implementa√ß√£o do m√©todo updateSackAndTarget, que agrega as quantidades de j√≥ias por cor que ainda precisam ser coletadas pela criatura.
+
+Sack sack;
+targetRed = 0;
+targetGreen = 0;
+targetBlue = 0;
+targetYellow = 0;
+targetMagenta = 0;
+targetWhite = 0;
+            
+// Update leaflets
+int n = 0;
+foreach (Leaflet l in c.getLeaflets())
+{
+       targetRed += l.getRequired("Red");
+       targetGreen += l.getRequired("Green");
+       targetBlue += l.getRequired("Blue");
+       targetYellow += l.getRequired("Yellow");
+       targetMagenta += l.getRequired("Magenta");
+       targetWhite += l.getRequired("White");
+       mind.updateLeaflet(n, l);
+       n++;
+}
+
+if (worldServer != null && worldServer.IsConnected)
+{
+       sack = worldServer.SendGetSack("0");
+       targetRed -= sack.red_crystal;
+       targetGreen -= sack.green_crystal;
+       targetBlue -= sack.blue_crystal;
+       targetYellow -= sack.yellow_crystal;
+       targetMagenta -= sack.magenta_crystal;
+       targetWhite -= sack.white_crystal;
+}
+
+- Implementa√ß√£o de detec√ß√£o de entidades pr√≥ximas √† criatura, configurando n√≠veis de ativa√ß√£o:
+
+// Loop through the list of things in the environment.
+// First, handle close objects.
+foreach (Thing thing in listOfThings)
+{
+       // Thing is close to the creature, so change activation values accordingly.
+       int categoryId = thing.CategoryId;
+       if (thing.DistanceToCreature <= 50 && categoryId != Thing.CATEGORY_CREATURE)
+       {
+           switch (categoryId)
+           {
+               case Thing.CATEGORY_BRICK:
+                   wallAheadActivationValue = WALL_AHEAD_ACT_VAL;
+                   break;
+               case Thing.CATEGORY_JEWEL:
+                   jewelAheadActivationValue = JEWEL_AHEAD_ACT_VAL;
+                   jewelToGet = thing;
+                   break;
+               case Thing.categoryPFOOD:
+                   foodAheadActivationValue = FOOD_AHEAD_ACT_VAL;
+                   foodToGet = thing;
+                   break;
+               default:
+                   break;
+           }
+       }
+   }
+
+- Implementa√ß√£o de l√≥gica para detec√ß√£o de j√≥ias no ambiente para completar a coleta especificada na leaflet. Uma l√≥gica similar foi implementada para coleta de comida.
+
+// Look now for the closest jewel to go to.
+IEnumerable<Thing> jewels = listOfThings.Where(item => (item.CategoryId == Thing.CATEGORY_JEWEL && item.DistanceToCreature > 50));
+if (jewels.Any())
+{
+IEnumerable<Thing> orderedJewels = jewels.OrderBy(item => item.DistanceToCreature);
+Boolean foundJewel = false;
+foreach (Thing jewel in orderedJewels)
+{
+  // Check if the jewel is required, otherwise skip.
+  if ((jewel.Material.Color.Equals("Red") && targetRed > 0) ||
+       (jewel.Material.Color.Equals("Green") && targetGreen > 0) ||
+       (jewel.Material.Color.Equals("Blue") && targetBlue > 0) ||
+       (jewel.Material.Color.Equals("Yellow") && targetYellow > 0) ||
+       (jewel.Material.Color.Equals("Magenta") && targetMagenta > 0) ||
+       (jewel.Material.Color.Equals("White") && targetWhite > 0))
+  {
+      jewelAwayActivationValue = JEWEL_AWAY_ACT_VAL;
+      jewelToGoTo = jewel;
+      // Found one jewel as target, no need to keep looking.
+      Console.WriteLine("Jewel to go to: " + jewel.Name);
+      Console.WriteLine("Jewel color: " + jewel.Material.Color);
+      break;
+  }
+}
+
+- Implementa√ß√£o de l√≥gica para detectar que a cole√ß√£o de j√≥ias foi finalizada:
+
+ // Verify if all collection of jewels is done.
+if (targetRed <= 0 && targetGreen <= 0 && targetBlue <= 0 &&
+targetYellow <= 0 && targetMagenta <= 0 && targetWhite <= 0)
+{
+allJewelsCollected = true;
+}
 
 Resultados
 
+Como resultado, foi poss√≠vel simular a coleta das j√≥ias com sucesso pela criatura controlada pela Clarion, assim como executar uma competi√ß√£o entre a Clarion e o SOAR.
+
 Dificuldades Encontradas
 
-3 | Aula 9 ñ IA941A
+Algumas dificuldades foram encontradas ao longo da implementa√ß√£o do c√≥digo:
 
+* Execu√ß√£o no ambiente Windows n√£o √© trivial, necessitando alterar segmentos da classe principal para carregar DLLs em caminhos apropriados.
+* Instabilidade da comunica√ß√£o com WS3D, provocando alguns crashes no ambiente Windows.
+* Falta de documenta√ß√£o nos tutorials do top level do ACS.
 
+Futuras Melhorias
+
+Algumas melhorias na implementa√ß√£o poderiam ser realizadas, tais como:
+
+* Adi√ß√£o de detec√ß√£o de proximidade de outras criaturas, para as situa√ß√µes de competi√ß√£o.
+* Ocorrem por vezes a falta de detec√ß√£o de entidades pr√≥ximas √† criatura, provavelmente devido ao √¢ngulo de vis√£o da criatura, criando situa√ß√µes de travamento de movimenta√ß√£o.
