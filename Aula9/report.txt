@@ -1,0 +1,20 @@
+Aula 9 – Clarion: Controlando o WorldServer3D
+
+Objetivo
+Utilizar a arquitetura cognitiva Clarion para controlar a aplicação WordServer3D (WS3D) através de implementação de um aplicativo utilizando linguagem de programação C# para execução em ambiente .Net ou Mono.
+Serão implementados dois testes:
+- Teste 1: Através da Clarion, será criada de uma criatura no WS3D que irá executar a coleta de jóias no ambiente de simulação de acordo com uma especificação prévia de quantidades e cores. Ao final do processo de coleta a criatura será deslocada para um posição determinada de entrega das jóias (Delivery Spot), convencionada na origem do ambiente (0,0).
+- Teste 2: Será executada uma competição entre a criatura descrita acima e uma segunda criatura controlada pela arquitetura cognitiva Soar.
+
+Para execução dos dois testes, serão providos scripts nos sistemas operacionais Linux e Windows:
+
+run-test1.sh / run-test1.bat
+run-test2.sh / run-test2.bat
+
+Descrição da implementação no Clarion
+
+Resultados
+
+Dificuldades Encontradas
+
+Conclusões
