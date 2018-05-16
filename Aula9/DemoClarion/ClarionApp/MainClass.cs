@@ -46,9 +46,9 @@ namespace ClarionApp
                     ws.NewCreature(400, 200, 0, out creatureId, out creatureName);
                     
                     ws.SendCreateLeaflet();
-                    
 
-                    // Create entities continuously.
+
+                    // Create entities continuously
                     if (!GlobalVars.competitionMode)
                     {
                         ws.NewBrick(4, 799, 1, 800, 600);
@@ -111,7 +111,7 @@ namespace ClarionApp
                 ws.NewFood(food, x, y);
             }
 
-            Task.Delay(30000).ContinueWith(t => CreateEntities());
+            //Task.Delay(30000).ContinueWith(t => CreateEntities());
         }
 
         #endregion
