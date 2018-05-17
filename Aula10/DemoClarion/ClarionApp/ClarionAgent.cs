@@ -25,6 +25,7 @@ namespace ClarionApp
 		GET_JEWEL,
         GET_FOOD,
         WANDER,
+		GO_TO_DELIVER,
         DELIVER
     }
 
@@ -153,6 +154,10 @@ namespace ClarionApp
         /// Output action that makes the agent go to the delivery spot.
         /// </summary>
 		private ExternalActionChunk outputGoToDeliverySpot;
+		/// <summary>
+		/// Output action that makes the agent deliver the jewels.
+		/// </summary>
+		private ExternalActionChunk outputDoDelivery;
         #endregion
 
         // Target jewels/food items
@@ -162,8 +167,14 @@ namespace ClarionApp
         Thing foodToGoTo = null;
         Thing deliverySpot = null;
 
+		// Leaflet ids
+		String leaflet1Id = null;
+		String leaflet2Id = null;
+		String leaflet3Id = null;
+
         // To indicate we are done.
         Boolean allJewelsCollected = false;
+		Boolean reachedDeliverySpot = false;
         #endregion
 
         #region Constructor
@@ -197,7 +208,8 @@ namespace ClarionApp
             outputGoToJewel = World.NewExternalActionChunk(CreatureActions.GO_TO_JEWEL.ToString());
             outputGoToFood = World.NewExternalActionChunk(CreatureActions.GO_TO_FOOD.ToString());
             outputWander = World.NewExternalActionChunk(CreatureActions.WANDER.ToString());
-            outputGoToDeliverySpot = World.NewExternalActionChunk(CreatureActions.DELIVER.ToString());
+            outputGoToDeliverySpot = World.NewExternalActionChunk(CreatureActions.GO_TO_DELIVER.ToString());
+			outputDoDelivery = World.NewExternalActionChunk(CreatureActions.DELIVER.ToString ());
 
             //Create thread to simulation
             runThread = new Thread(CognitiveCycle);
@@ -285,11 +297,19 @@ namespace ClarionApp
                 case CreatureActions.WANDER:
                     worldServer.SendSetAngle(creatureId, 2, -2, 2);
                     break;
-                case CreatureActions.DELIVER:
+                case CreatureActions.GO_TO_DELIVER:
                     // Send creature to the delivery spot.
                     worldServer.SendSetAngle(creatureId, 0, 0, prad);
                     worldServer.SendSetGoTo(creatureId, 1, 1, deliverySpot.X1, deliverySpot.Y1);
                     break;
+				case CreatureActions.DELIVER:
+					// Deliver jewels
+					worldServer.SendDeliver (creatureId, leaflet1Id);
+					worldServer.SendDeliver (creatureId, leaflet2Id);
+					worldServer.SendDeliver (creatureId, leaflet3Id);
+					// All done, need to stop the agent.
+					Abort(true);
+					break;
                 default:
 			    break;
 				}
@@ -368,6 +388,14 @@ namespace ClarionApp
             // Commit this rule to Agent (in the ACS)
             CurrentAgent.Commit(ruleGoToDeliverySpot);
 
+			// Create Rule To Deliver Jewels
+			SupportCalculator deliverSupportCalculator = FixedRuleToDeliver;
+			FixedRule ruleDeliver = AgentInitializer.InitializeActionRule(CurrentAgent, FixedRule.Factory, outputDoDelivery, 
+				deliverSupportCalculator);
+
+			// Commit this rule to Agent (in the ACS)
+			CurrentAgent.Commit(ruleDeliver);
+
             // Disable Rule Refinement
             CurrentAgent.ACS.Parameters.PERFORM_RER_REFINEMENT = false;
 
@@ -432,6 +460,8 @@ namespace ClarionApp
                             jewelToGet = thing;
                             break;
                         case Thing.categoryPFOOD:
+						case Thing.CATEGORY_NPFOOD:
+						case Thing.CATEGORY_FOOD:
                             foodAheadActivationValue = FOOD_AHEAD_ACT_VAL;
                             foodToGet = thing;
                             break;
@@ -487,7 +517,8 @@ namespace ClarionApp
             }
 
             // And the closest food to go to, if required.
-            IEnumerable<Thing> foods = listOfThings.Where(item => (item.CategoryId == Thing.categoryPFOOD && item.DistanceToCreature > 50));
+            IEnumerable<Thing> foods = listOfThings.Where(item => (item.CategoryId == Thing.categoryPFOOD ||
+				item.CategoryId == Thing.CATEGORY_FOOD || item.CategoryId == Thing.CATEGORY_NPFOOD && item.DistanceToCreature > 50));
             if (foods.Any() && c.Fuel < 400)
             {
                 foodAwayActivationValue = FOOD_AWAY_ACT_VAL;
@@ -495,6 +526,12 @@ namespace ClarionApp
                 Console.WriteLine("Food to go to: " + foodToGoTo.Name);
             }
 
+			// Check if at the delivery spot and set activation for delivery.
+			if (allJewelsCollected && c.X1 == 0 && c.X2 == 0)
+			{
+				reachedDeliverySpot = true;
+			}
+				
             // Set up activation levels.
             si.Add(inputWallAhead, wallAheadActivationValue);
             si.Add(inputJewelAhead, jewelAheadActivationValue);
@@ -528,9 +565,19 @@ namespace ClarionApp
                 targetYellow += l.getRequired("Yellow");
                 targetMagenta += l.getRequired("Magenta");
                 targetWhite += l.getRequired("White");
+
+				if (n == 0) {
+					leaflet1Id = l.leafletID.ToString();
+				} else if (n == 1) {
+					leaflet2Id = l.leafletID.ToString();
+				} else {
+					leaflet3Id = l.leafletID.ToString();
+				}
                 mind.updateLeaflet(n, l);
                 n++;
             }
+
+
 
             if (worldServer != null && worldServer.IsConnected)
             {
@@ -582,6 +629,19 @@ namespace ClarionApp
                 return 0.0;
             }
         }
+
+		private double FixedRuleToDeliver(ActivationCollection currentInput, Rule target)
+		{
+			// Check if all jewels collected.
+			if (allJewelsCollected && reachedDeliverySpot)
+			{
+				return 1.0;
+			}
+			else
+			{
+				return 0.0;
+			}
+		}
 
         private double FixedRuleToGetJewel(ActivationCollection currentInput, Rule target)
 		{
