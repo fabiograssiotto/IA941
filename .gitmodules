@@ -1,0 +1,3 @@
+[submodule "Aula11/lida-framework"]
+	path = Aula11/lida-framework
+	url = https://github.com/CognitiveComputingResearchGroup/lida-framework.git
