@@ -304,15 +304,14 @@ namespace ClarionApp
 					break;
                 case CreatureActions.GET_FOOD:
                     worldServer.SendEatIt(creatureId, foodToGet.Name);
-                    //worldServer.SendSackIt(creatureId, foodToGet.Name);
                     break;
                 case CreatureActions.GO_TO_JEWEL:
                     worldServer.SendSetAngle(creatureId, 0, 0, prad);
-                    worldServer.SendSetGoTo(creatureId, 1, 1, jewelToGoTo.X1, jewelToGoTo.Y1);
+                    worldServer.SendSetGoTo(creatureId, 2, 2, jewelToGoTo.X1, jewelToGoTo.Y1);
                     break;
                 case CreatureActions.GO_TO_FOOD:
                     worldServer.SendSetAngle(creatureId, 0, 0, prad);
-                    worldServer.SendSetGoTo(creatureId, 1, 1, foodToGoTo.X1, foodToGoTo.Y1);
+                    worldServer.SendSetGoTo(creatureId, 2, 2, foodToGoTo.X1, foodToGoTo.Y1);
                     break;
                 case CreatureActions.WANDER:
                     worldServer.SendSetAngle(creatureId, 2, -2, 2);
@@ -320,13 +319,14 @@ namespace ClarionApp
                 case CreatureActions.GO_TO_DELIVER:
                     // Send creature to the delivery spot.
                     worldServer.SendSetAngle(creatureId, 0, 0, prad);
-                    worldServer.SendSetGoTo(creatureId, 1, 1, deliverySpot.X1, deliverySpot.Y1);
+                    worldServer.SendSetGoTo(creatureId, 2, 2, deliverySpot.X1, deliverySpot.Y1);
                     break;
 				case CreatureActions.DELIVER:
 					// Deliver jewels
 					worldServer.SendDeliver (creatureId, leaflet1Id);
 					worldServer.SendDeliver (creatureId, leaflet2Id);
 					worldServer.SendDeliver (creatureId, leaflet3Id);
+                    Abort(true);
 					break;
                 default:
 			    break;
