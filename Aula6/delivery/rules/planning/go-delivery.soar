@@ -1,10 +1,9 @@
-################ MONITOR OPERATOR ###################################
-# This operator will monitor if the agent has successfully collected
-# all entities, and send the creature to the deliverySpot.
+################ GO TO DELIVERY  #####################################
+# This operator will instruct the creature to go to the delivery spot.
 sp {propose*go*to*delivery
 	 (state <s> ^name planning
-              ^deliverySpot <deliverySpot>
               ^io.input-link <il>)
+   (<il> ^CREATURE.DELIVERYSPOT <deliverySpot>)
    (<deliverySpot> ^X <dX> ^Y <dY>)
    (<il> ^CREATURE.TARGET <target>)
    (<target> ^Red <tRedAmmount> <= 0

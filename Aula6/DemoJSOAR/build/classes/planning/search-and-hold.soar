@@ -1,0 +1,79 @@
+################ SEARCH AND HOLD ENTITIES ###################################
+# This operator will make the agent hold entities that are currently
+# in the visual field into memory. Entities that we are interested on are
+# only the jewels.
+# Only Jewels still needed for the target need to be considered in the
+# search operation.
+
+# Propose adding to memory jewels found in the visual field.
+sp {propose*search*and*hold*jewel
+   (state <s> ^name planning
+              ^io.input-link <il>)
+   (<il> ^CREATURE <creature>)
+   (<creature> ^POSITION <position>)
+   (<position> ^X <crX>)
+   (<position> ^Y <crY>)
+# First condition is, is there a jewel in the visual field of the creature?
+   (<creature> ^SENSOR.VISUAL.ENTITY <entity>)     
+   (<entity> ^TYPE <type> JEWEL)   
+   (<entity> ^COLOR <color>)
+   (<entity> ^X <x>)
+   (<entity> ^Y <y>) 
+   (<entity> ^NAME <name>)
+# Second condition is, are there any entities in memory?
+# The strategy is to only keep one entity in memory per round of search-and-get.
+   -(<creature> ^MEMORY.ENTITY <memoryEntity>)
+# Third condition is, do we still need to get a jewel of that color?
+   (<creature> ^TARGET <target>)
+   (<target>   ^<color> <tgtAmmount>)
+   (<target>   ^<color> { <tgtAmmount> > 0 })
+-->
+   (<s> ^operator <o> +)
+   (<o> ^name searchAndHoldJewel)
+   (<o> ^parameterEntity <newJewel>)
+   (<newJewel> ^Name <name>)
+   (<newJewel> ^Type <type>)
+   (<newJewel> ^X <x>)
+   (<newJewel> ^Y <y>)
+   (<newJewel> ^Color <color>)
+   (<newJewel> ^Distance (sqrt (+ (* (- <crX> <x>) (- <crX> <x>)) (* (- <crY> <y>) (- <crY> <y>)))))
+   (write (crlf) | propose*search*and*hold*jewel Target Jewel = | <name> )
+   (write (crlf) | Creature x: | <crX> | y: | <crY> | Jewel x: | <x> | y: | <y> )
+   (write (crlf) | target color = | <color> | ammount = | <tgtAmmount> )}
+
+   
+# Add to memory the jewel selected.
+sp {apply*search*and*hold*jewel
+   (state <s> ^operator <o>
+              ^io <io>)
+   (<io> ^input-link <il>)
+   (<io> ^output-link <ol>)
+   (<il> ^CREATURE <creature>)
+   (<o> ^name searchAndHoldJewel)
+   (<o> ^parameterEntity <newJewel>)
+   (<newJewel> ^X <x>)
+   (<newJewel> ^Y <y>)
+   (<newJewel> ^Name <name>)
+   (<newJewel> ^Type <type>)
+   (<newJewel> ^Color <color>)
+  -(<ol> ^ADD_MEM <something>)
+-->
+   (<creature> ^MEMORY.ENTITY <memoryEntity>)
+   (<memoryEntity> ^X <x>)
+   (<memoryEntity> ^Y <y>)
+   (<memoryEntity> ^NAME <name>)
+   (<ol> ^ADD_MEM <command>)
+   (<command> ^Name <name>)
+   (<command> ^X <x>)
+   (<command> ^Y <y>)
+   (write (crlf) | apply*search*and*hold*jewel name = | <name> )
+   (write (crlf) | Jewel x: | <x> | y: | <y> )}
+
+sp {apply*search*and*hold*remove
+ (state <s> ^operator.name searchAndHoldJewel
+            ^io.output-link <ol>)
+   (<ol> ^ADD_MEM <add>)
+   (<move> ^status complete)
+-->
+   (<ol> ^ADD_MEM <add> -)
+   (write (crlf) | apply*search*and*hold*remove |)}

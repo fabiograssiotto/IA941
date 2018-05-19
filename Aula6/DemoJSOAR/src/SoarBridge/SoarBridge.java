@@ -51,6 +51,7 @@ public class SoarBridge
     Identifier creatureParameters;
     Identifier creaturePosition;
     Identifier creatureMemory;
+    Identifier deliverySpot;
     
     Environment env;
     public Creature c;
@@ -180,6 +181,12 @@ public class SoarBridge
                 CreateFloatWME(entity, "X", memoryEntityX);
                 CreateFloatWME(entity, "Y", memoryEntityY);
               }
+              //Initialize Delivery Spot
+              deliverySpot = CreateIdWME(creature, "DELIVERYSPOT");
+              CreateFloatWME(deliverySpot, "X", 0.0);
+              CreateFloatWME(deliverySpot, "Y", 0.0);
+              CreateFloatWME(deliverySpot, "DISTANCE", 
+                      GetGeometricDistanceToCreature(0.0,0.0,0.0,0.0,c.getPosition().getX(),c.getPosition().getY()));  
               
               // Set Creature Parameters
               Calendar lCDateTime = Calendar.getInstance();
@@ -418,6 +425,22 @@ public class SoarBridge
                                 commandList.add(command);
                             }
                             break;
+                            
+                        case DELIVER:
+                            command = new Command(Command.CommandType.DELIVER);
+                            CommandDeliver commandDeliver = (CommandDeliver) command.getCommandArgument();
+                            if (commandDeliver != null) 
+                            {
+                                // Get leafletIds to deliver
+                                Creature c = env.getCreature();
+                                List<Leaflet> leafletList = c.getLeaflets();
+                                for(Leaflet l: leafletList) 
+                                {
+                                    commandDeliver.setLeafletId(l.getID().toString());
+                                    commandList.add(command);
+                                }
+                            }
+                            break;
                         
                         case ADD_MEM:
                             memoryEntityInit = true;
@@ -535,7 +558,16 @@ public class SoarBridge
                         processEatCommand((CommandEat)command.getCommandArgument());
                     break;
 
-                    default:System.out.println("Nenhum comando definido ...");
+                    case DELIVER:
+                        processDeliverCommand((CommandDeliver)command.getCommandArgument());
+                    break;
+                        
+                    case STOP:
+                        processStopCommand((CommandStop)command.getCommandArgument());
+                    break;
+                    
+                    default:
+                        System.out.println("Nenhum comando definido ...");
                         // Do nothing
                     break;
                 }
@@ -596,6 +628,38 @@ public class SoarBridge
         else
         {
             logger.severe("Error processing processMoveCommand");
+        }
+    }
+    
+    /**
+     * Send Deliver Command to World Server
+     * @param soarCommandDeliver Soar Move Command Structure
+     */
+    private void processDeliverCommand(CommandDeliver soarCommandDeliver) throws CommandExecException
+    {
+        if (soarCommandDeliver != null)
+        {
+            CommandUtility.sendDeliverLeaflet("0", soarCommandDeliver.getLeafletId());
+        }
+        else
+        {
+            logger.severe("Error processing processDeliverCommand");
+        }
+    }
+    
+    /**
+     * Send Stop Command to World Server
+     * @param soarCommandStop Soar Move Command Structure
+     */
+    private void processStopCommand(CommandStop soarCommandStop) throws CommandExecException
+    {
+        if (soarCommandStop != null)
+        {
+            CommandUtility.sendStopCreature("0");
+        }
+        else
+        {
+            logger.severe("Error processing processDeliverCommand");
         }
     }
     

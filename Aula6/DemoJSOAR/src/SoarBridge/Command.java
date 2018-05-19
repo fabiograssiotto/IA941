@@ -16,6 +16,8 @@ public class Command
         MOVE,
         GET,
         EAT,
+        DELIVER,
+        STOP,
         ADD_MEM,
         REMOVE_MEM
     }
@@ -46,12 +48,15 @@ public class Command
             case EAT:
                 commandArgument = new CommandEat();
                 break;
-
-            /* Not really a command for WS3D.    
-            case ADD_MEM:
-                commandArgument = new CommandAddMem();
+            
+            case DELIVER:
+                commandArgument = new CommandDeliver();
                 break;
-            */    
+                
+            case STOP:
+                commandArgument = new CommandStop();
+                break;
+                
             default:
                 commandArgument = null;
                 break;

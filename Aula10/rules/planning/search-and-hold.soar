@@ -3,7 +3,7 @@
 # in the visual field into memory. Entities that we are interested on are
 # only the jewels.
 # Only Jewels still needed for the target need to be considered in the
-# search operation, whereas all food counts.
+# search operation.
 
 # Propose adding to memory jewels found in the visual field.
 sp {propose*search*and*hold*jewel

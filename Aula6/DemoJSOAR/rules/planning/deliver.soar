@@ -1,0 +1,45 @@
+################ DELIVERY  #####################################
+# This operator will instruct the creature to deliver the Jewels 
+# as specified in the leaflets. After that, it will stop, ending 
+# the simulation.
+sp {propose*deliver
+	 (state <s> ^name planning
+              ^io.input-link <il>)
+   (<il> ^CREATURE.DELIVERYSPOT <deliverySpot>)
+   (<deliverySpot> ^X <dX> 
+                   ^Y <dY>
+                   ^DISTANCE <DISTANCE> < 50)
+   (<il> ^CREATURE.TARGET <target>)
+   (<target> ^Red <tRedAmmount> <= 0
+             ^Green <tGreenAmmount> <= 0
+             ^Blue <tBlueAmmount> <= 0
+             ^Yellow <tYellowAmmount> <= 0
+             ^Magenta <tMagentaAmmount> <= 0
+             ^White <tWhiteAmmount> <= 0)
+-->
+   (<s> ^operator <o> +)
+   (<o> ^name deliver)
+   (write (crlf) | propose*deliver |)}
+
+sp {apply*deliver
+   (state <s> ^operator <o>
+              ^io <io>)
+   (<io> ^output-link <ol>)
+   (<o> ^name deliver)
+  -(<ol> ^DELIVER <somewhere>)
+-->
+   (<ol> ^DELIVER <command>)
+   (<ol> ^STOP <command>) # Stop creature right after delivering.
+   (write (crlf) | apply*deliver |)}
+
+   sp {apply*deliver*remove
+   (state <s> ^operator.name goToDeliverySpot
+            ^io.output-link <ol>)
+   (<ol> ^DELIVER <deliver>)
+   (<ol> ^STOP <stop>)
+   (<deliver> ^status complete)
+   (<stop> ^status complete)
+-->
+   (<ol> ^DELIVER <deliver> -)
+   (<ol> ^STOP <stop> -)
+   (write (crlf) | apply*deliver*remove |)}

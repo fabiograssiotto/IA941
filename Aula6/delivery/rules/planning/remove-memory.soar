@@ -1,0 +1,51 @@
+################ REMOVE ENTITIES ###################################
+# This operator will make the agent remove from memory entities that
+# are not present anymore in the visual field. This may happen if the
+# entity is collected by another creature.
+sp {propose*remove*memory
+   (state <s> ^name planning
+              ^io.input-link <il>)
+   (<il> ^CREATURE.MEMORY <memory>)
+   (<memory> ^ENTITY <memEntity>) # There is one entity in memory...
+   (<memEntity> ^NAME <entityName>)
+   (<il> ^CREATURE.SENSOR <sensor>)
+   (<sensor> ^VISUAL <visual>)
+   (<visual> ^ENTITY <entity>)
+  -(<entity> ^NAME <entityName>) # That is not on the visual field anymore.
+-->
+   (<s> ^operator <o> + =)
+   (<o> ^name remove_mem)
+   (<o> ^parameter <p>)
+   (<p> ^NAME <entityName>)
+   (write (crlf) | propose*remove*memory: name = | <entityName> )}
+
+# Remove the entity from memory
+sp {apply*remove*memory
+   (state <s> ^operator <o>
+              ^io.input-link <il>
+              ^io.output-link <ol>)
+   (<o> ^name remove_mem)
+   (<o> ^parameter.NAME <entityName>)
+   (<il> ^CREATURE <creature>)
+   (<creature> ^MEMORY <memory>)
+   (<memory> ^ENTITY <entity>)
+  -(<ol> ^REMOVE_MEM <something>)
+-->
+   (<memory> ^ENTITY <entity> -)
+   (<ol> ^REMOVE_MEM <entityName>) # Remove entity from memory
+   (write (crlf) | apply*remove*memory |)
+   (write (crlf) | thing to remove: | <entityName>)}
+
+# Apply*remove*remove:
+# If the remove operator is selected,
+# and there is a completed get command on the output link,
+# then remove that command.   
+sp {apply*remove*memory*remove
+    (state <s> ^operator <o>            
+               ^io.output-link <out>)
+    (<o> ^name remove_mem)
+    (<o> ^parameter.name <jewelName>)
+    (<out> ^REMOVE_MEM <remove>)
+    (<remove> ^status complete)
+-->
+    (<out> ^REMOVE_MEM <remove> -)}  

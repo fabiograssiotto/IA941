@@ -15,9 +15,8 @@ E:\Development\Git\IA941\Aula9\DemoClarion\ClarionApp\obj\Release\ClarionApp.csp
 E:\Development\Git\IA941\Aula9\DemoClarion\ClarionApp\obj\Release\ClarionApp.csproj.CoreCompileInputs.cache
 E:\Development\Git\IA941\Aula9\DemoClarion\ClarionApp\obj\Release\ClarionApp.csproj.CopyComplete
 E:\Development\Git\IA941\Aula9\DemoClarion\ClarionApp\obj\Release\ClarionApp.exe
-E:\Development\Git\IA941\Aula10\DemoClarion\ClarionApp\obj\Release\ClarionApp.csprojResolveAssemblyReference.cache
-E:\Development\Git\IA941\Aula10\DemoClarion\ClarionApp\obj\Release\ClarionApp.csproj.CoreCompileInputs.cache
-E:\Development\Git\IA941\Aula10\DemoClarion\ClarionApp\obj\Release\ClarionApp.exe
+E:\Development\Git\IA941\Aula10\delivery\DemoClarion\Win\ClarionApp.exe.config
+E:\Development\Git\IA941\Aula10\delivery\DemoClarion\Win\ClarionApp.exe
 E:\Development\Git\IA941\Aula10\DemoClarion\ClarionApp\bin\Release\ClarionApp.exe.config
 E:\Development\Git\IA941\Aula10\DemoClarion\ClarionApp\bin\Release\ClarionApp.exe
 E:\Development\Git\IA941\Aula10\DemoClarion\ClarionApp\bin\Release\atk-sharp.dll
@@ -31,4 +30,7 @@ E:\Development\Git\IA941\Aula10\DemoClarion\ClarionApp\bin\Release\atk-sharp.pdb
 E:\Development\Git\IA941\Aula10\DemoClarion\ClarionApp\bin\Release\gdk-sharp.pdb
 E:\Development\Git\IA941\Aula10\DemoClarion\ClarionApp\bin\Release\glib-sharp.pdb
 E:\Development\Git\IA941\Aula10\DemoClarion\ClarionApp\bin\Release\pango-sharp.pdb
+E:\Development\Git\IA941\Aula10\DemoClarion\ClarionApp\obj\Release\ClarionApp.csprojResolveAssemblyReference.cache
+E:\Development\Git\IA941\Aula10\DemoClarion\ClarionApp\obj\Release\ClarionApp.csproj.CoreCompileInputs.cache
 E:\Development\Git\IA941\Aula10\DemoClarion\ClarionApp\obj\Release\ClarionApp.csproj.CopyComplete
+E:\Development\Git\IA941\Aula10\DemoClarion\ClarionApp\obj\Release\ClarionApp.exe

@@ -47,11 +47,8 @@ namespace ClarionApp
                     
                     ws.SendCreateLeaflet();
 
-                    // Create entities 
-                    if (!GlobalVars.competitionMode)
-                    {
-                        CreateEntities();
-                    }
+                    // Create entities
+                    CreateEntities();
 
                     if (!String.IsNullOrWhiteSpace(creatureId))
                     {
@@ -88,7 +85,15 @@ namespace ClarionApp
         {
             // Create a set of jewels in the environment
             Random rnd = new Random();
-            for (int i = 0; i < 50; i++)
+            int numJewels = 0;
+            if (GlobalVars.competitionMode)
+            {
+                numJewels = 25;
+            } else
+            {
+                numJewels = 50;
+            }
+            for (int i = 0; i < numJewels; i++)
             {
                 // Randomly select color and position.
                 int color = rnd.Next(0, 6);

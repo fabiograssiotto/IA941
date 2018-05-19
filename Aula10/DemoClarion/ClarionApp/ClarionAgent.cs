@@ -323,9 +323,11 @@ namespace ClarionApp
                     break;
 				case CreatureActions.DELIVER:
 					// Deliver jewels
-					worldServer.SendDeliver (creatureId, leaflet1Id);
-					worldServer.SendDeliver (creatureId, leaflet2Id);
-					worldServer.SendDeliver (creatureId, leaflet3Id);
+					worldServer.SendDeliver(creatureId, leaflet1Id);
+					worldServer.SendDeliver(creatureId, leaflet2Id);
+					worldServer.SendDeliver(creatureId, leaflet3Id);
+                    worldServer.SendStopCreature(creatureId);
+                    // Delete the Agent
                     Abort(true);
 					break;
                 default:

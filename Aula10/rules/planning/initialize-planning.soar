@@ -12,8 +12,6 @@ sp {apply*initialize-planning
               ^io.input-link.CREATURE <creature>)
    (<op> ^name init)
 -->
-   (<s> ^name planning
-        ^deliverySpot <deliverySpot>)
+   (<s> ^name planning)
    (<creature> ^INITIALIZED 1)
-   (<deliverySpot> ^X 0 ^Y 0)
    (write (crlf) | apply*initialize*planning |)}

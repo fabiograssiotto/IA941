@@ -1,0 +1,46 @@
+################ EAT FOOD ###################################
+# This operator will make the agent eat food.
+sp {propose*eat
+   (state <s> ^name planning
+              ^io.input-link <il>)
+   (<il> ^CREATURE.SENSOR <sensor>)
+   (<sensor> ^VISUAL <visual>)
+   (<visual> ^ENTITY <entity>)
+   (<entity> ^NAME <entityName>)
+   (<entity> ^DISTANCE <DISTANCE> < 50)
+   (<entity> ^TYPE FOOD)
+-->
+   (<s> ^operator <o> +)
+   (<o> ^name eat)
+   (<o> ^parameter <p>)
+   (<p> ^NAME <entityName>)
+   (<p> ^DISTANCE <DISTANCE>)
+   (write (crlf) | propose*eat: name = | <entityName> | distance = | <DISTANCE>)}
+
+# Eat food
+sp {apply*eat
+   (state <s> ^operator <o>
+              ^io.input-link <il>
+              ^io.output-link <ol>)
+   (<o> ^name eat)
+   (<o> ^parameter.NAME <entityName>)
+  -(<ol> ^EAT <something>)
+-->
+    (<ol> ^EAT <command>)
+    (<command> ^Name <entityName>)
+    (write (crlf) | apply*eat |)
+    (write (crlf) | thing to eat: | <entityName>)}
+
+# Apply*eat*remove:
+# If the eat operator is selected,
+# and there is a completed eat command on the output link,
+# then remove that command.   
+sp {apply*eat*remove
+    (state <s> ^operator <o>            
+               ^io.output-link <out>)
+    (<o> ^name eat)
+    (<o> ^parameter.name <jewelName>)
+    (<out> ^EAT <move>)
+    (<move> ^status complete)
+-->
+    (<out> ^EAT <move> -)}  
