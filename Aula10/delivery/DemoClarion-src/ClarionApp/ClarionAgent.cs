@@ -25,6 +25,7 @@ namespace ClarionApp
 		GET_JEWEL,
         GET_FOOD,
         WANDER,
+		GO_TO_DELIVER,
         DELIVER
     }
 
@@ -55,14 +56,24 @@ namespace ClarionApp
         /// Constant that represents that there is at least one food item away from the creature
         /// </summary>
         private String DIMENSION_FOOD_AWAY = "FoodAway";
+        /// <summary>
+        /// Constant that represents that all jewels from the leaflet have been collected
+        /// </summary>
+        private String DIMENSION_ALL_JEWELS_COLLECTED = "AllJewelsCollected";
+        /// <summary>
+        /// Constant that represents that the creature can deliver all jewels
+        /// </summary>
+        private String DIMENSION_CREATURE_CAN_DELIVER = "CreatureCanDeliver";
 
         /// <summary>
         /// Activation Levels for the sensory information
         /// </summary>
-        private double JEWEL_AHEAD_ACT_VAL = 1.0;
-        private double JEWEL_AWAY_ACT_VAL = 0.9;
-        private double FOOD_AHEAD_ACT_VAL = 0.8;
-        private double FOOD_AWAY_ACT_VAL = 0.6;
+        private double CREATURE_CAN_DELIVER_ACT_VAL = 1.0;
+        private double ALL_JEWELS_COLLECTED_ACT_VAL = 0.9;
+        private double JEWEL_AHEAD_ACT_VAL = 0.8;
+        private double JEWEL_AWAY_ACT_VAL = 0.7;
+        private double FOOD_AHEAD_ACT_VAL = 0.6;
+        private double FOOD_AWAY_ACT_VAL = 0.5;
         private double WALL_AHEAD_ACT_VAL = 0.3;
         private double MIN_ACT_VAL = 0.0;
 
@@ -102,25 +113,33 @@ namespace ClarionApp
 
         #region Perception Input
         /// <summary>
-        /// Perception input to indicates a wall ahead
+        /// Perception input to indicate a wall ahead
         /// </summary>
 		private DimensionValuePair inputWallAhead;
 		/// <summary>
-		/// Perception input to indicates a jewel ahead
+		/// Perception input to indicate a jewel ahead
 		/// </summary>
 		private DimensionValuePair inputJewelAhead;
         /// <summary>
-		/// Perception input to indicates a food item ahead
+		/// Perception input to indicate a food item ahead
 		/// </summary>
 		private DimensionValuePair inputFoodAhead;
         /// <summary>
-		/// Perception input to indicates a jewel away
+		/// Perception input to indicate a jewel away
 		/// </summary>
 		private DimensionValuePair inputJewelAway;
         /// <summary>
-		/// Perception input to indicates a food item away
+		/// Perception input to indicate a food item away
 		/// </summary>
 		private DimensionValuePair inputFoodAway;
+        /// <summary>
+		/// Perception input to indicate all jewel items are collected.
+		/// </summary>
+		private DimensionValuePair inputAllJewelsCollected;
+        /// <summary>
+		/// Perception input to indicate delivery can be done.
+		/// </summary>
+		private DimensionValuePair inputCreatureCanDeliver;
 
         #endregion
 
@@ -153,6 +172,10 @@ namespace ClarionApp
         /// Output action that makes the agent go to the delivery spot.
         /// </summary>
 		private ExternalActionChunk outputGoToDeliverySpot;
+		/// <summary>
+		/// Output action that makes the agent deliver the jewels.
+		/// </summary>
+		private ExternalActionChunk outputDoDelivery;
         #endregion
 
         // Target jewels/food items
@@ -162,8 +185,14 @@ namespace ClarionApp
         Thing foodToGoTo = null;
         Thing deliverySpot = null;
 
+		// Leaflet ids
+		String leaflet1Id = null;
+		String leaflet2Id = null;
+		String leaflet3Id = null;
+
         // To indicate we are done.
-        Boolean allJewelsCollected = false;
+        //Boolean allJewelsCollected = false;
+		//Boolean reachedDeliverySpot = false;
         #endregion
 
         #region Constructor
@@ -189,6 +218,8 @@ namespace ClarionApp
             inputFoodAhead = World.NewDimensionValuePair(SENSOR_VISUAL_DIMENSION, DIMENSION_FOOD_AHEAD);
             inputJewelAway = World.NewDimensionValuePair(SENSOR_VISUAL_DIMENSION, DIMENSION_JEWEL_AWAY);
             inputFoodAway = World.NewDimensionValuePair(SENSOR_VISUAL_DIMENSION, DIMENSION_FOOD_AWAY);
+            inputAllJewelsCollected = World.NewDimensionValuePair(SENSOR_VISUAL_DIMENSION, DIMENSION_ALL_JEWELS_COLLECTED);
+            inputCreatureCanDeliver = World.NewDimensionValuePair(SENSOR_VISUAL_DIMENSION, DIMENSION_CREATURE_CAN_DELIVER);
 
             // Initialize Output actions
             outputRotateClockwise = World.NewExternalActionChunk(CreatureActions.ROTATE_CLOCKWISE.ToString());            
@@ -197,7 +228,8 @@ namespace ClarionApp
             outputGoToJewel = World.NewExternalActionChunk(CreatureActions.GO_TO_JEWEL.ToString());
             outputGoToFood = World.NewExternalActionChunk(CreatureActions.GO_TO_FOOD.ToString());
             outputWander = World.NewExternalActionChunk(CreatureActions.WANDER.ToString());
-            outputGoToDeliverySpot = World.NewExternalActionChunk(CreatureActions.DELIVER.ToString());
+            outputGoToDeliverySpot = World.NewExternalActionChunk(CreatureActions.GO_TO_DELIVER.ToString());
+			outputDoDelivery = World.NewExternalActionChunk(CreatureActions.DELIVER.ToString ());
 
             //Create thread to simulation
             runThread = new Thread(CognitiveCycle);
@@ -272,24 +304,32 @@ namespace ClarionApp
 					break;
                 case CreatureActions.GET_FOOD:
                     worldServer.SendEatIt(creatureId, foodToGet.Name);
-                    //worldServer.SendSackIt(creatureId, foodToGet.Name);
                     break;
                 case CreatureActions.GO_TO_JEWEL:
                     worldServer.SendSetAngle(creatureId, 0, 0, prad);
-                    worldServer.SendSetGoTo(creatureId, 1, 1, jewelToGoTo.X1, jewelToGoTo.Y1);
+                    worldServer.SendSetGoTo(creatureId, 2, 2, jewelToGoTo.X1, jewelToGoTo.Y1);
                     break;
                 case CreatureActions.GO_TO_FOOD:
                     worldServer.SendSetAngle(creatureId, 0, 0, prad);
-                    worldServer.SendSetGoTo(creatureId, 1, 1, foodToGoTo.X1, foodToGoTo.Y1);
+                    worldServer.SendSetGoTo(creatureId, 2, 2, foodToGoTo.X1, foodToGoTo.Y1);
                     break;
                 case CreatureActions.WANDER:
                     worldServer.SendSetAngle(creatureId, 2, -2, 2);
                     break;
-                case CreatureActions.DELIVER:
+                case CreatureActions.GO_TO_DELIVER:
                     // Send creature to the delivery spot.
                     worldServer.SendSetAngle(creatureId, 0, 0, prad);
-                    worldServer.SendSetGoTo(creatureId, 1, 1, deliverySpot.X1, deliverySpot.Y1);
+                    worldServer.SendSetGoTo(creatureId, 2, 2, deliverySpot.X1, deliverySpot.Y1);
                     break;
+				case CreatureActions.DELIVER:
+					// Deliver jewels
+					worldServer.SendDeliver(creatureId, leaflet1Id);
+					worldServer.SendDeliver(creatureId, leaflet2Id);
+					worldServer.SendDeliver(creatureId, leaflet3Id);
+                    worldServer.SendStopCreature(creatureId);
+                    // Delete the Agent
+                    Abort(true);
+					break;
                 default:
 			    break;
 				}
@@ -368,6 +408,14 @@ namespace ClarionApp
             // Commit this rule to Agent (in the ACS)
             CurrentAgent.Commit(ruleGoToDeliverySpot);
 
+			// Create Rule To Deliver Jewels
+			SupportCalculator deliverSupportCalculator = FixedRuleToDeliver;
+			FixedRule ruleDeliver = AgentInitializer.InitializeActionRule(CurrentAgent, FixedRule.Factory, outputDoDelivery, 
+				deliverSupportCalculator);
+
+			// Commit this rule to Agent (in the ACS)
+			CurrentAgent.Commit(ruleDeliver);
+
             // Disable Rule Refinement
             CurrentAgent.ACS.Parameters.PERFORM_RER_REFINEMENT = false;
 
@@ -404,7 +452,7 @@ namespace ClarionApp
             int targetRed, targetGreen, targetBlue, targetYellow, targetMagenta, targetWhite;
             Creature c = (Creature)listOfThings.Where(item => (item.CategoryId == Thing.CATEGORY_CREATURE)).First();
 
-            updateSackAndTarget(listOfThings, c, out targetRed, out targetGreen, out targetBlue, 
+            Sack s = updateSackAndTarget(listOfThings, c, out targetRed, out targetGreen, out targetBlue, 
                                 out targetYellow, out targetMagenta, out targetWhite);
 
             // Set up initial activation levels.
@@ -413,6 +461,8 @@ namespace ClarionApp
             double foodAheadActivationValue = MIN_ACT_VAL;
             double jewelAwayActivationValue = MIN_ACT_VAL;
             double foodAwayActivationValue = MIN_ACT_VAL;
+            double allJewelsCollectedActivationValue = MIN_ACT_VAL;
+            double creatureCanDeliverActivationValue = MIN_ACT_VAL;
 
             // Loop through the list of things in the environment.
             // First, handle close objects.
@@ -432,6 +482,8 @@ namespace ClarionApp
                             jewelToGet = thing;
                             break;
                         case Thing.categoryPFOOD:
+						case Thing.CATEGORY_NPFOOD:
+						case Thing.CATEGORY_FOOD:
                             foodAheadActivationValue = FOOD_AHEAD_ACT_VAL;
                             foodToGet = thing;
                             break;
@@ -483,11 +535,13 @@ namespace ClarionApp
             if (targetRed <= 0 && targetGreen <= 0 && targetBlue <= 0 &&
                 targetYellow <= 0 && targetMagenta <= 0 && targetWhite <= 0)
             {
-                allJewelsCollected = true;
+                allJewelsCollectedActivationValue = ALL_JEWELS_COLLECTED_ACT_VAL;
+                Console.WriteLine("Go to delivery, all items collected");
             }
 
             // And the closest food to go to, if required.
-            IEnumerable<Thing> foods = listOfThings.Where(item => (item.CategoryId == Thing.categoryPFOOD && item.DistanceToCreature > 50));
+            IEnumerable<Thing> foods = listOfThings.Where(item => (item.CategoryId == Thing.categoryPFOOD ||
+				item.CategoryId == Thing.CATEGORY_FOOD || item.CategoryId == Thing.CATEGORY_NPFOOD && item.DistanceToCreature > 50));
             if (foods.Any() && c.Fuel < 400)
             {
                 foodAwayActivationValue = FOOD_AWAY_ACT_VAL;
@@ -495,22 +549,33 @@ namespace ClarionApp
                 Console.WriteLine("Food to go to: " + foodToGoTo.Name);
             }
 
+			// Check if at the delivery spot with jewels to deliver and set activation for delivery.
+			if (c.X1 == 0 && c.X2 == 0 && s != null &&
+               ((s.red_crystal >= 0) || (s.green_crystal >= 0) || (s.blue_crystal >= 0) ||
+                (s.yellow_crystal >= 0) || (s.magenta_crystal >= 0) || (s.white_crystal >= 0)))
+			{
+                creatureCanDeliverActivationValue = CREATURE_CAN_DELIVER_ACT_VAL;
+                Console.WriteLine("Creature can deliver jewels");
+			}
+				
             // Set up activation levels.
             si.Add(inputWallAhead, wallAheadActivationValue);
             si.Add(inputJewelAhead, jewelAheadActivationValue);
             si.Add(inputFoodAhead, foodAheadActivationValue);
             si.Add(inputJewelAway, jewelAwayActivationValue);
             si.Add(inputFoodAway, foodAwayActivationValue);
+            si.Add(inputAllJewelsCollected, allJewelsCollectedActivationValue);
+            si.Add(inputCreatureCanDeliver, creatureCanDeliverActivationValue);
 
             return si;
         }
 
-        private void updateSackAndTarget(IList<Thing> listOfThings, Creature c, out int targetRed, 
+        private Sack updateSackAndTarget(IList<Thing> listOfThings, Creature c, out int targetRed, 
                                          out int targetGreen, out int targetBlue, out int targetYellow,
                                          out int targetMagenta, out int targetWhite)
         {
             // Get information from sack and leaflets.
-            Sack sack;
+            Sack sack = null;
             targetRed = 0;
             targetGreen = 0;
             targetBlue = 0;
@@ -528,6 +593,14 @@ namespace ClarionApp
                 targetYellow += l.getRequired("Yellow");
                 targetMagenta += l.getRequired("Magenta");
                 targetWhite += l.getRequired("White");
+
+				if (n == 0) {
+					leaflet1Id = l.leafletID.ToString();
+				} else if (n == 1) {
+					leaflet2Id = l.leafletID.ToString();
+				} else {
+					leaflet3Id = l.leafletID.ToString();
+				}
                 mind.updateLeaflet(n, l);
                 n++;
             }
@@ -542,6 +615,7 @@ namespace ClarionApp
                 targetMagenta -= sack.magenta_crystal;
                 targetWhite -= sack.white_crystal;
             }
+            return sack;
         }
 
         #endregion
@@ -573,14 +647,12 @@ namespace ClarionApp
         private double FixedRuleToGoToDeliverySpot(ActivationCollection currentInput, Rule target)
         {
             // Check if all jewels collected.
-            if (allJewelsCollected)
-            {
-                return 1.0;
-            }
-            else
-            {
-                return 0.0;
-            }
+            return ((currentInput.Contains(inputAllJewelsCollected, ALL_JEWELS_COLLECTED_ACT_VAL))) ? 1.0 : 0.0;
+        }
+
+		private double FixedRuleToDeliver(ActivationCollection currentInput, Rule target)
+		{
+            return ((currentInput.Contains(inputCreatureCanDeliver, CREATURE_CAN_DELIVER_ACT_VAL))) ? 1.0 : 0.0;
         }
 
         private double FixedRuleToGetJewel(ActivationCollection currentInput, Rule target)

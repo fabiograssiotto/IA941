@@ -664,6 +664,46 @@ namespace ClarionApp
             return returnDic;
         }
 
+		// Code to deliver jewels.
+		public string SendDeliver(string creatureId, string leafletId)
+		{
+			String response = String.Empty;
+
+			try
+			{
+				// Prepare the message
+				StringBuilder builder = new StringBuilder();
+				builder.Append("deliver ");
+				builder.Append(creatureId);
+				builder.Append(" ");
+				builder.Append(leafletId);
+
+				// Send Message
+				SendMessage(builder.ToString());
+
+				// Read the response
+				response = ReadMessage();
+			}
+			catch (WorldServerConnectionError connEx)
+			{
+				throw connEx;
+			}
+			catch (WorldServerSendError sendEx)
+			{
+				throw sendEx;
+			}
+			catch (WorldServerReadError readEx)
+			{
+				throw readEx;
+			}
+			catch (Exception e)
+			{
+				throw new WorldServerSendError("Error while sending message", e);
+			}
+
+			return response;
+		}
+
 		/// <summary>
 		/// Send GetSack Command
 		/// </summary>
