@@ -6,3 +6,4 @@ nbdist/
 .nb-gradle/
 *.so
 *~
+/Aula12/exampleProjects/basicAgentExercises/nbproject/private/

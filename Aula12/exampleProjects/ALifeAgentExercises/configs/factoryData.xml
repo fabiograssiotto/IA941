@@ -114,6 +114,12 @@
             <associatedmodule>SensoryMemory</associatedmodule>
             <associatedmodule>PerceptualAssociativeMemory</associatedmodule>
         </task>
+        <task name="BadHealthDetector">
+            <class>alifeagent.featuredetectors.BadHealthDetector</class>
+            <ticksperrun>3</ticksperrun>
+            <associatedmodule>SensoryMemory</associatedmodule>
+            <associatedmodule>PerceptualAssociativeMemory</associatedmodule>
+        </task>
         <task name="FairHealthDetector">
             <class>alifeagent.featuredetectors.FairHealthDetector</class>
             <ticksperrun>3</ticksperrun>

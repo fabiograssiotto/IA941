@@ -107,6 +107,12 @@
 			<param name="backgroundColor" type="int">-1</param>
 			<param name="node" type="string">square</param>
 		</task>
+                <task name="ScreenWhiteDetector">
+			<class>myagent.featuredetectors.WhiteBgFeatureDetector</class>
+			<ticksperrun>5</ticksperrun>
+			<associatedmodule>SensoryMemory</associatedmodule>
+			<associatedmodule>PerceptualAssociativeMemory</associatedmodule>
+		</task>
 		<task name="BasicAttentionCodelet">
 			<class>edu.memphis.ccrg.lida.attentioncodelets.BasicAttentionCodelet
 			</class>
