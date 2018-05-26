@@ -1,3 +1,9 @@
 [submodule "Aula11/lida-framework"]
 	path = Aula11/lida-framework
 	url = https://github.com/CognitiveComputingResearchGroup/lida-framework.git
+[submodule "Aula13/ws3d"]
+	path = Aula13/ws3d
+	url = https://github.com/CST-Group/ws3d
+[submodule "Aula13/WS3DProxy"]
+	path = Aula13/WS3DProxy
+	url = https://github.com/CST-Group/WS3DProxy
