@@ -64,7 +64,8 @@ public class Environment extends EnvironmentImpl {
                 // @param type 0-Red 1-Green 2-Blue 3-Yellow 4-Magenta 5-White
                 // @param x abscissa of the location of the brick
                 // @param y ordinate of the location of the brick
-                World.createBrick(color, x1, y1, x1 + xDim, y1 + yDim);
+                //World.createBrick(color, x1, y1, x1 + xDim, y1 + yDim);
+                World.createBrick(color, x1, y1, x1 + 10, y1 + 10);
             }
 
             Thread.sleep(4000);
@@ -155,7 +156,7 @@ public class Environment extends EnvironmentImpl {
                 food = thing;
             } else if (brick == null
                     && thing.getCategory() == Constants.categoryBRICK
-                    && creature.calculateDistanceTo(thing) <= 50 /*Constants.OFFSET*/) {
+                    && creature.calculateDistanceTo(thing) <= 20 /*Constants.OFFSET*/) {
                 // Identifies bricks
                 brick = thing;
             }
@@ -170,7 +171,7 @@ public class Environment extends EnvironmentImpl {
 
     private void performAction(String currentAction) {
         try {
-            //System.out.println("Action: "+currentAction);
+            System.out.println("Action: " + currentAction);
             switch (currentAction) {
                 case "rotate":
                     creature.rotate(1.0);
@@ -204,7 +205,16 @@ public class Environment extends EnvironmentImpl {
                     break;
                 case "avoidBrick":
                     if (brick != null) {
-                        creature.rotate(-2.0);
+                        // Stop creature
+                        creature.move(0.0, 0.0, 0.0);
+                        // And move further from brick wall
+                        double crX = creature.getPosition().getX();
+                        double crY = creature.getPosition().getY();
+                        double dx = brick.getX1() - crX;
+                        double dy = brick.getY1() - crY;
+                        //creature.moveto(3.0, crX + dx, crY + dy);
+                        creature.moveto(3.0, brick.getX2(), brick.getY2() + 100);
+
                     }
                     break;
                 default:
