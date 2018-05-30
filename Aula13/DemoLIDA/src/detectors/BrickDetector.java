@@ -19,9 +19,9 @@ public class BrickDetector extends BasicDetectionAlgorithm {
 
     @Override
     public double detect() {
-        Thing block = (Thing) sensoryMemory.getSensoryContent(modality, detectorParams);
+        Thing brick = (Thing) sensoryMemory.getSensoryContent(modality, detectorParams);
         double activation = 0.0;
-        if (block != null) {
+        if (brick != null) {
             activation = 1.0;
         }
         return activation;

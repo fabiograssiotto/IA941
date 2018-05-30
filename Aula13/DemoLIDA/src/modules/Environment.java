@@ -2,6 +2,7 @@ package modules;
 
 import edu.memphis.ccrg.lida.environment.EnvironmentImpl;
 import edu.memphis.ccrg.lida.framework.tasks.FrameworkTaskImpl;
+import static java.lang.Math.abs;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +17,8 @@ import ws3dproxy.util.Constants;
 public class Environment extends EnvironmentImpl {
 
     private static final int DEFAULT_TICKS_PER_RUN = 100;
+    private static final int DISTANCE_TO_BRICK = 80;
+    private static final int BRICK_MANOUVER_DIST = 80;
     private int ticksPerRun;
     private WS3DProxy proxy;
     private Creature creature;
@@ -47,25 +50,31 @@ public class Environment extends EnvironmentImpl {
         try {
             System.out.println("Reseting the WS3D World ...");
             proxy.getWorld().reset();
-            creature = proxy.createCreature(100, 100, 0);
+
+            int crX = 100;
+            int crY = 100;
+            creature = proxy.createCreature(crX, crY, 0);
+
             creature.start();
             System.out.println("Starting the WS3D Resource Generator ... ");
             World.grow(1);
 
-            // Randomly create some bricks around the environment.
+            // Create some bricks around the environment.
             Random rand = new Random();
-            for (int i = 0; i < 10; i++) {
-                int color = rand.nextInt(6);
-                int x1 = rand.nextInt(World.getInstance().getEnvironmentWidth());
-                int y1 = rand.nextInt(World.getInstance().getEnvironmentHeight());
-                int xDim = 20 + rand.nextInt(5) * 10;
-                int yDim = 20 + rand.nextInt(5) * 10;
+            for (int x = 0; x < World.getInstance().getEnvironmentWidth(); x = x + 100) {
+                for (int y = 0; y < World.getInstance().getEnvironmentHeight(); y = y + 100) {
 
-                // @param type 0-Red 1-Green 2-Blue 3-Yellow 4-Magenta 5-White
-                // @param x abscissa of the location of the brick
-                // @param y ordinate of the location of the brick
-                //World.createBrick(color, x1, y1, x1 + xDim, y1 + yDim);
-                World.createBrick(color, x1, y1, x1 + 10, y1 + 10);
+                    // Valid bricks are at least at a distance of 50 units from the creature in
+                    // the x and y axis. We do that so there are no problems for maneuvering around
+                    // in the environment.
+                    if (abs(crX - x) > 50 && abs(crY - y) > 50) {
+                        // coordinates are ok. Discard randomly most of them so there is no overcrowding.
+                        int r = rand.nextInt(4);
+                        if (r == 0) {
+                            World.createBrick(rand.nextInt(6), x, y, x + 10, y + 10);
+                        }
+                    }
+                }
             }
 
             Thread.sleep(4000);
@@ -126,10 +135,15 @@ public class Environment extends EnvironmentImpl {
         jewel = null;
         leafletJewel = null;
         thingAhead.clear();
+        brick = null;
 
         for (Thing thing : creature.getThingsInVision()) {
-            if (creature.calculateDistanceTo(thing) <= Constants.OFFSET
-                    && thing.getCategory() != Constants.categoryBRICK) {
+            if (thing.getCategory() == Constants.categoryBRICK
+                    && creature.calculateDistanceTo(thing) <= DISTANCE_TO_BRICK) {
+                // Identifies we are close to a brick.
+                brick = thing;
+                break;
+            } else if (creature.calculateDistanceTo(thing) <= Constants.OFFSET) {
                 // Identifica o objeto proximo
                 thingAhead.add(thing);
                 break;
@@ -154,11 +168,6 @@ public class Environment extends EnvironmentImpl {
 
                 // Identifica qualquer tipo de comida
                 food = thing;
-            } else if (brick == null
-                    && thing.getCategory() == Constants.categoryBRICK
-                    && creature.calculateDistanceTo(thing) <= 20 /*Constants.OFFSET*/) {
-                // Identifies bricks
-                brick = thing;
             }
         }
     }
@@ -205,16 +214,30 @@ public class Environment extends EnvironmentImpl {
                     break;
                 case "avoidBrick":
                     if (brick != null) {
-                        // Stop creature
-                        creature.move(0.0, 0.0, 0.0);
-                        // And move further from brick wall
+                        // The action here should be to manouver the creature to avoid the wall.
+
                         double crX = creature.getPosition().getX();
                         double crY = creature.getPosition().getY();
-                        double dx = brick.getX1() - crX;
-                        double dy = brick.getY1() - crY;
-                        //creature.moveto(3.0, crX + dx, crY + dy);
-                        creature.moveto(3.0, brick.getX2(), brick.getY2() + 100);
 
+                        double targetX, targetY;
+
+                        // Check coordinates to drive the creature around the bricks in the environment.
+                        if (crY >= brick.getY2() || (crY >= brick.getY1() && crY <= brick.getY2())) {
+                            // creature is below the brick.
+                            // manouver from under it.
+                            targetY = brick.getY2() + BRICK_MANOUVER_DIST;
+                        } else {
+                            // creature is above the brick.
+                            targetY = brick.getY1() - BRICK_MANOUVER_DIST;
+                        }
+
+                        if (crX >= brick.getX2() || (crX >= brick.getX1() && crX <= brick.getX2())) {
+                            targetX = brick.getX2() + BRICK_MANOUVER_DIST;
+                        } else {
+                            targetX = brick.getX1() - BRICK_MANOUVER_DIST;
+                        }
+
+                        creature.moveto(3.0, targetX, targetY);
                     }
                     break;
                 default:
