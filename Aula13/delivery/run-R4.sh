@@ -1,6 +1,6 @@
 #!/bin/bash
 # Script to launch WordServer3d
 java -jar ws3d/WorldServer3D.jar &
+sleep 5
 # Script to launch DemoLIDA
-cd DemoLIDA
-java -jar DemoLIDA.jar &
+java -jar DemoLIDA/DemoLIDA.jar &
