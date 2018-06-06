@@ -1,0 +1,12 @@
+//************************************************************************
+// Tutorial for WS3DApp using CST
+//
+//Author: Ricardo R. Gudwin
+//Date: October, 16th 2015
+//************************************************************************
+
+The full tutorial for using WS3DApp can now be read at:
+
+http://cst.fee.unicamp.br/tutorials/CoreModelTrail
+
+     
