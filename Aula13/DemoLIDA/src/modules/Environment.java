@@ -18,7 +18,7 @@ public class Environment extends EnvironmentImpl {
 
     private static final int DEFAULT_TICKS_PER_RUN = 100;
     private static final int DISTANCE_TO_BRICK = 80;
-    private static final int BRICK_MANOUVER_DIST = 80;
+    private static final int BRICK_MANOUVER_DIST = 50;
     private int ticksPerRun;
     private WS3DProxy proxy;
     private Creature creature;
@@ -28,6 +28,7 @@ public class Environment extends EnvironmentImpl {
     private Thing leafletJewel;
     private String currentAction;
     private Thing brick;
+    private Object freespace;
 
     public Environment() {
         this.ticksPerRun = DEFAULT_TICKS_PER_RUN;
@@ -37,8 +38,10 @@ public class Environment extends EnvironmentImpl {
         this.jewel = null;
         this.thingAhead = new ArrayList<>();
         this.leafletJewel = null;
-        this.currentAction = "rotate";
+        //this.currentAction = "rotate";
+        this.currentAction = "doNothing";
         this.brick = null;
+        this.freespace = null;
     }
 
     @Override
@@ -57,8 +60,9 @@ public class Environment extends EnvironmentImpl {
 
             creature.start();
             System.out.println("Starting the WS3D Resource Generator ... ");
-            World.grow(1);
+            //World.grow(1);
 
+            if (true) {
             // Create some bricks around the environment.
             Random rand = new Random();
             for (int x = 0; x < World.getInstance().getEnvironmentWidth(); x = x + 100) {
@@ -70,11 +74,14 @@ public class Environment extends EnvironmentImpl {
                     if (abs(crX - x) > 50 && abs(crY - y) > 50) {
                         // coordinates are ok. Discard randomly most of them so there is no overcrowding.
                         int r = rand.nextInt(4);
-                        if (r == 0) {
-                            World.createBrick(rand.nextInt(6), x, y, x + 10, y + 10);
+                        if (r == 0 || r == 1) {
+                            int xDim = rand.nextInt(20);
+                            int yDim = rand.nextInt(20);
+                            World.createBrick(rand.nextInt(6), x, y, x + xDim, y + yDim);
                         }
                     }
                 }
+            }
             }
 
             Thread.sleep(4000);
@@ -100,7 +107,8 @@ public class Environment extends EnvironmentImpl {
 
     @Override
     public void resetState() {
-        currentAction = "rotate";
+        //currentAction = "rotate";
+        currentAction = "doNothing";
     }
 
     @Override
@@ -123,6 +131,9 @@ public class Environment extends EnvironmentImpl {
             case "brick":
                 requestedObject = brick;
                 break;
+            case "freespace":
+                requestedObject = freespace;
+                break;
             default:
                 break;
         }
@@ -136,6 +147,7 @@ public class Environment extends EnvironmentImpl {
         leafletJewel = null;
         thingAhead.clear();
         brick = null;
+        freespace = null;
 
         for (Thing thing : creature.getThingsInVision()) {
             if (thing.getCategory() == Constants.categoryBRICK
@@ -143,32 +155,11 @@ public class Environment extends EnvironmentImpl {
                 // Identifies we are close to a brick.
                 brick = thing;
                 break;
-            } else if (creature.calculateDistanceTo(thing) <= Constants.OFFSET) {
-                // Identifica o objeto proximo
-                thingAhead.add(thing);
-                break;
-            } else if (thing.getCategory() == Constants.categoryJEWEL) {
-                if (leafletJewel == null) {
-                    // Identifica se a joia esta no leaflet
-                    for (Leaflet leaflet : creature.getLeaflets()) {
-                        if (leaflet.ifInLeaflet(thing.getMaterial().getColorName())
-                                && leaflet.getTotalNumberOfType(thing.getMaterial().getColorName()) > leaflet.getCollectedNumberOfType(thing.getMaterial().getColorName())) {
-                            leafletJewel = thing;
-                            break;
-                        }
-                    }
-                } else {
-                    // Identifica a joia que nao esta no leaflet
-                    jewel = thing;
-                }
-            } else if (food == null && creature.getFuel() <= 300.0
-                    && (thing.getCategory() == Constants.categoryFOOD
-                    || thing.getCategory() == Constants.categoryPFOOD
-                    || thing.getCategory() == Constants.categoryNPFOOD)) {
-
-                // Identifica qualquer tipo de comida
-                food = thing;
-            }
+            } 
+        }
+        // In case that there are no bricks, we have free space.
+        if (brick == null) {
+            freespace  = new Object();
         }
     }
 
@@ -180,7 +171,7 @@ public class Environment extends EnvironmentImpl {
 
     private void performAction(String currentAction) {
         try {
-            //System.out.println("Action: " + currentAction);
+            System.out.println("Action: " + currentAction);
             switch (currentAction) {
                 case "rotate":
                     creature.rotate(1.0);
@@ -212,12 +203,26 @@ public class Environment extends EnvironmentImpl {
                     }
                     this.resetState();
                     break;
+                case "goToDestination":
+                    double destX, destY;
+                    destX = World.getInstance().getEnvironmentWidth();
+                    destY = World.getInstance().getEnvironmentHeight();
+                    creature.moveto(3.0, destX, destY);
+                    System.out.println("Action: " + currentAction + " x:" + destX + " y:" + destY);
+                    this.resetState();
+                    break;
+                case "doNothing":
+                    break;
                 case "avoidBrick":
+                    //creature.move(0.0, 0.0, 0.0);
                     if (brick != null) {
                         // The action here should be to manouver the creature to avoid the wall.
 
                         double crX = creature.getPosition().getX();
                         double crY = creature.getPosition().getY();
+                        double brY1 = brick.getY1();
+                        double brY2 = brick.getY2();
+                        
 
                         double targetX, targetY;
 
@@ -238,7 +243,9 @@ public class Environment extends EnvironmentImpl {
                         }
 
                         creature.moveto(3.0, targetX, targetY);
+                        System.out.println("Action: " + currentAction + " x:" + targetX + " y:" + targetY);
                     }
+                    this.resetState();
                     break;
                 default:
                     break;

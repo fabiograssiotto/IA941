@@ -15,6 +15,7 @@ public class SensoryMemory extends SensoryMemoryImpl {
     private List<Thing> thingAhead;
     private Thing leafletJewel;
     private Thing brick;
+    private Object freespace;
 
     public SensoryMemory() {
         this.sensorParam = new HashMap<>();
@@ -23,11 +24,13 @@ public class SensoryMemory extends SensoryMemoryImpl {
         this.thingAhead = new ArrayList<>();
         this.leafletJewel = null;
         this.brick = null;
+        this.freespace = null;
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public void runSensors() {
+        /*
         sensorParam.clear();
         sensorParam.put("mode", "food");
         food = (Thing) environment.getState(sensorParam);
@@ -39,10 +42,14 @@ public class SensoryMemory extends SensoryMemoryImpl {
         thingAhead = (List<Thing>) environment.getState(sensorParam);
         sensorParam.clear();
         sensorParam.put("mode", "leafletJewel");
-        leafletJewel = (Thing) environment.getState(sensorParam);
+        leafletJewel = (Thing) environment.getState(sensorParam);*/
         sensorParam.clear();
         sensorParam.put("mode", "brick");
         brick = (Thing) environment.getState(sensorParam);
+        sensorParam.clear();
+        sensorParam.put("mode", "freespace");
+        freespace = environment.getState(sensorParam);
+        
     }
 
     @Override
@@ -64,6 +71,9 @@ public class SensoryMemory extends SensoryMemoryImpl {
                 break;
             case "brick":
                 requestedObject = brick;
+                break;
+            case "freespace":
+                requestedObject = freespace;
                 break;
             default:
                 break;

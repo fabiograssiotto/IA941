@@ -106,6 +106,7 @@
             <associatedmodule>SensoryMemory</associatedmodule>
             <associatedmodule>PerceptualAssociativeMemory</associatedmodule>
         </task>
+        <!--
         <task name="FoodDetector">
             <class>detectors.FoodDetector</class>
             <ticksperrun>3</ticksperrun>
@@ -129,9 +130,15 @@
             <ticksperrun>3</ticksperrun>
             <associatedmodule>SensoryMemory</associatedmodule>
             <associatedmodule>PerceptualAssociativeMemory</associatedmodule>
-        </task>
+        </task>-->
         <task name="BrickDetector">
             <class>detectors.BrickDetector</class>
+            <ticksperrun>3</ticksperrun>
+            <associatedmodule>SensoryMemory</associatedmodule>
+            <associatedmodule>PerceptualAssociativeMemory</associatedmodule>
+        </task>
+        <task name="FreeSpaceDetector">
+            <class>detectors.FreeSpaceDetector</class>
             <ticksperrun>3</ticksperrun>
             <associatedmodule>SensoryMemory</associatedmodule>
             <associatedmodule>PerceptualAssociativeMemory</associatedmodule>
