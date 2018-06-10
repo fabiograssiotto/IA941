@@ -58,30 +58,32 @@ public class Environment extends EnvironmentImpl {
             int crY = 100;
             creature = proxy.createCreature(crX, crY, 0);
 
+            // set initial destination as the same as the creature position.
+            proxy.getWorld().setDestination(crX, crY);
             creature.start();
             System.out.println("Starting the WS3D Resource Generator ... ");
             //World.grow(1);
 
             if (true) {
-            // Create some bricks around the environment.
-            Random rand = new Random();
-            for (int x = 0; x < World.getInstance().getEnvironmentWidth(); x = x + 100) {
-                for (int y = 0; y < World.getInstance().getEnvironmentHeight(); y = y + 100) {
+                // Create some bricks around the environment.
+                Random rand = new Random();
+                for (int x = 0; x < World.getInstance().getEnvironmentWidth(); x = x + 100) {
+                    for (int y = 0; y < World.getInstance().getEnvironmentHeight(); y = y + 100) {
 
-                    // Valid bricks are at least at a distance of 50 units from the creature in
-                    // the x and y axis. We do that so there are no problems for maneuvering around
-                    // in the environment.
-                    if (abs(crX - x) > 50 && abs(crY - y) > 50) {
-                        // coordinates are ok. Discard randomly most of them so there is no overcrowding.
-                        int r = rand.nextInt(4);
-                        if (r == 0 || r == 1) {
-                            int xDim = rand.nextInt(20);
-                            int yDim = rand.nextInt(20);
-                            World.createBrick(rand.nextInt(6), x, y, x + xDim, y + yDim);
+                        // Valid bricks are at least at a distance of 50 units from the creature in
+                        // the x and y axis. We do that so there are no problems for maneuvering around
+                        // in the environment.
+                        if (abs(crX - x) > 50 && abs(crY - y) > 50) {
+                            // coordinates are ok. Discard randomly most of them so there is no overcrowding.
+                            int r = rand.nextInt(4);
+                            if (r == 0 || r == 1) {
+                                int xDim = rand.nextInt(20);
+                                int yDim = rand.nextInt(20);
+                                World.createBrick(rand.nextInt(6), x, y, x + xDim, y + yDim);
+                            }
                         }
                     }
                 }
-            }
             }
 
             Thread.sleep(4000);
@@ -155,11 +157,11 @@ public class Environment extends EnvironmentImpl {
                 // Identifies we are close to a brick.
                 brick = thing;
                 break;
-            } 
+            }
         }
         // In case that there are no bricks, we have free space.
         if (brick == null) {
-            freespace  = new Object();
+            freespace = new Object();
         }
     }
 
@@ -171,6 +173,7 @@ public class Environment extends EnvironmentImpl {
 
     private void performAction(String currentAction) {
         try {
+
             System.out.println("Action: " + currentAction);
             switch (currentAction) {
                 case "rotate":
@@ -204,11 +207,9 @@ public class Environment extends EnvironmentImpl {
                     this.resetState();
                     break;
                 case "goToDestination":
-                    double destX, destY;
-                    destX = World.getInstance().getEnvironmentWidth();
-                    destY = World.getInstance().getEnvironmentHeight();
-                    creature.moveto(3.0, destX, destY);
-                    System.out.println("Action: " + currentAction + " x:" + destX + " y:" + destY);
+                    int[] dest = proxy.getWorld().getDestination();
+                    System.out.println("Creature destination X: " + dest[0] + " Y: " + dest[1]);
+                    creature.moveto(3.0, dest[0], dest[1]);
                     this.resetState();
                     break;
                 case "doNothing":
@@ -222,7 +223,6 @@ public class Environment extends EnvironmentImpl {
                         double crY = creature.getPosition().getY();
                         double brY1 = brick.getY1();
                         double brY2 = brick.getY2();
-                        
 
                         double targetX, targetY;
 
