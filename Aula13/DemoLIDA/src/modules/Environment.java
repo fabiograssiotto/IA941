@@ -3,45 +3,42 @@ package modules;
 import edu.memphis.ccrg.lida.environment.EnvironmentImpl;
 import edu.memphis.ccrg.lida.framework.tasks.FrameworkTaskImpl;
 import static java.lang.Math.abs;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import pathfinding.Example;
 import ws3dproxy.WS3DProxy;
 import ws3dproxy.model.Creature;
-import ws3dproxy.model.Leaflet;
 import ws3dproxy.model.Thing;
 import ws3dproxy.model.World;
 import ws3dproxy.util.Constants;
+import view.CurrentActionFrame;
 
 public class Environment extends EnvironmentImpl {
 
     private static final int DEFAULT_TICKS_PER_RUN = 100;
     private static final int DISTANCE_TO_BRICK = 80;
-    private static final int BRICK_MANOUVER_DIST = 50;
+    private static final int BRICK_MANOUVER_DIST = 100;
     private int ticksPerRun;
     private WS3DProxy proxy;
     private Creature creature;
-    private Thing food;
-    private Thing jewel;
-    private List<Thing> thingAhead;
-    private Thing leafletJewel;
     private String currentAction;
     private Thing brick;
     private Object freespace;
+    final private CurrentActionFrame actionPane;
 
     public Environment() {
         this.ticksPerRun = DEFAULT_TICKS_PER_RUN;
         this.proxy = new WS3DProxy();
         this.creature = null;
-        this.food = null;
-        this.jewel = null;
-        this.thingAhead = new ArrayList<>();
-        this.leafletJewel = null;
         //this.currentAction = "rotate";
         this.currentAction = "doNothing";
         this.brick = null;
         this.freespace = null;
+
+        // Iniitalize Current Action Pane
+        this.actionPane = new CurrentActionFrame();
+        this.actionPane.setText(this.currentAction);
+        this.actionPane.setVisible(true);
     }
 
     @Override
@@ -77,14 +74,15 @@ public class Environment extends EnvironmentImpl {
                             // coordinates are ok. Discard randomly most of them so there is no overcrowding.
                             int r = rand.nextInt(4);
                             if (r == 0 || r == 1) {
-                                int xDim = rand.nextInt(20);
-                                int yDim = rand.nextInt(20);
-                                World.createBrick(rand.nextInt(6), x, y, x + xDim, y + yDim);
+                                World.createBrick(rand.nextInt(6), x, y, x + 10, y + 10);
                             }
                         }
                     }
                 }
             }
+
+            // Pathfinding
+            Example ex = new Example();
 
             Thread.sleep(4000);
             creature.updateState();
@@ -109,7 +107,6 @@ public class Environment extends EnvironmentImpl {
 
     @Override
     public void resetState() {
-        //currentAction = "rotate";
         currentAction = "doNothing";
     }
 
@@ -118,18 +115,6 @@ public class Environment extends EnvironmentImpl {
         Object requestedObject = null;
         String mode = (String) params.get("mode");
         switch (mode) {
-            case "food":
-                requestedObject = food;
-                break;
-            case "jewel":
-                requestedObject = jewel;
-                break;
-            case "thingAhead":
-                requestedObject = thingAhead;
-                break;
-            case "leafletJewel":
-                requestedObject = leafletJewel;
-                break;
             case "brick":
                 requestedObject = brick;
                 break;
@@ -144,10 +129,6 @@ public class Environment extends EnvironmentImpl {
 
     public void updateEnvironment() {
         creature.updateState();
-        food = null;
-        jewel = null;
-        leafletJewel = null;
-        thingAhead.clear();
         brick = null;
         freespace = null;
 
@@ -159,7 +140,7 @@ public class Environment extends EnvironmentImpl {
                 break;
             }
         }
-        // In case that there are no bricks, we have free space.
+        // In case that there are no bricks found in the visual memory, we have free space.
         if (brick == null) {
             freespace = new Object();
         }
@@ -169,6 +150,7 @@ public class Environment extends EnvironmentImpl {
     public void processAction(Object action) {
         String actionName = (String) action;
         currentAction = actionName.substring(actionName.indexOf(".") + 1);
+        actionPane.setText(currentAction);
     }
 
     private void performAction(String currentAction) {
@@ -176,44 +158,29 @@ public class Environment extends EnvironmentImpl {
 
             System.out.println("Action: " + currentAction);
             switch (currentAction) {
-                case "rotate":
-                    creature.rotate(1.0);
-                    //CommandUtility.sendSetTurn(creature.getIndex(), -1.0, -1.0, 3.0);
-                    break;
-                case "gotoFood":
-                    if (food != null) {
-                        creature.moveto(3.0, food.getX1(), food.getY1());
-                    }
-                    //CommandUtility.sendGoTo(creature.getIndex(), 3.0, 3.0, food.getX1(), food.getY1());
-                    break;
-                case "gotoJewel":
-                    if (leafletJewel != null) {
-                        creature.moveto(3.0, leafletJewel.getX1(), leafletJewel.getY1());
-                    }
-                    //CommandUtility.sendGoTo(creature.getIndex(), 3.0, 3.0, leafletJewel.getX1(), leafletJewel.getY1());
-                    break;
-                case "get":
-                    creature.move(0.0, 0.0, 0.0);
-                    //CommandUtility.sendSetTurn(creature.getIndex(), 0.0, 0.0, 0.0);
-                    if (thingAhead != null) {
-                        for (Thing thing : thingAhead) {
-                            if (thing.getCategory() == Constants.categoryJEWEL) {
-                                creature.putInSack(thing.getName());
-                            } else if (thing.getCategory() == Constants.categoryFOOD || thing.getCategory() == Constants.categoryNPFOOD || thing.getCategory() == Constants.categoryPFOOD) {
-                                creature.eatIt(thing.getName());
-                            }
-                        }
-                    }
-                    this.resetState();
-                    break;
-                case "goToDestination":
-                    int[] dest = proxy.getWorld().getDestination();
-                    System.out.println("Creature destination X: " + dest[0] + " Y: " + dest[1]);
-                    creature.moveto(3.0, dest[0], dest[1]);
-                    this.resetState();
-                    break;
                 case "doNothing":
                     break;
+                case "goToDestination": {
+                    // Check if creature is already at the destination point.
+                    int[] dest = proxy.getWorld().getDestination();
+                    int crX = (int) creature.getPosition().getX();
+                    int crY = (int) creature.getPosition().getY();
+
+                    double dist = Math.sqrt((crX - dest[0]) * (crX - dest[0]) + (crY - dest[1]) * (crY - dest[1]));
+                    System.out.println("Distance to destination: " + dist);
+                    if (dist > 50) {
+                        // only move if destination is far enough.
+                        System.out.println("Creature destination X: " + dest[0] + " Y: " + dest[1]);
+                        creature.start();
+                        creature.moveto(3.0, dest[0], dest[1]);
+                    } else {
+                        // No need to move.
+                        creature.stop();
+                        resetState();
+                        System.out.println("Creature at the destination");
+                    }
+                }
+                break;
                 case "avoidBrick":
                     //creature.move(0.0, 0.0, 0.0);
                     if (brick != null) {
@@ -221,25 +188,30 @@ public class Environment extends EnvironmentImpl {
 
                         double crX = creature.getPosition().getX();
                         double crY = creature.getPosition().getY();
+                        double brX1 = brick.getX1();
+                        double brX2 = brick.getX2();
                         double brY1 = brick.getY1();
                         double brY2 = brick.getY2();
 
                         double targetX, targetY;
 
                         // Check coordinates to drive the creature around the bricks in the environment.
-                        if (crY >= brick.getY2() || (crY >= brick.getY1() && crY <= brick.getY2())) {
-                            // creature is below the brick.
-                            // manouver from under it.
-                            targetY = brick.getY2() + BRICK_MANOUVER_DIST;
+                        if (crY <= brY1 && crX <= brX1) {
+                            // 1st quadrant: creature is above and to the left of the brick.
+                            targetX = (brX1 + brX2) / 2;
+                            targetY = brY1 - BRICK_MANOUVER_DIST;
+                        } else if (crY <= brY1 && crX >= brX2) {
+                            // 2nd quadrant: above and to the right of the brick
+                            targetX = (brX1 + brX2) / 2;
+                            targetY = brY1 - BRICK_MANOUVER_DIST;
+                        } else if (crY >= brY2 && crX <= brX1) {
+                            // 3rd quadrant: below and to the left of the brick
+                            targetX = (brX1 + brX2) / 2;
+                            targetY = brY2 + BRICK_MANOUVER_DIST;
                         } else {
-                            // creature is above the brick.
-                            targetY = brick.getY1() - BRICK_MANOUVER_DIST;
-                        }
-
-                        if (crX >= brick.getX2() || (crX >= brick.getX1() && crX <= brick.getX2())) {
-                            targetX = brick.getX2() + BRICK_MANOUVER_DIST;
-                        } else {
-                            targetX = brick.getX1() - BRICK_MANOUVER_DIST;
+                            // 4th: below and to the right of the brick.
+                            targetX = (brX1 + brX2) / 2;
+                            targetY = brY2 + BRICK_MANOUVER_DIST;
                         }
 
                         creature.moveto(3.0, targetX, targetY);

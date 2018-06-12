@@ -106,31 +106,6 @@
             <associatedmodule>SensoryMemory</associatedmodule>
             <associatedmodule>PerceptualAssociativeMemory</associatedmodule>
         </task>
-        <!--
-        <task name="FoodDetector">
-            <class>detectors.FoodDetector</class>
-            <ticksperrun>3</ticksperrun>
-            <associatedmodule>SensoryMemory</associatedmodule>
-            <associatedmodule>PerceptualAssociativeMemory</associatedmodule>
-        </task>
-        <task name="ThingAheadDetector">
-            <class>detectors.ThingAheadDetector</class>
-            <ticksperrun>3</ticksperrun>
-            <associatedmodule>SensoryMemory</associatedmodule>
-            <associatedmodule>PerceptualAssociativeMemory</associatedmodule>
-        </task>
-        <task name="LeafletJewelDetector">
-            <class>detectors.LeafletJewelDetector</class>
-            <ticksperrun>3</ticksperrun>
-            <associatedmodule>SensoryMemory</associatedmodule>
-            <associatedmodule>PerceptualAssociativeMemory</associatedmodule>
-        </task>
-        <task name="JewelDetector">
-            <class>detectors.JewelDetector</class>
-            <ticksperrun>3</ticksperrun>
-            <associatedmodule>SensoryMemory</associatedmodule>
-            <associatedmodule>PerceptualAssociativeMemory</associatedmodule>
-        </task>-->
         <task name="BrickDetector">
             <class>detectors.BrickDetector</class>
             <ticksperrun>3</ticksperrun>
