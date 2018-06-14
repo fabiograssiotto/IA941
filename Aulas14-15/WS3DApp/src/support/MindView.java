@@ -1,4 +1,4 @@
-/*****************************************************************************
+/** ***************************************************************************
  * Copyright 2007-2015 DCA-FEEC-UNICAMP
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,11 +12,10 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
+ *
  * Contributors:
  *    Klaus Raizer, Andre Paraense, Ricardo Ribeiro Gudwin
- *****************************************************************************/
-
+ **************************************************************************** */
 package support;
 
 import br.unicamp.cst.core.entities.MemoryObject;
@@ -31,21 +30,25 @@ import ws3dproxy.model.World;
 import ws3dproxy.util.Constants;
 
 class MVTimerTask extends TimerTask {
+
     MindView mv;
     boolean enabled = true;
-    
+
     public MVTimerTask(MindView mvi) {
         mv = mvi;
     }
-    
+
     public void run() {
-        if (enabled) mv.tick();
+        if (enabled) {
+            mv.tick();
+        }
     }
-    
+
     public void setEnabled(boolean value) {
         enabled = value;
     }
 }
+
 /**
  *
  * @author rgudwin
@@ -54,8 +57,9 @@ public class MindView extends javax.swing.JFrame {
 
     Timer t;
     List<MemoryObject> mol = new ArrayList<>();
-    int j=0;
+    int j = 0;
     Random r = new Random();
+
     /**
      * Creates new form NewJFrame
      */
@@ -63,20 +67,20 @@ public class MindView extends javax.swing.JFrame {
         initComponents();
         setTitle(name);
     }
-    
+
     public void addMO(MemoryObject moi) {
         mol.add(moi);
     }
-    
+
     public void StartTimer() {
         t = new Timer();
         MVTimerTask tt = new MVTimerTask(this);
-        t.scheduleAtFixedRate(tt,0,500);
+        t.scheduleAtFixedRate(tt, 0, 500);
     }
-    
+
     public void tick() {
         String alltext = "";
-        if (mol.size() != 0) 
+        if (mol.size() != 0) {
             for (MemoryObject mo : mol) {
                 if (mo.getI() != null) {
                     //Class cl = mo.getT();
@@ -85,33 +89,44 @@ public class MindView extends javax.swing.JFrame {
                     String moName = mo.getName();
                     if (moName.equals("KNOWN_APPLES") || moName.equals("VISION")) {
                         //alltext += mo.getName()+": "+k+"<-> ";
-                        alltext += mo.getName()+": [ ";
-                        CopyOnWriteArrayList<Thing> l = new CopyOnWriteArrayList<>((List<Thing>)k);
+                        alltext += mo.getName() + ": [ ";
+                        CopyOnWriteArrayList<Thing> l = new CopyOnWriteArrayList<>((List<Thing>) k);
                         for (Thing t : l) {
                             String kindofthing = "t";
-                            if (t.getCategory() == Constants.categoryPFOOD) kindofthing = "a";
-                            alltext += kindofthing+"("+(int)(t.getX1()+t.getX2())/2+","+(int)(t.getY1()+t.getY2())/2+") ";
-                        }    
+                            if (t.getCategory() == Constants.categoryPFOOD) {
+                                kindofthing = "a";
+                            }
+                            alltext += kindofthing + "(" + (int) (t.getX1() + t.getX2()) / 2 + "," + (int) (t.getY1() + t.getY2()) / 2 + ") ";
+                        }
                         alltext += "]\n";
-                    }
-                    else if (moName.equals("CLOSEST_APPLE")) {
-                        Thing t = (Thing)k;
+                    } else if (moName.equals("CLOSEST_APPLE")) {
+                        Thing t = (Thing) k;
                         String kindofthing = "t";
-                        if (t.getCategory() == 21) kindofthing = "a";
-                        alltext += moName+": "+kindofthing+"("+(int)(t.getX1()+t.getX2())/2+","+(int)(t.getY1()+t.getY2())/2+")\n";
+                        if (t.getCategory() == 21) {
+                            kindofthing = "a";
+                        }
+                        alltext += moName + ": " + kindofthing + "(" + (int) (t.getX1() + t.getX2()) / 2 + "," + (int) (t.getY1() + t.getY2()) / 2 + ")\n";
+                    } else if (moName.equals("CLOSEST_JEWEL")) {
+                        Thing t = (Thing) k;
+                        String kindofthing = "t";
+                        if (t.getCategory() == 21) {
+                            kindofthing = "a";
+                        }
+                        alltext += moName + ": " + kindofthing + "(" + (int) (t.getX1() + t.getX2()) / 2 + "," + (int) (t.getY1() + t.getY2()) / 2 + ")\n";
+                    } else {
+                        alltext += mo.getName() + ": " + k + "\n";
                     }
-                    else     
-                    alltext += mo.getName()+": "+k+"\n";
+                } else //alltext += mo.getName()+": "+mo.getI()+"\n";
+                {
+                    alltext += mo.getName() + ":\n";
                 }
-                else
-                    //alltext += mo.getName()+": "+mo.getI()+"\n";
-                    alltext += mo.getName()+":\n";
-            }   
+            }
+        }
         text.setText(alltext);
         j++;
         if (j == 7) {
             try {
-              World.createFood(0,r.nextInt(800) , r.nextInt(600));
+                World.createFood(0, r.nextInt(800), r.nextInt(600));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -121,9 +136,7 @@ public class MindView extends javax.swing.JFrame {
     }
 
     /**
-     * This method is called from within the constructor to initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is always
-     * regenerated by the Form Editor.
+     * This method is called from within the constructor to initialize the form. WARNING: Do NOT modify this code. The content of this method is always regenerated by the Form Editor.
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -159,7 +172,7 @@ public class MindView extends javax.swing.JFrame {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -188,7 +201,7 @@ public class MindView extends javax.swing.JFrame {
                 mv.StartTimer();
             }
         });
-        
+
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
