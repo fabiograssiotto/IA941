@@ -10,3 +10,6 @@
 [submodule "Aulas14-15/WS3DProxy"]
 	path = Aulas14-15/WS3DProxy
 	url = https://github.com/CST-Group/WS3DProxy.git
+[submodule "Aulas14-15/cst"]
+	path = Aulas14-15/cst
+	url = https://github.com/CST-Group/cst.git

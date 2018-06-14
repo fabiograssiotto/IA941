@@ -1,4 +1,5 @@
-/** ***************************************************************************
+/**
+ * ***************************************************************************
  * Copyright 2007-2015 DCA-FEEC-UNICAMP
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,7 +16,8 @@
  *
  * Contributors:
  *    Klaus Raizer, Andre Paraense, Ricardo Ribeiro Gudwin
- **************************************************************************** */
+ ****************************************************************************
+ */
 package support;
 
 import br.unicamp.cst.core.entities.MemoryObject;
@@ -94,6 +96,18 @@ public class MindView extends javax.swing.JFrame {
                         for (Thing t : l) {
                             String kindofthing = "t";
                             if (t.getCategory() == Constants.categoryPFOOD) {
+                                kindofthing = "a";
+                            }
+                            alltext += kindofthing + "(" + (int) (t.getX1() + t.getX2()) / 2 + "," + (int) (t.getY1() + t.getY2()) / 2 + ") ";
+                        }
+                        alltext += "]\n";
+                    } else if (moName.equals("KNOWN_JEWELS") || moName.equals("VISION")) {
+                        //alltext += mo.getName()+": "+k+"<-> ";
+                        alltext += mo.getName() + ": [ ";
+                        CopyOnWriteArrayList<Thing> l = new CopyOnWriteArrayList<>((List<Thing>) k);
+                        for (Thing t : l) {
+                            String kindofthing = "t";
+                            if (t.getCategory() == Constants.categoryJEWEL) {
                                 kindofthing = "a";
                             }
                             alltext += kindofthing + "(" + (int) (t.getX1() + t.getX2()) / 2 + "," + (int) (t.getY1() + t.getY2()) / 2 + ") ";

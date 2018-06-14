@@ -1,5 +1,6 @@
 
-/** ***************************************************************************
+/**
+ * ***************************************************************************
  * Copyright 2007-2015 DCA-FEEC-UNICAMP
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,13 +17,17 @@
  *
  * Contributors:
  *    Klaus Raizer, Andre Paraense, Ricardo Ribeiro Gudwin
- **************************************************************************** */
+ ****************************************************************************
+ */
 import br.unicamp.cst.core.entities.Codelet;
+import br.unicamp.cst.core.entities.MemoryContainer;
 import br.unicamp.cst.core.entities.MemoryObject;
 import br.unicamp.cst.core.entities.Mind;
 import codelets.behaviors.EatClosestApple;
 import codelets.behaviors.Forage;
 import codelets.behaviors.GoToClosestApple;
+import codelets.behaviors.GoToClosestJewel;
+import codelets.behaviors.PickupClosestJewel;
 import codelets.motor.HandsActionCodelet;
 import codelets.motor.LegsActionCodelet;
 import codelets.perception.AppleDetector;
@@ -60,6 +65,9 @@ public class AgentMind extends Mind {
         MemoryObject closestJewelMO;
         MemoryObject knownJewelsMO;
 
+        // Declare Memory Container for Legs Decision
+        MemoryContainer legsDecisionMC;
+
         //Initialize Memory Objects
         legsMO = createMemoryObject("LEGS", "");
         handsMO = createMemoryObject("HANDS", "");
@@ -72,15 +80,20 @@ public class AgentMind extends Mind {
         List<Thing> knownApples = Collections.synchronizedList(new ArrayList<Thing>());
         knownApplesMO = createMemoryObject("KNOWN_APPLES", knownApples);
         Thing closestJewel = null;
-        closestJewelMO = createMemoryObject("CLOSEST_JEWEL", closestApple);
+        closestJewelMO = createMemoryObject("CLOSEST_JEWEL", closestJewel);
         List<Thing> knownJewels = Collections.synchronizedList(new ArrayList<Thing>());
         knownJewelsMO = createMemoryObject("KNOWN_JEWELS", knownJewels);
+
+        // Initialize Memory Container
+        legsDecisionMC = createMemoryContainer("LEGS_DECISION_MC");
 
         // Create and Populate MindViewer
         MindView mv = new MindView("MindView");
         mv.addMO(knownApplesMO);
+        mv.addMO(knownJewelsMO);
         mv.addMO(visionMO);
         mv.addMO(closestAppleMO);
+        mv.addMO(closestJewelMO);
         mv.addMO(innerSenseMO);
         mv.addMO(handsMO);
         mv.addMO(legsMO);
@@ -135,12 +148,25 @@ public class AgentMind extends Mind {
         goToClosestApple.addOutput(legsMO);
         insertCodelet(goToClosestApple);
 
+        Codelet goToClosestJewel = new GoToClosestJewel(creatureBasicSpeed, reachDistance);
+        goToClosestJewel.addInput(closestJewelMO);
+        goToClosestJewel.addInput(innerSenseMO);
+        goToClosestJewel.addOutput(legsMO);
+        insertCodelet(goToClosestJewel);
+
         Codelet eatApple = new EatClosestApple(reachDistance);
         eatApple.addInput(closestAppleMO);
         eatApple.addInput(innerSenseMO);
         eatApple.addOutput(handsMO);
         eatApple.addOutput(knownApplesMO);
         insertCodelet(eatApple);
+
+        Codelet pickupJewel = new PickupClosestJewel(reachDistance);
+        pickupJewel.addInput(closestJewelMO);
+        pickupJewel.addInput(innerSenseMO);
+        pickupJewel.addOutput(handsMO);
+        pickupJewel.addOutput(knownJewelsMO);
+        insertCodelet(pickupJewel);
 
         Codelet forage = new Forage();
         forage.addInput(knownApplesMO);
