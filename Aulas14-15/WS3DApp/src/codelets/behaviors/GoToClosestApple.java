@@ -35,7 +35,6 @@ public class GoToClosestApple extends Codelet {
 
     private MemoryObject closestAppleMO;
     private MemoryObject selfInfoMO;
-    //private MemoryObject legsMO;
     private MemoryContainer legsDecisionMC;
     private int memoryContainerIdx = -1;
     private int creatureBasicSpeed;
@@ -50,7 +49,6 @@ public class GoToClosestApple extends Codelet {
     public void accessMemoryObjects() {
         closestAppleMO = (MemoryObject) this.getInput("CLOSEST_APPLE");
         selfInfoMO = (MemoryObject) this.getInput("INNER");
-        //legsMO = (MemoryObject) this.getOutput("LEGS");
 
         // Memory Container for decision
         legsDecisionMC = (MemoryContainer) this.getOutput("LEGS_DECISION_MC");
@@ -106,7 +104,7 @@ public class GoToClosestApple extends Codelet {
                     message.put("Y", (int) appleY);
                     message.put("SPEED", 0.0);
                 }
-                //legsMO.updateI(message.toString());
+
                 if (memoryContainerIdx == -1) {
                     memoryContainerIdx = legsDecisionMC.setI(message.toString(), eval);
                 } else {

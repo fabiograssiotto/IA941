@@ -111,7 +111,7 @@ public class AgentMind extends Mind {
 
         // Create Actuator Codelets
         Codelet legs = new LegsActionCodelet(env.c);
-        legs.addInput(legsMO);
+        legs.addInput(legsDecisionMC);
         insertCodelet(legs);
 
         Codelet hands = new HandsActionCodelet(env.c);
@@ -145,13 +145,13 @@ public class AgentMind extends Mind {
         Codelet goToClosestApple = new GoToClosestApple(creatureBasicSpeed, reachDistance);
         goToClosestApple.addInput(closestAppleMO);
         goToClosestApple.addInput(innerSenseMO);
-        goToClosestApple.addOutput(legsMO);
+        goToClosestApple.addOutput(legsDecisionMC);
         insertCodelet(goToClosestApple);
 
         Codelet goToClosestJewel = new GoToClosestJewel(creatureBasicSpeed, reachDistance);
         goToClosestJewel.addInput(closestJewelMO);
         goToClosestJewel.addInput(innerSenseMO);
-        goToClosestJewel.addOutput(legsMO);
+        goToClosestJewel.addOutput(legsDecisionMC);
         insertCodelet(goToClosestJewel);
 
         Codelet eatApple = new EatClosestApple(reachDistance);

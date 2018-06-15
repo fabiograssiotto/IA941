@@ -6,6 +6,7 @@ import java.awt.geom.Point2D;
 import org.json.JSONException;
 import org.json.JSONObject;
 import br.unicamp.cst.core.entities.Codelet;
+import br.unicamp.cst.core.entities.MemoryContainer;
 import br.unicamp.cst.core.entities.MemoryObject;
 import memory.CreatureInnerSense;
 import ws3dproxy.model.Thing;
@@ -14,7 +15,8 @@ public class GoToClosestJewel extends Codelet {
 
     private MemoryObject closestJewelMO;
     private MemoryObject selfInfoMO;
-    private MemoryObject legsMO;
+    private MemoryContainer legsDecisionMC;
+    private int memoryContainerIdx = -1;
     final private int creatureBasicSpeed;
     final private double reachDistance;
 
@@ -27,7 +29,9 @@ public class GoToClosestJewel extends Codelet {
     public void accessMemoryObjects() {
         closestJewelMO = (MemoryObject) this.getInput("CLOSEST_JEWEL");
         selfInfoMO = (MemoryObject) this.getInput("INNER");
-        legsMO = (MemoryObject) this.getOutput("LEGS");
+
+        // Memory Container for decision
+        legsDecisionMC = (MemoryContainer) this.getOutput("LEGS_DECISION_MC");
     }
 
     @Override
@@ -38,6 +42,7 @@ public class GoToClosestJewel extends Codelet {
 
         Thing closestJewel = (Thing) closestJewelMO.getI();
         CreatureInnerSense cis = (CreatureInnerSense) selfInfoMO.getI();
+        double eval = 0.5; // constant evaluator
 
         if (closestJewel != null) {
             double jewelX = 0;
@@ -74,7 +79,11 @@ public class GoToClosestJewel extends Codelet {
                     message.put("Y", (int) jewelY);
                     message.put("SPEED", 0.0);
                 }
-                legsMO.updateI(message.toString());
+                if (memoryContainerIdx == -1) {
+                    memoryContainerIdx = legsDecisionMC.setI(message.toString(), eval);
+                } else {
+                    legsDecisionMC.setI(message, eval, memoryContainerIdx);
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
