@@ -45,7 +45,7 @@ public class ExperimentMain {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		ExperimentMain em = new ExperimentMain();
+		new ExperimentMain();
 	}
 
 }
