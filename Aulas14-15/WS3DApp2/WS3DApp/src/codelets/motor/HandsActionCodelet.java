@@ -60,8 +60,8 @@ public class HandsActionCodelet extends Codelet {
                 jsonAction = new JSONObject(command);
                 if (jsonAction.has("ACTION") && jsonAction.has("OBJECT")) {
                     String action = jsonAction.getString("ACTION");
+                    System.out.println("HANDS Action: " + action);
                     String objectName = jsonAction.getString("OBJECT");
-                    System.out.println("HANDS Action: " + action + " " + objectName);
                     if (action.equals("PICKUP")) {
                         try {
                             c.putInSack(objectName);

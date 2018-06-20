@@ -77,10 +77,10 @@ public class LegsActionCodelet extends Codelet {
                     int x = 0, y = 0;
                     String action = command.getString("ACTION");
                     System.out.println("LEGS Action: " + action);
-                    if (action.equals("WANDER")) {
+                    if (action.equals("FORAGE")) {
                         //if (!comm.equals(previousLegsAction)) {
                         if (!comm.equals(previousLegsAction)) {
-                            log.info("Sending wander command to agent");
+                            log.info("Sending Forage command to agent");
                         }
                         try {
                             c.rotate(2);

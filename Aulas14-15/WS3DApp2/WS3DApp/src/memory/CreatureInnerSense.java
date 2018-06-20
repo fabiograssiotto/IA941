@@ -1,4 +1,3 @@
-
 /** ***************************************************************************
  * Copyright 2007-2015 DCA-FEEC-UNICAMP
  *
@@ -17,37 +16,40 @@
  * Contributors:
  *    Klaus Raizer, Andre Paraense, Ricardo Ribeiro Gudwin
  **************************************************************************** */
-import ws3dproxy.CommandExecException;
-import ws3dproxy.WS3DProxy;
-import ws3dproxy.model.Creature;
-import ws3dproxy.model.World;
+package memory;
+
+import java.awt.Polygon;
+import java.util.List;
+import ws3dproxy.model.WorldPoint;
+import ws3dproxy.model.Leaflet;
 
 /**
  *
  * @author rgudwin
  */
-public class Environment {
+public class CreatureInnerSense {
 
-    public String host = "localhost";
-    public int port = 4011;
-    public String robotID = "r0";
-    public Creature c = null;
+    public WorldPoint position;
+    public double pitch;
+    public double fuel;
+    public Polygon FOV;
+    public List<Leaflet> leaflets;
 
-    public Environment() {
-        WS3DProxy proxy = new WS3DProxy();
-        try {
-            World w = World.getInstance();
-            w.reset();
+    @Override
+    public String toString() {
+        String retStr;
+        if (position != null) {
+            retStr = "Position: (" + (int) position.getX() + "," + (int) position.getY() + ") Pitch: " + (int) pitch + " Fuel: " + fuel;
 
-            // To create jewels in the environment.
-            World.grow(1);
-            c = proxy.createCreature(100, 100, 0);
-            c.start();
-
-        } catch (CommandExecException e) {
-
+        } else {
+            retStr = "Position: null,null" + " Pitch: " + pitch + " Fuel: " + fuel;
         }
-        System.out.println("Robot " + c.getName() + " is ready to go.");
-
+        // Add leaflets to Mindview display.
+        if (leaflets != null) {
+            for (Leaflet l : leaflets) {
+                retStr += " Leaflet: " + l.toString() + " ";
+            }
+        }
+        return retStr;
     }
 }

@@ -12,47 +12,54 @@ import memory.CreatureInnerSense;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import ws3dproxy.model.Thing;
+import ws3dproxy.util.Constants;
 
-public class PickupClosestJewel extends Codelet {
+/*
+* Removes when necessary objects that were not the target of the creature.
+* Basically this is for objects (food/jewels) found on the path.
+ */
+public class RemoveObstacle extends Codelet {
 
+    private MemoryObject closestObstacleMO;
     private MemoryObject closestJewelMO;
     private MemoryObject innerSenseMO;
-    private MemoryObject knownMO;
     private int reachDistance;
     private MemoryObject handsMO;
+    Thing closestObstacle;
     Thing closestJewel;
     CreatureInnerSense cis;
-    List<Thing> known;
 
-    public PickupClosestJewel(int reachDistance) {
+    public RemoveObstacle(int reachDistance) {
         setTimeStep(50);
         this.reachDistance = reachDistance;
     }
 
     @Override
     public void accessMemoryObjects() {
+        closestObstacleMO = (MemoryObject) this.getInput("CLOSEST_OBSTACLE");
         closestJewelMO = (MemoryObject) this.getInput("CLOSEST_JEWEL");
         innerSenseMO = (MemoryObject) this.getInput("INNER");
         handsMO = (MemoryObject) this.getOutput("HANDS");
-        knownMO = (MemoryObject) this.getOutput("KNOWN_JEWELS");
     }
 
     @Override
     public void proc() {
-        String jewelName = "";
+        String thingName = "";
+        closestObstacle = (Thing) closestObstacleMO.getI();
         closestJewel = (Thing) closestJewelMO.getI();
         cis = (CreatureInnerSense) innerSenseMO.getI();
-        known = (List<Thing>) knownMO.getI();
-        //Find distance between closest jewel and self
-        //If closer than reachDistance, pick up the jewel
 
-        if (closestJewel != null) {
-            double jewelX = 0;
-            double jewelY = 0;
+        // Check if the closest thing is not the closest jewel.
+        // In case it is not, it is an obstacle, so get rid of it.
+        if (closestObstacle != null && closestJewel != null
+                && closestObstacle.getCategory() == Constants.categoryJEWEL
+                && (!closestObstacle.getName().equals(closestJewel.getName()))) {
+            double thingX = 0;
+            double thingY = 0;
             try {
-                jewelX = closestJewel.getX1();
-                jewelY = closestJewel.getY1();
-                jewelName = closestJewel.getName();
+                thingX = closestObstacle.getX1();
+                thingY = closestObstacle.getY1();
+                thingName = closestObstacle.getName();
 
             } catch (Exception e) {
                 // TODO Auto-generated catch block
@@ -63,7 +70,7 @@ public class PickupClosestJewel extends Codelet {
             double selfY = cis.position.getY();
 
             Point2D pJewel = new Point();
-            pJewel.setLocation(jewelX, jewelY);
+            pJewel.setLocation(thingX, thingY);
 
             Point2D pSelf = new Point();
             pSelf.setLocation(selfX, selfY);
@@ -71,17 +78,14 @@ public class PickupClosestJewel extends Codelet {
             double distance = pSelf.distance(pJewel);
             JSONObject message = new JSONObject();
             try {
-                if (distance < reachDistance) { // pickup the jewel
-                    System.out.println("PickupClosestJewel Pickup");
-                    message.put("OBJECT", jewelName);
-                    message.put("ACTION", "PICKUP");
+                if (distance < reachDistance) { // bury it, as we do not need it.
+                    message.put("OBJECT", thingName);
+                    message.put("ACTION", "BURY");
                     handsMO.updateI(message.toString());
-                    DestroyClosestJewel();
+                    DestroyClosestThing();
                 } else {
                     handsMO.updateI("");	//nothing
                 }
-
-//				System.out.println(message);
             } catch (JSONException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -89,31 +93,14 @@ public class PickupClosestJewel extends Codelet {
         } else {
             handsMO.updateI("");	//nothing
         }
+
     }
 
     @Override
     public void calculateActivation() {
-
     }
 
-    public void DestroyClosestJewel() {
-        int r = -1;
-        int i = 0;
-        synchronized (known) {
-            CopyOnWriteArrayList<Thing> myknown = new CopyOnWriteArrayList<>(known);
-            for (Thing t : known) {
-                if (closestJewel != null) {
-                    if (t.getName().equals(closestJewel.getName())) {
-                        r = i;
-                    }
-                }
-                i++;
-            }
-            if (r != -1) {
-                known.remove(r);
-            }
-            closestJewel = null;
-        }
+    public void DestroyClosestThing() {
+        closestJewel = null;
     }
-
 }

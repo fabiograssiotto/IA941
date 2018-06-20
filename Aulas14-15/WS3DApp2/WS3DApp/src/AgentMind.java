@@ -183,7 +183,6 @@ public class AgentMind extends Mind {
         Codelet removeObstacle = new RemoveObstacle(reachDistance);
         removeObstacle.addInput(closestObstacleMO);
         removeObstacle.addInput(closestJewelMO);
-        removeObstacle.addInput(closestFoodMO);
         removeObstacle.addInput(innerSenseMO);
         removeObstacle.addOutput(handsMO);
         insertCodelet(removeObstacle);

@@ -13,46 +13,46 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import ws3dproxy.model.Thing;
 
-public class PickupClosestJewel extends Codelet {
+public class EatClosestFood extends Codelet {
 
-    private MemoryObject closestJewelMO;
+    private MemoryObject closestFoodMO;
     private MemoryObject innerSenseMO;
     private MemoryObject knownMO;
     private int reachDistance;
     private MemoryObject handsMO;
-    Thing closestJewel;
+    Thing closestFood;
     CreatureInnerSense cis;
     List<Thing> known;
 
-    public PickupClosestJewel(int reachDistance) {
+    public EatClosestFood(int reachDistance) {
         setTimeStep(50);
         this.reachDistance = reachDistance;
     }
 
     @Override
     public void accessMemoryObjects() {
-        closestJewelMO = (MemoryObject) this.getInput("CLOSEST_JEWEL");
+        closestFoodMO = (MemoryObject) this.getInput("CLOSEST_FOOD");
         innerSenseMO = (MemoryObject) this.getInput("INNER");
         handsMO = (MemoryObject) this.getOutput("HANDS");
-        knownMO = (MemoryObject) this.getOutput("KNOWN_JEWELS");
+        knownMO = (MemoryObject) this.getOutput("KNOWN_FOODS");
     }
 
     @Override
     public void proc() {
-        String jewelName = "";
-        closestJewel = (Thing) closestJewelMO.getI();
+        String foodName = "";
+        closestFood = (Thing) closestFoodMO.getI();
         cis = (CreatureInnerSense) innerSenseMO.getI();
         known = (List<Thing>) knownMO.getI();
-        //Find distance between closest jewel and self
-        //If closer than reachDistance, pick up the jewel
+        //Find distance between closest food and self
+        //If closer than reachDistance, eat the food
 
-        if (closestJewel != null) {
-            double jewelX = 0;
-            double jewelY = 0;
+        if (closestFood != null) {
+            double foodX = 0;
+            double foodY = 0;
             try {
-                jewelX = closestJewel.getX1();
-                jewelY = closestJewel.getY1();
-                jewelName = closestJewel.getName();
+                foodX = closestFood.getX1();
+                foodY = closestFood.getY1();
+                foodName = closestFood.getName();
 
             } catch (Exception e) {
                 // TODO Auto-generated catch block
@@ -62,26 +62,24 @@ public class PickupClosestJewel extends Codelet {
             double selfX = cis.position.getX();
             double selfY = cis.position.getY();
 
-            Point2D pJewel = new Point();
-            pJewel.setLocation(jewelX, jewelY);
+            Point2D pFood = new Point();
+            pFood.setLocation(foodX, foodY);
 
             Point2D pSelf = new Point();
             pSelf.setLocation(selfX, selfY);
 
-            double distance = pSelf.distance(pJewel);
+            double distance = pSelf.distance(pFood);
             JSONObject message = new JSONObject();
             try {
-                if (distance < reachDistance) { // pickup the jewel
-                    System.out.println("PickupClosestJewel Pickup");
-                    message.put("OBJECT", jewelName);
-                    message.put("ACTION", "PICKUP");
+                if (distance < reachDistance) { //eat it
+                    message.put("OBJECT", foodName);
+                    message.put("ACTION", "EATIT");
                     handsMO.updateI(message.toString());
-                    DestroyClosestJewel();
+                    DestroyClosestFood();
                 } else {
                     handsMO.updateI("");	//nothing
                 }
 
-//				System.out.println(message);
             } catch (JSONException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -96,14 +94,14 @@ public class PickupClosestJewel extends Codelet {
 
     }
 
-    public void DestroyClosestJewel() {
+    public void DestroyClosestFood() {
         int r = -1;
         int i = 0;
         synchronized (known) {
             CopyOnWriteArrayList<Thing> myknown = new CopyOnWriteArrayList<>(known);
             for (Thing t : known) {
-                if (closestJewel != null) {
-                    if (t.getName().equals(closestJewel.getName())) {
+                if (closestFood != null) {
+                    if (t.getName().equals(closestFood.getName())) {
                         r = i;
                     }
                 }
@@ -112,7 +110,7 @@ public class PickupClosestJewel extends Codelet {
             if (r != -1) {
                 known.remove(r);
             }
-            closestJewel = null;
+            closestFood = null;
         }
     }
 
