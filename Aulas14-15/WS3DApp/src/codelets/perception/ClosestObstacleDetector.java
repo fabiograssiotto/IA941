@@ -19,7 +19,7 @@ public class ClosestObstacleDetector extends Codelet {
 
     private MemoryObject visionMO;
     private MemoryObject innerSenseMO;
-    private MemoryObject closestThingMO;
+    private MemoryObject closestObstacleMO;
 
     public ClosestObstacleDetector() {
     }
@@ -28,7 +28,7 @@ public class ClosestObstacleDetector extends Codelet {
     public void accessMemoryObjects() {
         this.visionMO = (MemoryObject) this.getInput("VISION");
         this.innerSenseMO = (MemoryObject) this.getInput("INNER");
-        this.closestThingMO = (MemoryObject) this.getOutput("CLOSEST_OBSTACLE");
+        this.closestObstacleMO = (MemoryObject) this.getOutput("CLOSEST_OBSTACLE");
     }
 
     @Override
@@ -38,7 +38,7 @@ public class ClosestObstacleDetector extends Codelet {
         synchronized (visionMO) {
 
             vision = new CopyOnWriteArrayList((List<Thing>) visionMO.getI());
-            closestObstacle = (Thing) closestThingMO.getI();
+            closestObstacle = (Thing) closestObstacleMO.getI();
             final CreatureInnerSense cis = (CreatureInnerSense) innerSenseMO.getI();
 
             synchronized (vision) {
@@ -61,6 +61,9 @@ public class ClosestObstacleDetector extends Codelet {
                     // Vision array is now sorted, store the closest entity.
                     closestObstacle = vision.get(0);
                 }
+            }
+            if (closestObstacle != null) {
+                closestObstacleMO.setI(closestObstacle);
             }
 
         }

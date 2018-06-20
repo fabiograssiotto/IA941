@@ -85,55 +85,18 @@ public class MindView extends javax.swing.JFrame {
         if (mol.size() != 0) {
             for (MemoryObject mo : mol) {
                 if (mo.getI() != null) {
-                    //Class cl = mo.getT();
-                    //Object k = cl.cast(mo.getI());
                     Object k = mo.getI();
                     String moName = mo.getName();
-                    if (moName.equals("KNOWN_APPLES") || moName.equals("VISION")) {
-                        //alltext += mo.getName()+": "+k+"<-> ";
+                    if (moName.equals("KNOWN_FOODS") || moName.equals("KNOWN_JEWELS") || moName.equals("VISION")) {
                         alltext += mo.getName() + ": [ ";
                         CopyOnWriteArrayList<Thing> l = new CopyOnWriteArrayList<>((List<Thing>) k);
                         for (Thing t : l) {
-                            String kindofthing = "t";
-                            if (t.getCategory() == Constants.categoryPFOOD) {
-                                kindofthing = "a";
-                            }
-                            alltext += kindofthing + "(" + (int) (t.getX1() + t.getX2()) / 2 + "," + (int) (t.getY1() + t.getY2()) / 2 + ") ";
+                            alltext += kindOfThing(t) + "(" + (int) (t.getX1() + t.getX2()) / 2 + "," + (int) (t.getY1() + t.getY2()) / 2 + ") ";
                         }
                         alltext += "]\n";
-                    } else if (moName.equals("KNOWN_JEWELS") || moName.equals("VISION")) {
-                        //alltext += mo.getName()+": "+k+"<-> ";
-                        alltext += mo.getName() + ": [ ";
-                        CopyOnWriteArrayList<Thing> l = new CopyOnWriteArrayList<>((List<Thing>) k);
-                        for (Thing t : l) {
-                            String kindofthing = "t";
-                            if (t.getCategory() == Constants.categoryJEWEL) {
-                                kindofthing = "a";
-                            }
-                            alltext += kindofthing + "(" + (int) (t.getX1() + t.getX2()) / 2 + "," + (int) (t.getY1() + t.getY2()) / 2 + ") ";
-                        }
-                        alltext += "]\n";
-                    } else if (moName.equals("CLOSEST_THING")) {
+                    } else if (moName.equals("CLOSEST_FOOD") || moName.equals("CLOSEST_JEWEL") || moName.equals("CLOSEST_OBSTACLE")) {
                         Thing t = (Thing) k;
-                        String kindofthing = "t";
-                        if (t.getCategory() == 21) {
-                            kindofthing = "a";
-                        }
-                        alltext += moName + ": " + kindofthing + "(" + (int) (t.getX1() + t.getX2()) / 2 + "," + (int) (t.getY1() + t.getY2()) / 2 + ")\n";
-                    } else if (moName.equals("CLOSEST_APPLE")) {
-                        Thing t = (Thing) k;
-                        String kindofthing = "t";
-                        if (t.getCategory() == 21) {
-                            kindofthing = "a";
-                        }
-                        alltext += moName + ": " + kindofthing + "(" + (int) (t.getX1() + t.getX2()) / 2 + "," + (int) (t.getY1() + t.getY2()) / 2 + ")\n";
-                    } else if (moName.equals("CLOSEST_JEWEL")) {
-                        Thing t = (Thing) k;
-                        String kindofthing = "t";
-                        if (t.getCategory() == 21) {
-                            kindofthing = "a";
-                        }
-                        alltext += moName + ": " + kindofthing + "(" + (int) (t.getX1() + t.getX2()) / 2 + "," + (int) (t.getY1() + t.getY2()) / 2 + ")\n";
+                        alltext += moName + ": " + kindOfThing(t) + "(" + (int) (t.getX1() + t.getX2()) / 2 + "," + (int) (t.getY1() + t.getY2()) / 2 + ")\n";
                     } else {
                         alltext += mo.getName() + ": " + k + "\n";
                     }
@@ -144,16 +107,17 @@ public class MindView extends javax.swing.JFrame {
             }
         }
         text.setText(alltext);
-        j++;
-        if (j == 7) {
-            try {
-                World.createFood(0, r.nextInt(800), r.nextInt(600));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            j = 0;
+    }
+
+    private String kindOfThing(Thing t) {
+        String kind;
+        int cat = t.getCategory();
+        if (cat == 21 || cat == 22) {
+            kind = "f"; // for food
+        } else {
+            kind = "j"; // for jewel
         }
-        //System.out.println("i");
+        return kind;
     }
 
     /**
