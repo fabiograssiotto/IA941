@@ -9,8 +9,6 @@ import org.json.JSONObject;
 import br.unicamp.cst.core.entities.Codelet;
 import br.unicamp.cst.core.entities.MemoryObject;
 import memory.CreatureInnerSense;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 import ws3dproxy.model.Thing;
 import ws3dproxy.util.Constants;
 
@@ -53,12 +51,24 @@ public class RemoveObstacle extends Codelet {
         closestFood = (Thing) closestFoodMO.getI();
         cis = (CreatureInnerSense) innerSenseMO.getI();
 
-        // Check if the closest thing is not the leaflet jewel.
-        // In case it is not, it is an obstacle, so get rid of it.
-        if (closestObstacle != null
-                && ((closestObstacle.getCategory() == Constants.categoryJEWEL && leafletJewel != null && !closestObstacle.getName().equals(leafletJewel.getName()))
-                || ((closestObstacle.getCategory() == Constants.categoryPFOOD || closestObstacle.getCategory() == Constants.categoryNPFOOD)
-                && closestFood != null && !closestObstacle.getName().equals(closestFood.getName())))) {
+        // Check all the conditions to remove an obstacle from the environment.
+        Boolean canRemove = false;
+
+        if (closestObstacle != null && isJewel(closestObstacle) && leafletJewel == null) {
+            // That is, no jewel to collect but we found a jewel
+            canRemove = true;
+        } else if (closestObstacle != null && isFood(closestObstacle) && closestFood == null) {
+            // That is, no food to collect but we found some food
+            canRemove = true;
+        } else if (closestObstacle != null && isJewel(closestObstacle) && leafletJewel != null && !closestObstacle.getName().equals(leafletJewel.getName())) {
+            // That is, the obstacle is not the current jewel we are looking for.
+            canRemove = true;
+        } else if (closestObstacle != null && isFood(closestObstacle) && closestFood != null && !closestObstacle.getName().equals(closestFood.getName())) {
+            // That is, the obstacle is not the current food we are looking for.
+            canRemove = true;
+        }
+
+        if (canRemove) {
 
             System.out.println("RemoveObstacle obstacle = " + closestObstacle.getName());
 
@@ -87,10 +97,18 @@ public class RemoveObstacle extends Codelet {
             JSONObject message = new JSONObject();
             try {
                 if (distance < reachDistance) { // bury it, as we do not need it.
-                    System.out.println("RemoveObstacle Bury");
-                    message.put("OBJECT", obstacleName);
-                    message.put("ACTION", "BURY");
-                    handsMO.updateI(message.toString());
+                    if (isJewel(closestObstacle)) {
+                        System.out.println("RemoveObstacle BURY");
+                        message.put("OBJECT", obstacleName);
+                        message.put("ACTION", "BURY");
+                        handsMO.updateI(message.toString());
+
+                    } else {
+                        System.out.println("RemoveObstacle EATIT");
+                        message.put("OBJECT", obstacleName);
+                        message.put("ACTION", "EATIT");
+                        handsMO.updateI(message.toString());
+                    }
                     DestroyClosestThing();
                 } else {
                     handsMO.updateI("");	//nothing
@@ -111,5 +129,21 @@ public class RemoveObstacle extends Codelet {
 
     public void DestroyClosestThing() {
         closestObstacle = null;
+    }
+
+    private Boolean isFood(Thing t) {
+        if (t.getCategory() == Constants.categoryPFOOD || t.getCategory() == Constants.categoryNPFOOD) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private Boolean isJewel(Thing t) {
+        if (t.getCategory() == Constants.categoryJEWEL) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
