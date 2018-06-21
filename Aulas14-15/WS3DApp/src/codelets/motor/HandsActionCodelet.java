@@ -62,33 +62,46 @@ public class HandsActionCodelet extends Codelet {
                 jsonAction = new JSONObject(command);
                 if (jsonAction.has("ACTION") && jsonAction.has("OBJECT")) {
                     String action = jsonAction.getString("ACTION");
-                    String objectName = jsonAction.getString("OBJECT");
-                    System.out.println("HANDS Action: " + action + " " + objectName);
-                    if (action.equals("PICKUP")) {
-                        try {
-                            c.putInSack(objectName);
-                        } catch (Exception e) {
+                    if (jsonAction.has("OBJECT")) {
+                        String objectName = jsonAction.getString("OBJECT");
+                        System.out.println("HANDS Action: " + action + " " + objectName);
+                        if (action.equals("PICKUP")) {
+                            try {
+                                c.putInSack(objectName);
+                            } catch (Exception e) {
 
+                            }
+                            log.info("Sending Put In Sack command to agent:****** " + objectName + "**********");
                         }
-                        log.info("Sending Put In Sack command to agent:****** " + objectName + "**********");
+                        if (action.equals("EATIT")) {
+                            try {
+                                c.eatIt(objectName);
+                            } catch (Exception e) {
 
-                        //							}
-                    }
-                    if (action.equals("EATIT")) {
-                        try {
-                            c.eatIt(objectName);
-                        } catch (Exception e) {
-
+                            }
+                            log.info("Sending Eat command to agent:****** " + objectName + "**********");
                         }
-                        log.info("Sending Eat command to agent:****** " + objectName + "**********");
-                    }
-                    if (action.equals("BURY")) {
-                        try {
-                            c.hideIt(objectName);
-                        } catch (Exception e) {
+                        if (action.equals("BURY")) {
+                            try {
+                                c.hideIt(objectName);
+                            } catch (Exception e) {
 
+                            }
+                            log.info("Sending Bury command to agent:****** " + objectName + "**********");
                         }
-                        log.info("Sending Bury command to agent:****** " + objectName + "**********");
+                    } else {
+                        System.out.println("HANDS Action: " + action);
+                        if (action.equals("DELIVER")) {
+                            try {
+                                String leaf1 = jsonAction.getString("LEAFLET1");
+                                String leaf2 = jsonAction.getString("LEAFLET2");
+                                String leaf3 = jsonAction.getString("LEAFLET3");
+                                c.deliverLeaflet(leaf1);
+                                c.deliverLeaflet(leaf2);
+                                c.deliverLeaflet(leaf3);
+                            } catch (Exception e) {
+                            }
+                        }
                     }
                 }
             } catch (JSONException e) {

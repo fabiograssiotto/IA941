@@ -23,6 +23,7 @@ import br.unicamp.cst.core.entities.Codelet;
 import br.unicamp.cst.core.entities.MemoryContainer;
 import br.unicamp.cst.core.entities.MemoryObject;
 import br.unicamp.cst.core.entities.Mind;
+import codelets.behaviors.DeliverLeaflets;
 import codelets.behaviors.EatClosestFood;
 import codelets.behaviors.Wander;
 import codelets.behaviors.GoToClosestFood;
@@ -32,6 +33,7 @@ import codelets.behaviors.PickupLeafletJewel;
 import codelets.behaviors.RemoveObstacle;
 import codelets.motor.HandsActionCodelet;
 import codelets.motor.LegsActionCodelet;
+import codelets.perception.AtDeliverySpotDetector;
 import codelets.perception.FoodDetector;
 import codelets.perception.ClosestFoodDetector;
 import codelets.perception.LeafletJewelDetector;
@@ -70,6 +72,7 @@ public class AgentMind extends Mind {
         MemoryObject knownJewelsMO;
         MemoryObject closestObstacleMO;
         MemoryObject leafletsDoneMO;
+        MemoryObject atDeliverySpotMO;
 
         // Declare Memory Container for Legs Decision
         MemoryContainer legsDecisionMC;
@@ -93,6 +96,8 @@ public class AgentMind extends Mind {
         closestObstacleMO = createMemoryObject("CLOSEST_OBSTACLE", closestObstacle);
         Boolean leafletsDone = false;
         leafletsDoneMO = createMemoryObject("LEAFLETS_DONE", leafletsDone);
+        Boolean atDeliverySpot = false;
+        atDeliverySpotMO = createMemoryObject("AT_DELIVERYSPOT", atDeliverySpot);
 
         // Initialize Memory Container
         legsDecisionMC = createMemoryContainer("LEGS_DECISION_MC");
@@ -109,6 +114,7 @@ public class AgentMind extends Mind {
         mv.addMO(legsMO);
         mv.addMO(closestObstacleMO);
         mv.addMO(leafletsDoneMO);
+        mv.addMO(atDeliverySpotMO);
         mv.StartTimer();
         mv.setVisible(true);
 
@@ -164,6 +170,11 @@ public class AgentMind extends Mind {
         leafletsDoneDetector.addOutput(leafletsDoneMO);
         insertCodelet(leafletsDoneDetector);
 
+        Codelet atDeliverySpotDetector = new AtDeliverySpotDetector();
+        atDeliverySpotDetector.addInput(innerSenseMO);
+        atDeliverySpotDetector.addOutput(atDeliverySpotMO);
+        insertCodelet(atDeliverySpotDetector);
+
         // Create Behavior Codelets
         Codelet goToClosestApple = new GoToClosestFood(creatureBasicSpeed, reachDistance);
         goToClosestApple.addInput(closestFoodMO);
@@ -181,6 +192,13 @@ public class AgentMind extends Mind {
         goToDeliverySpot.addInput(leafletsDoneMO);
         goToDeliverySpot.addOutput(legsDecisionMC);
         insertCodelet(goToDeliverySpot);
+
+        Codelet deliverLeaflets = new DeliverLeaflets();
+        deliverLeaflets.addInput(innerSenseMO);
+        deliverLeaflets.addInput(leafletsDoneMO);
+        deliverLeaflets.addInput(atDeliverySpotMO);
+        deliverLeaflets.addOutput(handsMO);
+        insertCodelet(deliverLeaflets);
 
         Codelet eatFood = new EatClosestFood(reachDistance);
         eatFood.addInput(closestFoodMO);
