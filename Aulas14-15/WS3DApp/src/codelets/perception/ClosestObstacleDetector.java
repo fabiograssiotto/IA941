@@ -64,6 +64,8 @@ public class ClosestObstacleDetector extends Codelet {
             }
             if (closestObstacle != null) {
                 closestObstacleMO.setI(closestObstacle);
+            } else {
+                closestObstacleMO.setI(null);
             }
 
         }

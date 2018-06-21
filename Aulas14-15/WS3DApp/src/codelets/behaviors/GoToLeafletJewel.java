@@ -11,23 +11,23 @@ import br.unicamp.cst.core.entities.MemoryObject;
 import memory.CreatureInnerSense;
 import ws3dproxy.model.Thing;
 
-public class GoToClosestJewel extends Codelet {
+public class GoToLeafletJewel extends Codelet {
 
-    private MemoryObject closestJewelMO;
+    private MemoryObject leafletJewelMO;
     private MemoryObject selfInfoMO;
     private MemoryContainer legsDecisionMC;
     private int memoryContainerIdx = -1;
     final private int creatureBasicSpeed;
     final private double reachDistance;
 
-    public GoToClosestJewel(int creatureBasicSpeed, int reachDistance) {
+    public GoToLeafletJewel(int creatureBasicSpeed, int reachDistance) {
         this.creatureBasicSpeed = creatureBasicSpeed;
         this.reachDistance = reachDistance;
     }
 
     @Override
     public void accessMemoryObjects() {
-        closestJewelMO = (MemoryObject) this.getInput("CLOSEST_JEWEL");
+        leafletJewelMO = (MemoryObject) this.getInput("LEAFLET_JEWEL");
         selfInfoMO = (MemoryObject) this.getInput("INNER");
 
         // Memory Container for decision
@@ -40,16 +40,18 @@ public class GoToClosestJewel extends Codelet {
         //If far, go towards it
         //If close, stops
 
-        Thing closestJewel = (Thing) closestJewelMO.getI();
+        Thing leafletJewel = (Thing) leafletJewelMO.getI();
         CreatureInnerSense cis = (CreatureInnerSense) selfInfoMO.getI();
-        double eval = 0.5; // constant evaluator
+        double eval = 0;
+        JSONObject message = new JSONObject();
 
-        if (closestJewel != null) {
+        if (leafletJewel != null) {
+            eval = 0.5;
             double jewelX = 0;
             double jewelY = 0;
             try {
-                jewelX = closestJewel.getX1();
-                jewelY = closestJewel.getY1();
+                jewelX = leafletJewel.getX1();
+                jewelY = leafletJewel.getY1();
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -65,30 +67,31 @@ public class GoToClosestJewel extends Codelet {
             pSelf.setLocation(selfX, selfY);
 
             double distance = pSelf.distance(pJewel);
-            JSONObject message = new JSONObject();
+
             try {
                 if (distance > reachDistance) { //Go to it
-                    System.out.println("GoToClosestJewel Go");
+                    System.out.println("GoToLeafletJewel Go");
                     message.put("ACTION", "GOTO");
                     message.put("X", (int) jewelX);
                     message.put("Y", (int) jewelY);
                     message.put("SPEED", creatureBasicSpeed);
 
                 } else {//Stop
-                    System.out.println("GoToClosestJewel Stop");
+                    System.out.println("GoToLeafletJewel Stop");
                     message.put("ACTION", "GOTO");
                     message.put("X", (int) jewelX);
                     message.put("Y", (int) jewelY);
                     message.put("SPEED", 0.0);
                 }
-                if (memoryContainerIdx == -1) {
-                    memoryContainerIdx = legsDecisionMC.setI(message.toString(), eval);
-                } else {
-                    legsDecisionMC.setI(message, eval, memoryContainerIdx);
-                }
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+        }
+        if (memoryContainerIdx == -1) {
+            memoryContainerIdx = legsDecisionMC.setI(message.toString(), eval);
+        } else {
+            legsDecisionMC.setI(message, eval, memoryContainerIdx);
         }
     }//end proc
 

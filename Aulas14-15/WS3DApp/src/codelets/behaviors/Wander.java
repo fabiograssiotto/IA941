@@ -19,13 +19,9 @@ public class Wander extends Codelet {
 
     private MemoryObject knownFoodsMO;
     private MemoryObject knownJewelsMO;
-    private MemoryObject closestFoodMO;
-    private MemoryObject closestJewelMO;
     private MemoryObject selfInfoMO;
     private List<Thing> knownFoods;
     private List<Thing> knownJewels;
-    private Thing closestFood;
-    private Thing closestJewel;
     private MemoryContainer legsDecisionMC;
     private int memoryContainerIdx = -1;
 
@@ -41,12 +37,8 @@ public class Wander extends Codelet {
         CreatureInnerSense cis = (CreatureInnerSense) selfInfoMO.getI();
         knownFoods = (List<Thing>) knownFoodsMO.getI();
         knownJewels = (List<Thing>) knownJewelsMO.getI();
-        closestFood = (Thing) closestFoodMO.getI();
-        closestJewel = (Thing) closestJewelMO.getI();
 
         if ((knownJewels.size() == 0 || (knownFoods.size() == 0 && cis.fuel < 400))) {
-//                || // That is no known jewels, or no known foods and fuel < 400
-            // (closestJewel == null || (closestFood == null && cis.fuel < 400))) { // No closest jewel to get or closest food and fuel < 400
             JSONObject message = new JSONObject();
             try {
                 double eval = 0.2;
@@ -71,8 +63,6 @@ public class Wander extends Codelet {
     public void accessMemoryObjects() {
         knownFoodsMO = (MemoryObject) this.getInput("KNOWN_FOODS");
         knownJewelsMO = (MemoryObject) this.getInput("KNOWN_JEWELS");
-        closestFoodMO = (MemoryObject) this.getInput("CLOSEST_FOOD");
-        closestJewelMO = (MemoryObject) this.getInput("CLOSEST_JEWEL");
         selfInfoMO = (MemoryObject) this.getInput("INNER");
         legsDecisionMC = (MemoryContainer) this.getOutput("LEGS_DECISION_MC");
     }

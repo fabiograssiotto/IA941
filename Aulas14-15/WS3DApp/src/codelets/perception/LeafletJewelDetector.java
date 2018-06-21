@@ -11,29 +11,29 @@ import ws3dproxy.model.Leaflet;
 import ws3dproxy.model.Thing;
 
 /**
- * @author fabiogr This codelet identifies the closest jewel that is also part of one of the leaflets.
+ * @author fabiogr This codelet identifies the closest jewel that is also required for one of the leaflets.
  */
-public class ClosestJewelDetector extends Codelet {
+public class LeafletJewelDetector extends Codelet {
 
     private MemoryObject knownMO;
-    private MemoryObject closestJewelMO;
+    private MemoryObject LeafletJewelMO;
     private MemoryObject innerSenseMO;
 
     private List<Thing> known;
 
-    public ClosestJewelDetector() {
+    public LeafletJewelDetector() {
     }
 
     @Override
     public void accessMemoryObjects() {
         this.knownMO = (MemoryObject) this.getInput("KNOWN_JEWELS");
         this.innerSenseMO = (MemoryObject) this.getInput("INNER");
-        this.closestJewelMO = (MemoryObject) this.getOutput("CLOSEST_JEWEL");
+        this.LeafletJewelMO = (MemoryObject) this.getOutput("LEAFLET_JEWEL");
     }
 
     @Override
     public void proc() {
-        Thing closest_jewel = null;
+        Thing leafletJewel = null;
         known = Collections.synchronizedList((List<Thing>) knownMO.getI());
         CreatureInnerSense cis = (CreatureInnerSense) innerSenseMO.getI();
         synchronized (known) {
@@ -45,48 +45,49 @@ public class ClosestJewelDetector extends Codelet {
                     String objectColor = t.getAttributes().getColor();
 
                     if (objectName.contains("Jewel")) { // it is a jewel
-                        // Check if the jewel color is in one of the leaflets.
+                        // Check if the jewel color is required for any of the leaflets.
                         List<Leaflet> leaflets = cis.leaflets;
                         boolean jewelFound = false;
                         for (Leaflet l : leaflets) {
                             HashMap<String, Integer[]> items = l.getItems();
-                            //Collection<> items.values();
-                            if (items.containsKey(objectColor)) {
+
+                            // Are we still missing this jewel color in this leaflet?
+                            if (l.getMissingNumberOfType(objectColor) > 0) {
                                 jewelFound = true;
                                 break;
                             }
                         }
                         if (!jewelFound) {
-                            // Go to the next jewel, as this one is not on the leaflets.
+                            // Go to the next jewel, as this one is not required for any of the leaflets.
                             continue;
                         } else {
                             // Jewel color found in one of the leaflets.
-                            if (closest_jewel == null) {
-                                closest_jewel = t;
+                            if (leafletJewel == null) {
+                                leafletJewel = t;
                             } else {
                                 double Dnew = calculateDistance(t.getX1(), t.getY1(), cis.position.getX(), cis.position.getY());
-                                double Dclosest = calculateDistance(closest_jewel.getX1(), closest_jewel.getY1(), cis.position.getX(), cis.position.getY());
+                                double Dclosest = calculateDistance(leafletJewel.getX1(), leafletJewel.getY1(), cis.position.getX(), cis.position.getY());
                                 if (Dnew < Dclosest) {
-                                    closest_jewel = t;
+                                    leafletJewel = t;
                                 }
                             }
                         }
                     }
                 }
 
-                if (closest_jewel != null) {
-                    if (closestJewelMO.getI() == null || !closestJewelMO.getI().equals(closest_jewel)) {
-                        closestJewelMO.setI(closest_jewel);
+                if (leafletJewel != null) {
+                    if (LeafletJewelMO.getI() == null || !LeafletJewelMO.getI().equals(leafletJewel)) {
+                        LeafletJewelMO.setI(leafletJewel);
                     }
 
                 } else {
                     //couldn't find any nearby jewels that are on the leaflets
-                    closest_jewel = null;
-                    closestJewelMO.setI(closest_jewel);
+                    leafletJewel = null;
+                    LeafletJewelMO.setI(leafletJewel);
                 }
             } else { // if there are no known jewels closest_jewel must be null
-                closest_jewel = null;
-                closestJewelMO.setI(closest_jewel);
+                leafletJewel = null;
+                LeafletJewelMO.setI(leafletJewel);
             }
         }
     }//end proc

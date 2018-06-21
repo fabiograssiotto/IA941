@@ -40,10 +40,11 @@ public class GoToClosestFood extends Codelet {
         Thing closestFood = (Thing) closestFoodMO.getI();
         CreatureInnerSense cis = (CreatureInnerSense) selfInfoMO.getI();
         double eval = 0.0;
+        JSONObject message = new JSONObject();
 
         // Get current fuel state to set as evaluation for the memory container.
         if (cis.fuel < 400) {
-            eval = 1.0;
+            eval = 0.8;
         }
 
         // Find distance between creature and closest apple
@@ -70,7 +71,7 @@ public class GoToClosestFood extends Codelet {
             pSelf.setLocation(selfX, selfY);
 
             double distance = pSelf.distance(pFood);
-            JSONObject message = new JSONObject();
+
             try {
                 if (distance > reachDistance) { //Go to it
                     System.out.println("GoToClosestFood Go eval = " + eval);
@@ -87,14 +88,14 @@ public class GoToClosestFood extends Codelet {
                     message.put("SPEED", 0.0);
                 }
 
-                if (memoryContainerIdx == -1) {
-                    memoryContainerIdx = legsDecisionMC.setI(message.toString(), eval);
-                } else {
-                    legsDecisionMC.setI(message, eval, memoryContainerIdx);
-                }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+        }
+        if (memoryContainerIdx == -1) {
+            memoryContainerIdx = legsDecisionMC.setI(message.toString(), eval);
+        } else {
+            legsDecisionMC.setI(message, eval, memoryContainerIdx);
         }
     }//end proc
 

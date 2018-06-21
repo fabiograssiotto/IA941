@@ -21,13 +21,13 @@ import ws3dproxy.util.Constants;
 public class RemoveObstacle extends Codelet {
 
     private MemoryObject closestObstacleMO;
-    private MemoryObject closestJewelMO;
+    private MemoryObject leafletJewelMO;
     private MemoryObject closestFoodMO;
     private MemoryObject innerSenseMO;
     private int reachDistance;
     private MemoryObject handsMO;
     Thing closestObstacle;
-    Thing closestJewel;
+    Thing leafletJewel;
     Thing closestFood;
     CreatureInnerSense cis;
 
@@ -39,7 +39,7 @@ public class RemoveObstacle extends Codelet {
     @Override
     public void accessMemoryObjects() {
         closestObstacleMO = (MemoryObject) this.getInput("CLOSEST_OBSTACLE");
-        closestJewelMO = (MemoryObject) this.getInput("CLOSEST_JEWEL");
+        leafletJewelMO = (MemoryObject) this.getInput("LEAFLET_JEWEL");
         closestFoodMO = (MemoryObject) this.getInput("CLOSEST_FOOD");
         innerSenseMO = (MemoryObject) this.getInput("INNER");
         handsMO = (MemoryObject) this.getOutput("HANDS");
@@ -49,14 +49,14 @@ public class RemoveObstacle extends Codelet {
     public void proc() {
         String obstacleName = "";
         closestObstacle = (Thing) closestObstacleMO.getI();
-        closestJewel = (Thing) closestJewelMO.getI();
+        leafletJewel = (Thing) leafletJewelMO.getI();
         closestFood = (Thing) closestFoodMO.getI();
         cis = (CreatureInnerSense) innerSenseMO.getI();
 
-        // Check if the closest thing is not the closest jewel.
+        // Check if the closest thing is not the leaflet jewel.
         // In case it is not, it is an obstacle, so get rid of it.
         if (closestObstacle != null
-                && ((closestObstacle.getCategory() == Constants.categoryJEWEL && closestJewel != null && !closestObstacle.getName().equals(closestJewel.getName()))
+                && ((closestObstacle.getCategory() == Constants.categoryJEWEL && leafletJewel != null && !closestObstacle.getName().equals(leafletJewel.getName()))
                 || ((closestObstacle.getCategory() == Constants.categoryPFOOD || closestObstacle.getCategory() == Constants.categoryNPFOOD)
                 && closestFood != null && !closestObstacle.getName().equals(closestFood.getName())))) {
 

@@ -13,25 +13,25 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import ws3dproxy.model.Thing;
 
-public class PickupClosestJewel extends Codelet {
+public class PickupLeafletJewel extends Codelet {
 
-    private MemoryObject closestJewelMO;
+    private MemoryObject leafletJewelMO;
     private MemoryObject innerSenseMO;
     private MemoryObject knownMO;
     private int reachDistance;
     private MemoryObject handsMO;
-    Thing closestJewel;
+    Thing leafletJewel;
     CreatureInnerSense cis;
     List<Thing> known;
 
-    public PickupClosestJewel(int reachDistance) {
+    public PickupLeafletJewel(int reachDistance) {
         setTimeStep(50);
         this.reachDistance = reachDistance;
     }
 
     @Override
     public void accessMemoryObjects() {
-        closestJewelMO = (MemoryObject) this.getInput("CLOSEST_JEWEL");
+        leafletJewelMO = (MemoryObject) this.getInput("LEAFLET_JEWEL");
         innerSenseMO = (MemoryObject) this.getInput("INNER");
         handsMO = (MemoryObject) this.getOutput("HANDS");
         knownMO = (MemoryObject) this.getOutput("KNOWN_JEWELS");
@@ -40,19 +40,19 @@ public class PickupClosestJewel extends Codelet {
     @Override
     public void proc() {
         String jewelName = "";
-        closestJewel = (Thing) closestJewelMO.getI();
+        leafletJewel = (Thing) leafletJewelMO.getI();
         cis = (CreatureInnerSense) innerSenseMO.getI();
         known = (List<Thing>) knownMO.getI();
-        //Find distance between closest jewel and self
+        //Find distance between the leaflet jewel and self
         //If closer than reachDistance, pick up the jewel
 
-        if (closestJewel != null) {
+        if (leafletJewel != null) {
             double jewelX = 0;
             double jewelY = 0;
             try {
-                jewelX = closestJewel.getX1();
-                jewelY = closestJewel.getY1();
-                jewelName = closestJewel.getName();
+                jewelX = leafletJewel.getX1();
+                jewelY = leafletJewel.getY1();
+                jewelName = leafletJewel.getName();
 
             } catch (Exception e) {
                 // TODO Auto-generated catch block
@@ -72,11 +72,11 @@ public class PickupClosestJewel extends Codelet {
             JSONObject message = new JSONObject();
             try {
                 if (distance < reachDistance) { // pickup the jewel
-                    System.out.println("PickupClosestJewel Pickup");
+                    System.out.println("PickupLeafletJewel Pickup");
                     message.put("OBJECT", jewelName);
                     message.put("ACTION", "PICKUP");
                     handsMO.updateI(message.toString());
-                    DestroyClosestJewel();
+                    DestroyLeafletJewel();
                 } else {
                     handsMO.updateI("");	//nothing
                 }
@@ -96,14 +96,14 @@ public class PickupClosestJewel extends Codelet {
 
     }
 
-    public void DestroyClosestJewel() {
+    public void DestroyLeafletJewel() {
         int r = -1;
         int i = 0;
         synchronized (known) {
             CopyOnWriteArrayList<Thing> myknown = new CopyOnWriteArrayList<>(known);
             for (Thing t : known) {
-                if (closestJewel != null) {
-                    if (t.getName().equals(closestJewel.getName())) {
+                if (leafletJewel != null) {
+                    if (t.getName().equals(leafletJewel.getName())) {
                         r = i;
                     }
                 }
@@ -112,7 +112,8 @@ public class PickupClosestJewel extends Codelet {
             if (r != -1) {
                 known.remove(r);
             }
-            closestJewel = null;
+            leafletJewel = null;
+            knownMO.setI(known);
         }
     }
 

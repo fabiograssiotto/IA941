@@ -111,6 +111,7 @@ public class EatClosestFood extends Codelet {
                 known.remove(r);
             }
             closestFood = null;
+            knownMO.setI(known);
         }
     }
 

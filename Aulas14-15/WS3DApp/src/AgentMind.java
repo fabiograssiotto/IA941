@@ -26,16 +26,17 @@ import br.unicamp.cst.core.entities.Mind;
 import codelets.behaviors.EatClosestFood;
 import codelets.behaviors.Wander;
 import codelets.behaviors.GoToClosestFood;
-import codelets.behaviors.GoToClosestJewel;
-import codelets.behaviors.PickupClosestJewel;
+import codelets.behaviors.GoToLeafletJewel;
+import codelets.behaviors.PickupLeafletJewel;
 import codelets.behaviors.RemoveObstacle;
 import codelets.motor.HandsActionCodelet;
 import codelets.motor.LegsActionCodelet;
 import codelets.perception.FoodDetector;
 import codelets.perception.ClosestFoodDetector;
-import codelets.perception.ClosestJewelDetector;
+import codelets.perception.LeafletJewelDetector;
 import codelets.perception.ClosestObstacleDetector;
 import codelets.perception.JewelDetector;
+import codelets.perception.LeafletsDoneDetector;
 import codelets.sensors.InnerSense;
 import codelets.sensors.Vision;
 import java.util.ArrayList;
@@ -64,9 +65,10 @@ public class AgentMind extends Mind {
         MemoryObject innerSenseMO;
         MemoryObject closestFoodMO;
         MemoryObject knownFoodsMO;
-        MemoryObject closestJewelMO;
+        MemoryObject leafletJewelMO;
         MemoryObject knownJewelsMO;
         MemoryObject closestObstacleMO;
+        MemoryObject leafletsDoneMO;
 
         // Declare Memory Container for Legs Decision
         MemoryContainer legsDecisionMC;
@@ -82,12 +84,14 @@ public class AgentMind extends Mind {
         closestFoodMO = createMemoryObject("CLOSEST_FOOD", closestFood);
         List<Thing> knownFoods = Collections.synchronizedList(new ArrayList<Thing>());
         knownFoodsMO = createMemoryObject("KNOWN_FOODS", knownFoods);
-        Thing closestJewel = null;
-        closestJewelMO = createMemoryObject("CLOSEST_JEWEL", closestJewel);
+        Thing leafletJewel = null;
+        leafletJewelMO = createMemoryObject("LEAFLET_JEWEL", leafletJewel);
         List<Thing> knownJewels = Collections.synchronizedList(new ArrayList<Thing>());
         knownJewelsMO = createMemoryObject("KNOWN_JEWELS", knownJewels);
         Thing closestObstacle = null;
         closestObstacleMO = createMemoryObject("CLOSEST_OBSTACLE", closestObstacle);
+        Boolean leafletsDone = false;
+        leafletsDoneMO = createMemoryObject("LEAFLETS_DONE", leafletsDone);
 
         // Initialize Memory Container
         legsDecisionMC = createMemoryContainer("LEGS_DECISION_MC");
@@ -98,11 +102,12 @@ public class AgentMind extends Mind {
         mv.addMO(knownJewelsMO);
         mv.addMO(visionMO);
         mv.addMO(closestFoodMO);
-        mv.addMO(closestJewelMO);
+        mv.addMO(leafletJewelMO);
         mv.addMO(innerSenseMO);
         mv.addMO(handsMO);
         mv.addMO(legsMO);
         mv.addMO(closestObstacleMO);
+        mv.addMO(leafletsDoneMO);
         mv.StartTimer();
         mv.setVisible(true);
 
@@ -141,17 +146,22 @@ public class AgentMind extends Mind {
         jd.addOutput(knownJewelsMO);
         insertCodelet(jd);
 
-        Codelet closestJewelDetector = new ClosestJewelDetector();
-        closestJewelDetector.addInput(knownJewelsMO);
-        closestJewelDetector.addInput(innerSenseMO);
-        closestJewelDetector.addOutput(closestJewelMO);
-        insertCodelet(closestJewelDetector);
+        Codelet leafletJewelDetector = new LeafletJewelDetector();
+        leafletJewelDetector.addInput(knownJewelsMO);
+        leafletJewelDetector.addInput(innerSenseMO);
+        leafletJewelDetector.addOutput(leafletJewelMO);
+        insertCodelet(leafletJewelDetector);
 
         Codelet closestObstacleDetector = new ClosestObstacleDetector();
         closestObstacleDetector.addInput(visionMO);
         closestObstacleDetector.addInput(innerSenseMO);
         closestObstacleDetector.addOutput(closestObstacleMO);
         insertCodelet(closestObstacleDetector);
+
+        Codelet leafletsDoneDetector = new LeafletsDoneDetector();
+        leafletsDoneDetector.addInput(innerSenseMO);
+        leafletsDoneDetector.addOutput(leafletsDoneMO);
+        insertCodelet(leafletsDoneDetector);
 
         // Create Behavior Codelets
         Codelet goToClosestApple = new GoToClosestFood(creatureBasicSpeed, reachDistance);
@@ -160,11 +170,11 @@ public class AgentMind extends Mind {
         goToClosestApple.addOutput(legsDecisionMC);
         insertCodelet(goToClosestApple);
 
-        Codelet goToClosestJewel = new GoToClosestJewel(creatureBasicSpeed, reachDistance);
-        goToClosestJewel.addInput(closestJewelMO);
-        goToClosestJewel.addInput(innerSenseMO);
-        goToClosestJewel.addOutput(legsDecisionMC);
-        insertCodelet(goToClosestJewel);
+        Codelet goToLeafletJewel = new GoToLeafletJewel(creatureBasicSpeed, reachDistance);
+        goToLeafletJewel.addInput(leafletJewelMO);
+        goToLeafletJewel.addInput(innerSenseMO);
+        goToLeafletJewel.addOutput(legsDecisionMC);
+        insertCodelet(goToLeafletJewel);
 
         Codelet eatFood = new EatClosestFood(reachDistance);
         eatFood.addInput(closestFoodMO);
@@ -173,8 +183,8 @@ public class AgentMind extends Mind {
         eatFood.addOutput(knownFoodsMO);
         insertCodelet(eatFood);
 
-        Codelet pickupJewel = new PickupClosestJewel(reachDistance);
-        pickupJewel.addInput(closestJewelMO);
+        Codelet pickupJewel = new PickupLeafletJewel(reachDistance);
+        pickupJewel.addInput(leafletJewelMO);
         pickupJewel.addInput(innerSenseMO);
         pickupJewel.addOutput(handsMO);
         pickupJewel.addOutput(knownJewelsMO);
@@ -182,7 +192,7 @@ public class AgentMind extends Mind {
 
         Codelet removeObstacle = new RemoveObstacle(reachDistance);
         removeObstacle.addInput(closestObstacleMO);
-        removeObstacle.addInput(closestJewelMO);
+        removeObstacle.addInput(leafletJewelMO);
         removeObstacle.addInput(closestFoodMO);
         removeObstacle.addInput(innerSenseMO);
         removeObstacle.addOutput(handsMO);
@@ -192,8 +202,6 @@ public class AgentMind extends Mind {
         wander.addInput(innerSenseMO);
         wander.addInput(knownFoodsMO);
         wander.addInput(knownJewelsMO);
-        wander.addInput(closestFoodMO);
-        wander.addInput(closestJewelMO);
         wander.addOutput(legsDecisionMC);
         insertCodelet(wander);
 

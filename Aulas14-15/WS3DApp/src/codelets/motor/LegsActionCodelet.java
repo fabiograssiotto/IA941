@@ -76,11 +76,11 @@ public class LegsActionCodelet extends Codelet {
                 if (command.has("ACTION")) {
                     int x = 0, y = 0;
                     String action = command.getString("ACTION");
-                    System.out.println("LEGS Action: " + action);
                     if (action.equals("WANDER")) {
                         //if (!comm.equals(previousLegsAction)) {
                         if (!comm.equals(previousLegsAction)) {
                             log.info("Sending wander command to agent");
+                            System.out.println("LEGS Action: " + action);
                         }
                         try {
                             c.rotate(2);
@@ -94,6 +94,7 @@ public class LegsActionCodelet extends Codelet {
                             double targety = command.getDouble("Y");
                             if (!comm.equals(previousLegsAction)) {
                                 log.info("Sending move command to agent: [" + targetx + "," + targety + "]");
+                                System.out.println("LEGS Action: " + action);
                             }
                             try {
                                 c.moveto(speed, targetx, targety);
@@ -106,6 +107,7 @@ public class LegsActionCodelet extends Codelet {
 
                     } else {
                         log.info("Sending stop command to agent");
+                        System.out.println("LEGS Action: " + action);
                         try {
                             c.moveto(0, 0, 0);
                         } catch (Exception e) {
