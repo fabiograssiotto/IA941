@@ -1,9 +1,5 @@
 nbproject/private/
-build/
 nbbuild/
-dist/
-nbdist/
 .nb-gradle/
 *.so
 *~
-/Aula12/exampleProjects/basicAgentExercises/nbproject/private/

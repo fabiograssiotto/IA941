@@ -12,23 +12,31 @@ public class GoToDeliverySpot extends Codelet {
 
     private MemoryObject leafletsDoneMO;
     private MemoryContainer legsDecisionMC;
+    private int memoryContainerIdx = -1;
+    private int creatureBasicSpeed;
 
-    public GoToDeliverySpot() {
+    public GoToDeliverySpot(int creatureBasicSpeed) {
+        this.creatureBasicSpeed = creatureBasicSpeed;
     }
 
     @Override
     public void accessMemoryObjects() {
         leafletsDoneMO = (MemoryObject) this.getInput("LEAFLETS_DONE");
+        // Memory Container for decision
+        legsDecisionMC = (MemoryContainer) this.getOutput("LEGS_DECISION_MC");
     }
 
     @Override
     public void proc() {
+
         Boolean leafletsDone = (Boolean) leafletsDoneMO.getI();
+        double eval = 0;
+        JSONObject message = new JSONObject();
 
         if (leafletsDone == true) {
             // Go to delivery spot
-            double eval = 1.0;
-            JSONObject message = new JSONObject();
+            eval = 1.0;
+
             try {
                 System.out.println("GoToDeliverySpot GOTO");
                 WorldPoint delivery = World.getInstance().getDeliverySpot();
@@ -39,6 +47,11 @@ public class GoToDeliverySpot extends Codelet {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+        }
+        if (memoryContainerIdx == -1) {
+            memoryContainerIdx = legsDecisionMC.setI(message.toString(), eval);
+        } else {
+            legsDecisionMC.setI(message, eval, memoryContainerIdx);
         }
     }//end proc
 

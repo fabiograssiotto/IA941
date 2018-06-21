@@ -26,6 +26,7 @@ import br.unicamp.cst.core.entities.Mind;
 import codelets.behaviors.EatClosestFood;
 import codelets.behaviors.Wander;
 import codelets.behaviors.GoToClosestFood;
+import codelets.behaviors.GoToDeliverySpot;
 import codelets.behaviors.GoToLeafletJewel;
 import codelets.behaviors.PickupLeafletJewel;
 import codelets.behaviors.RemoveObstacle;
@@ -176,6 +177,11 @@ public class AgentMind extends Mind {
         goToLeafletJewel.addOutput(legsDecisionMC);
         insertCodelet(goToLeafletJewel);
 
+        Codelet goToDeliverySpot = new GoToDeliverySpot(creatureBasicSpeed);
+        goToDeliverySpot.addInput(leafletsDoneMO);
+        goToDeliverySpot.addOutput(legsDecisionMC);
+        insertCodelet(goToDeliverySpot);
+
         Codelet eatFood = new EatClosestFood(reachDistance);
         eatFood.addInput(closestFoodMO);
         eatFood.addInput(innerSenseMO);
@@ -207,7 +213,7 @@ public class AgentMind extends Mind {
 
         // sets a time step for running the codelets to avoid heating too much your machine
         for (Codelet c : this.getCodeRack().getAllCodelets()) {
-            c.setTimeStep(200);
+            c.setTimeStep(50);
         }
 
         // Start Cognitive Cycle

@@ -1,4 +1,5 @@
-/** ***************************************************************************
+/**
+ * ***************************************************************************
  * Copyright 2007-2015 DCA-FEEC-UNICAMP
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,7 +16,8 @@
  *
  * Contributors:
  *    Klaus Raizer, Andre Paraense, Ricardo Ribeiro Gudwin
- **************************************************************************** */
+ ****************************************************************************
+ */
 package codelets.motor;
 
 import org.json.JSONException;
@@ -89,26 +91,11 @@ public class HandsActionCodelet extends Codelet {
                         log.info("Sending Bury command to agent:****** " + objectName + "**********");
                     }
                 }
-//                                else if (jsonAction.has("ACTION")) {
-//                                    int x=0,y=0;
-//                                    String action=jsonAction.getString("ACTION");
-//                                    if(action.equals("FORAGE")){
-//                                                try {
-//                                                      x = r.nextInt(600);
-//                                                      y = r.nextInt(800);
-//                                                 c.moveto(1, x,y );
-//                                                } catch (Exception e) {
-//
-//                                                }
-//						System.out.println("Sending Forage command to agent:****** ("+x+","+y+") **********");
-//					}
-//                                }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
 
         }
-//		System.out.println("OK_hands");
         previousHandsAction = (String) handsMO.getI();
     }//end proc
 

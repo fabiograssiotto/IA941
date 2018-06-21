@@ -33,23 +33,26 @@ public class LeafletsDoneDetector extends Codelet {
     public void proc() {
         CreatureInnerSense cis = (CreatureInnerSense) innerSenseMO.getI();
         List<Leaflet> leaflets = cis.leaflets;
-
         boolean leafletsDone = false;
-        for (Leaflet l : leaflets) {
-            // Check if we are still missing any jewels on the leaflets.
-            if ((l.getMissingNumberOfType("Red") <= 0)
-                    && (l.getMissingNumberOfType("Green") <= 0)
-                    && (l.getMissingNumberOfType("Blue") <= 0)
-                    && (l.getMissingNumberOfType("Yellow") <= 0)
-                    && (l.getMissingNumberOfType("Magenta") <= 0)
-                    && (l.getMissingNumberOfType("White") <= 0)) {
-                // This leaflet is done.
-                leafletsDone = true;
-            } else {
-                leafletsDone = false;
-                break;
+
+        if (leaflets != null) {
+            for (Leaflet l : leaflets) {
+                // Check if we are still missing any jewels on the leaflets.
+                if ((l.getMissingNumberOfType("Red") <= 0)
+                        && (l.getMissingNumberOfType("Green") <= 0)
+                        && (l.getMissingNumberOfType("Blue") <= 0)
+                        && (l.getMissingNumberOfType("Yellow") <= 0)
+                        && (l.getMissingNumberOfType("Magenta") <= 0)
+                        && (l.getMissingNumberOfType("White") <= 0)) {
+                    // This leaflet is done.
+                    leafletsDone = true;
+                } else {
+                    leafletsDone = false;
+                    break;
+                }
             }
         }
+
         leafletsDoneMO.setI(leafletsDone);
     }//end proc
 
