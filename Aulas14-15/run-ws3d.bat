@@ -1,1 +1,1 @@
-start java -jar ws3d\WorldServer3D.jar
+start java -jar ws3d\dist\WorldServer3D.jar
