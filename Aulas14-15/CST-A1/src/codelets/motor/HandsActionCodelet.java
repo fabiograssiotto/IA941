@@ -25,6 +25,7 @@ import org.json.JSONObject;
 
 import br.unicamp.cst.core.entities.Codelet;
 import br.unicamp.cst.core.entities.MemoryObject;
+import br.unicamp.cst.core.entities.Mind;
 import java.util.Random;
 import java.util.logging.Logger;
 import ws3dproxy.model.Creature;
@@ -39,12 +40,15 @@ public class HandsActionCodelet extends Codelet {
 
     private MemoryObject handsMO;
     private String previousHandsAction = "";
-    private Creature c;
-    private Random r = new Random();
+    final private Creature c;
+    final private Mind mind;
+    final private Random r = new Random();
     static Logger log = Logger.getLogger(HandsActionCodelet.class.getCanonicalName());
 
-    public HandsActionCodelet(Creature nc) {
+    public HandsActionCodelet(Creature nc, Mind mind) {
         c = nc;
+        setTimeStep(25);
+        this.mind = mind;
     }
 
     @Override
@@ -99,6 +103,12 @@ public class HandsActionCodelet extends Codelet {
                                 c.deliverLeaflet(leaf1);
                                 c.deliverLeaflet(leaf2);
                                 c.deliverLeaflet(leaf3);
+
+                                // Stop creature.
+                                c.stop();
+
+                                // Stop simulation
+                                mind.shutDown();
                             } catch (Exception e) {
                             }
                         }

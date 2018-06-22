@@ -16,7 +16,7 @@ import ws3dproxy.model.Thing;
 public class LeafletJewelDetector extends Codelet {
 
     private MemoryObject knownMO;
-    private MemoryObject LeafletJewelMO;
+    private MemoryObject leafletJewelMO;
     private MemoryObject innerSenseMO;
 
     private List<Thing> known;
@@ -28,12 +28,18 @@ public class LeafletJewelDetector extends Codelet {
     public void accessMemoryObjects() {
         this.knownMO = (MemoryObject) this.getInput("KNOWN_JEWELS");
         this.innerSenseMO = (MemoryObject) this.getInput("INNER");
-        this.LeafletJewelMO = (MemoryObject) this.getOutput("LEAFLET_JEWEL");
+        this.leafletJewelMO = (MemoryObject) this.getOutput("LEAFLET_JEWEL");
     }
 
     @Override
     public void proc() {
-        Thing leafletJewel = null;
+        Thing leafletJewel = (Thing) leafletJewelMO.getI();
+        if (leafletJewel != null) {
+            // That is, we already have a target Jewel to go to
+            return;
+        }
+
+        // Keep going as we need a new target.
         known = Collections.synchronizedList((List<Thing>) knownMO.getI());
         CreatureInnerSense cis = (CreatureInnerSense) innerSenseMO.getI();
         synchronized (known) {
@@ -76,18 +82,18 @@ public class LeafletJewelDetector extends Codelet {
                 }
 
                 if (leafletJewel != null) {
-                    if (LeafletJewelMO.getI() == null || !LeafletJewelMO.getI().equals(leafletJewel)) {
-                        LeafletJewelMO.setI(leafletJewel);
+                    if (leafletJewelMO.getI() == null || !leafletJewelMO.getI().equals(leafletJewel)) {
+                        leafletJewelMO.setI(leafletJewel);
                     }
 
                 } else {
                     //couldn't find any nearby jewels that are on the leaflets
                     leafletJewel = null;
-                    LeafletJewelMO.setI(leafletJewel);
+                    leafletJewelMO.setI(leafletJewel);
                 }
             } else { // if there are no known jewels closest_jewel must be null
                 leafletJewel = null;
-                LeafletJewelMO.setI(leafletJewel);
+                leafletJewelMO.setI(leafletJewel);
             }
         }
     }//end proc

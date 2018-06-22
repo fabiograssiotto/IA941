@@ -114,6 +114,7 @@ public class PickupLeafletJewel extends Codelet {
             }
             leafletJewel = null;
             knownMO.setI(known);
+            leafletJewelMO.setI(leafletJewel);
         }
     }
 

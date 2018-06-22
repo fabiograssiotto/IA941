@@ -39,11 +39,11 @@ public class Environment {
             World w = World.getInstance();
             w.reset();
 
-            // To create jewels in the environment.
-            World.grow(1);
             c = proxy.createCreature(100, 100, 0);
             c.start();
 
+            // To create objects in the environment.
+            World.grow(1);
         } catch (CommandExecException e) {
 
         }

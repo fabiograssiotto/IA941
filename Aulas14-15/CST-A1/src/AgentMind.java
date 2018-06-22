@@ -57,6 +57,7 @@ public class AgentMind extends Mind {
 
     private static int creatureBasicSpeed = 3;
     private static int reachDistance = 50;
+    private static int obstacleDistance = 80;
 
     public AgentMind(Environment env) {
         super();
@@ -132,7 +133,7 @@ public class AgentMind extends Mind {
         legs.addInput(legsDecisionMC);
         insertCodelet(legs);
 
-        Codelet hands = new HandsActionCodelet(env.c);
+        Codelet hands = new HandsActionCodelet(env.c, this);
         hands.addInput(handsMO);
         insertCodelet(hands);
 
@@ -214,7 +215,7 @@ public class AgentMind extends Mind {
         pickupJewel.addOutput(knownJewelsMO);
         insertCodelet(pickupJewel);
 
-        Codelet removeObstacle = new RemoveObstacle(reachDistance);
+        Codelet removeObstacle = new RemoveObstacle(obstacleDistance);
         removeObstacle.addInput(closestObstacleMO);
         removeObstacle.addInput(leafletJewelMO);
         removeObstacle.addInput(closestFoodMO);
@@ -236,6 +237,11 @@ public class AgentMind extends Mind {
 
         // Start Cognitive Cycle
         start();
+    }
+
+    public void shutdown() {
+        // Stop all codelets threads.
+        shutdown();
     }
 
 }

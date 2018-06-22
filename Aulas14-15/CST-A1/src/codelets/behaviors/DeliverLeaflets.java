@@ -45,7 +45,9 @@ public class DeliverLeaflets extends Codelet {
                 int leafletNum = 1;
                 for (Leaflet l : leaflets) {
                     message.put("LEAFLET" + Integer.toString(leafletNum), Long.toString(l.getID()));
+                    leafletNum++;
                 }
+                handsMO.updateI(message.toString());
             } catch (JSONException e) {
                 e.printStackTrace();
             }
