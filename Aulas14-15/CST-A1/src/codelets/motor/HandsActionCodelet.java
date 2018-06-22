@@ -60,7 +60,7 @@ public class HandsActionCodelet extends Codelet {
             JSONObject jsonAction;
             try {
                 jsonAction = new JSONObject(command);
-                if (jsonAction.has("ACTION") && jsonAction.has("OBJECT")) {
+                if (jsonAction.has("ACTION")) {
                     String action = jsonAction.getString("ACTION");
                     if (jsonAction.has("OBJECT")) {
                         String objectName = jsonAction.getString("OBJECT");
