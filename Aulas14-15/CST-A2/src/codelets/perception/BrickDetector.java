@@ -18,6 +18,7 @@ public class BrickDetector extends Codelet {
 
     private MemoryObject visionMO;
     private MemoryObject brickListMO;
+    private MemoryObject newBrickFoundMO;
 
     public BrickDetector() {
 
@@ -29,39 +30,40 @@ public class BrickDetector extends Codelet {
             this.visionMO = (MemoryObject) this.getInput("VISION");
         }
         this.brickListMO = (MemoryObject) this.getOutput("BRICK_LIST");
+        this.newBrickFoundMO = (MemoryObject) this.getOutput("NEWBRICK_FOUND");
     }
 
     @Override
     public void proc() {
         CopyOnWriteArrayList<Thing> vision;
         List<Thing> brickList;
+        Boolean newBrickFound = false;
         synchronized (visionMO) {
             vision = new CopyOnWriteArrayList((List<Thing>) visionMO.getI());
             brickList = Collections.synchronizedList((List<Thing>) brickListMO.getI());
+            CopyOnWriteArrayList<Thing> myList = new CopyOnWriteArrayList<>(brickList);
             synchronized (vision) {
                 for (Thing t : vision) {
-                    boolean found = false;
                     synchronized (brickList) {
-                        CopyOnWriteArrayList<Thing> myList = new CopyOnWriteArrayList<>(brickList);
-                        for (Thing e : myList) {
-                            if (t.getName().equals(e.getName())) {
-                                found = true;
-                                break;
+                        if (t.getCategory() == Constants.categoryBRICK) {
+                            if (myList.contains(t)) {
+                                continue;
+                            } else {
+                                // Add to list
+                                myList.add(t);
+                                newBrickFound = true;
                             }
                         }
-                        if (found == false && t.getCategory() == Constants.categoryBRICK) {
-                            myList.add(t);
-                        }
                     }
-
                 }
+                brickListMO.setI(myList);
+                newBrickFoundMO.setI(newBrickFound);
             }
         }
     }// end proc
 
     @Override
     public void calculateActivation() {
-
     }
 
 }//end class

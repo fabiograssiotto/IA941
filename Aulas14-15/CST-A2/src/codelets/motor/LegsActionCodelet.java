@@ -38,7 +38,7 @@ import ws3dproxy.model.Creature;
  */
 public class LegsActionCodelet extends Codelet {
 
-    private MemoryContainer legsDecisionMC;
+    private MemoryObject legsMO;
     private double previousTargetx = 0;
     private double previousTargety = 0;
     private String previousLegsAction = "";
@@ -49,22 +49,18 @@ public class LegsActionCodelet extends Codelet {
 
     public LegsActionCodelet(Creature nc) {
         c = nc;
-        setTimeStep(50);
+        setTimeStep(20);
     }
 
     @Override
     public void accessMemoryObjects() {
-        legsDecisionMC = (MemoryContainer) this.getInput("LEGS_DECISION_MC");
+        legsMO = (MemoryObject) this.getInput("LEGS");
     }
 
     @Override
     public void proc() {
 
-        if (legsDecisionMC == null || legsDecisionMC.getI() == null) {
-            return;
-        }
-
-        String comm = (String) legsDecisionMC.getI().toString();
+        String comm = (String) legsMO.getI();
         if (comm == null) {
             comm = "";
         }

@@ -35,6 +35,8 @@ public class Environment {
     public String robotID = "r0";
     public Creature c = null;
 
+    private static Boolean CREATEBRICKS = true;
+
     public Environment() {
         WS3DProxy proxy = new WS3DProxy();
         try {
@@ -48,20 +50,22 @@ public class Environment {
 
             // Create Bricks on the environment.
             // Create some bricks around the environment.
-            Random rand = new Random();
-            for (int x = 0; x < World.getInstance().getEnvironmentWidth(); x = x + 50) {
-                for (int y = 0; y < World.getInstance().getEnvironmentHeight(); y = y + 50) {
+            if (CREATEBRICKS) {
+                Random rand = new Random();
+                for (int x = 0; x < World.getInstance().getEnvironmentWidth(); x = x + 50) {
+                    for (int y = 0; y < World.getInstance().getEnvironmentHeight(); y = y + 50) {
 
-                    // Valid bricks are at least at a distance of 50 units from the creature in
-                    // the x and y axis. We do that so there are no problems for maneuvering around
-                    // in the environment.
-                    if (abs(crX - x) > 50 && abs(crY - y) > 50) {
-                        // coordinates are ok. Discard randomly most of them so there is no overcrowding.
-                        int r = rand.nextInt(4);
-                        int xDim = rand.nextInt(30);
-                        int yDim = rand.nextInt(30);
-                        if (r == 0 || r == 1) {
-                            World.createBrick(rand.nextInt(6), x, y, x + xDim, y + yDim);
+                        // Valid bricks are at least at a distance of 50 units from the creature in
+                        // the x and y axis. We do that so there are no problems for maneuvering around
+                        // in the environment.
+                        if (abs(crX - x) > 50 && abs(crY - y) > 50) {
+                            // coordinates are ok. Discard randomly most of them so there is no overcrowding.
+                            int r = rand.nextInt(10);
+                            int xDim = rand.nextInt(30);
+                            int yDim = rand.nextInt(30);
+                            if (r == 0) {
+                                World.createBrick(rand.nextInt(6), x, y, x + xDim, y + yDim);
+                            }
                         }
                     }
                 }

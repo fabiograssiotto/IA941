@@ -37,7 +37,7 @@ public final class Pathfinder {
     private boolean hasPlan = false;
 
     // Factor to reduce the environment to a grid representation.
-    private static final int GRID_FACTOR = 20;
+    private static final int GRID_FACTOR = 5;
 
     public Pathfinder(int xDim, int yDim) {
 
@@ -83,7 +83,7 @@ public final class Pathfinder {
         // Get the best route as a stack of Vertex objects:
         int[] start = {y1Grid, x1Grid}; // y, x
         int[] goal = {y2Grid, x2Grid};  // y, x
-        bestroute = gn.route(start, goal, Options.ASTAR, Options.DIAGONAL_HEURISTIC, false);
+        bestroute = gn.route(start, goal, Options.ASTAR, Options.NO_HEURISTIC, false);
     }
 
     public int[] getNextDestination() {

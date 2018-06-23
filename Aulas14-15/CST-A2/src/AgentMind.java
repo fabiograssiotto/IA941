@@ -41,7 +41,7 @@ import ws3dproxy.model.Thing;
  */
 public class AgentMind extends Mind {
 
-    final private static int creatureBasicSpeed = 3;
+    final private static double creatureBasicSpeed = 0.5;
     final private static int reachDistance = 50;
 
     public AgentMind(Environment env) {
@@ -52,6 +52,7 @@ public class AgentMind extends Mind {
         MemoryObject visionMO;
         MemoryObject innerSenseMO;
         MemoryObject brickListMO;
+        MemoryObject newBrickFoundMO;
 
         //Initialize Memory Objects
         legsMO = createMemoryObject("LEGS", "");
@@ -61,6 +62,8 @@ public class AgentMind extends Mind {
         innerSenseMO = createMemoryObject("INNER", cis);
         List<Thing> brickList = Collections.synchronizedList(new ArrayList<Thing>());
         brickListMO = createMemoryObject("BRICK_LIST", brickList);
+        Boolean newBrickFound = false;
+        newBrickFoundMO = createMemoryObject("NEWBRICK_FOUND", newBrickFound);
 
         // Create and Populate MindViewer
         MindView mv = new MindView("MindView");
@@ -68,6 +71,7 @@ public class AgentMind extends Mind {
         mv.addMO(visionMO);
         mv.addMO(innerSenseMO);
         mv.addMO(legsMO);
+        mv.addMO(newBrickFoundMO);
         mv.StartTimer();
         mv.setVisible(true);
 
@@ -89,13 +93,15 @@ public class AgentMind extends Mind {
         Codelet brickDetector = new BrickDetector();
         brickDetector.addInput(visionMO);
         brickDetector.addOutput(brickListMO);
+        brickDetector.addOutput(newBrickFoundMO);
         insertCodelet(brickDetector);
 
         // Create Behavior Codelets
-        Codelet goToDestination = new GoToDestination(creatureBasicSpeed, reachDistance);
+        Codelet goToDestination = new GoToDestination(creatureBasicSpeed);
         goToDestination.addInput(brickListMO);
         goToDestination.addInput(innerSenseMO);
         goToDestination.addOutput(legsMO);
+        goToDestination.addOutput(newBrickFoundMO);
         insertCodelet(goToDestination);
 
         // sets a time step for running the codelets to avoid heating too much your machine
