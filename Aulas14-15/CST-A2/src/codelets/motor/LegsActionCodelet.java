@@ -49,7 +49,6 @@ public class LegsActionCodelet extends Codelet {
 
     public LegsActionCodelet(Creature nc) {
         c = nc;
-        setTimeStep(20);
     }
 
     @Override
@@ -64,56 +63,33 @@ public class LegsActionCodelet extends Codelet {
         if (comm == null) {
             comm = "";
         }
-        Random r = new Random();
 
         if (!comm.equals("")) {
 
             try {
                 JSONObject command = new JSONObject(comm);
+                System.out.println("LEGS received command:" + command.toString());
                 if (command.has("ACTION")) {
                     int x = 0, y = 0;
                     String action = command.getString("ACTION");
-                    if (action.equals("WANDER")) {
-                        //if (!comm.equals(previousLegsAction)) {
+                    if (action.equals("GOTO")) {
+                        double speed = command.getDouble("SPEED");
+                        double targetx = command.getDouble("X");
+                        double targety = command.getDouble("Y");
                         if (!comm.equals(previousLegsAction)) {
-                            log.info("Sending wander command to agent");
+                            log.info("Sending move command to agent: [" + targetx + "," + targety + "]");
                             System.out.println("LEGS Action: " + action);
                         }
                         try {
-                            c.rotate(2);
+                            c.moveto(speed, targetx, targety);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                    } else if (action.equals("GOTO")) {
-                        if (!comm.equals(previousLegsAction)) {
-                            double speed = command.getDouble("SPEED");
-                            double targetx = command.getDouble("X");
-                            double targety = command.getDouble("Y");
-                            if (!comm.equals(previousLegsAction)) {
-                                log.info("Sending move command to agent: [" + targetx + "," + targety + "]");
-                                System.out.println("LEGS Action: " + action);
-                            }
-                            try {
-                                c.moveto(speed, targetx, targety);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                            previousTargetx = targetx;
-                            previousTargety = targety;
-                        }
-
-                    } else {
-                        log.info("Sending stop command to agent");
-                        System.out.println("LEGS Action: " + action);
-                        try {
-                            c.moveto(0, 0, 0);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
+                        previousTargetx = targetx;
+                        previousTargety = targety;
                     }
                 }
                 previousLegsAction = comm;
-                k++;
             } catch (JSONException e) {
                 e.printStackTrace();
             }

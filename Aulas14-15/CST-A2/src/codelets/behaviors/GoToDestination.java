@@ -1,9 +1,13 @@
 package codelets.behaviors;
 
+import main.Environment;
 import org.json.JSONException;
 import org.json.JSONObject;
 import br.unicamp.cst.core.entities.Codelet;
 import br.unicamp.cst.core.entities.MemoryObject;
+import br.unicamp.cst.core.entities.Mind;
+import java.awt.Point;
+import java.awt.geom.Point2D;
 import java.util.List;
 import memory.CreatureInnerSense;
 import pathfinding.Pathfinder;
@@ -12,12 +16,13 @@ import ws3dproxy.model.World;
 
 public class GoToDestination extends Codelet {
 
-    private MemoryObject newBrickFoundMO;
+    private MemoryObject closeBrickFoundMO;
     private MemoryObject brickListMO;
     private MemoryObject innerSenseMO;
     private MemoryObject legsMO;
     private final double creatureBasicSpeed;
     private int[] nextStep;
+    private Mind mind;
 
     // For the path in the environment
     private final Pathfinder planner;
@@ -25,19 +30,18 @@ public class GoToDestination extends Codelet {
     private final double dimY;
     private final double destX;
     private final double destY;
-    private final static double MIN_DIST = 5.0;
+    private final static double MIN_DIST = 10.0;
 
-    public GoToDestination(double creatureBasicSpeed) {
-        setTimeStep(20);
+    public GoToDestination(double creatureBasicSpeed, Mind mind) {
         this.creatureBasicSpeed = creatureBasicSpeed;
-
+        this.mind = mind;
         // Get World dimensions
         dimX = World.getInstance().getEnvironmentWidth();
         dimY = World.getInstance().getEnvironmentHeight();
 
         // Set the final destination close to the corner at the bottom right.
-        destX = 400;
-        destY = 400;
+        destX = Environment.destinationX;
+        destY = Environment.destinationY;
 
         planner = new Pathfinder((int) dimX, (int) dimY);
     }
@@ -46,7 +50,7 @@ public class GoToDestination extends Codelet {
     public void accessMemoryObjects() {
         innerSenseMO = (MemoryObject) this.getInput("INNER");
         brickListMO = (MemoryObject) this.getInput("BRICK_LIST");
-        newBrickFoundMO = (MemoryObject) this.getOutput("NEWBRICK_FOUND");
+        closeBrickFoundMO = (MemoryObject) this.getOutput("CLOSE_BRICK_FOUND");
         legsMO = (MemoryObject) this.getOutput("LEGS");
     }
 
@@ -55,7 +59,7 @@ public class GoToDestination extends Codelet {
 
         CreatureInnerSense cis = (CreatureInnerSense) innerSenseMO.getI();
         List<Thing> brickList = (List<Thing>) brickListMO.getI();
-        Boolean newBrickFound = (Boolean) newBrickFoundMO.getI();
+        Boolean closeBrickFound = (Boolean) closeBrickFoundMO.getI();
         String command = "";
 
         // Check initialization
@@ -65,18 +69,24 @@ public class GoToDestination extends Codelet {
         double crX = cis.position.getX();
         double crY = cis.position.getY();
         if (calculateDistance(crX, crY, destX, destY) < MIN_DIST) {
-            // Already arrived, return.
+            // Arrived at the destination.
+            System.out.println("GoToDestination Arrived");
+            command = stopMove((int) crX, (int) crY);
+            legsMO.setI(command);
+            mind.shutDown();
             return;
         } else {
             // Need to follow a plan to get to the destination.
-            if (newBrickFound) {
+            if (closeBrickFound) {
+                System.out.println("GoToDestination New Brick Found: REPLAN");
                 planner.reset();
                 Boolean reset = false;
-                newBrickFoundMO.setI(reset);
+                closeBrickFoundMO.setI(reset);
                 return;
             }
             if (!planner.hasPlan()) {
                 // There is no plan, or we need a new one.
+                System.out.println("GoToDestination Create New Plan");
                 planner.replan((int) crX, (int) crY, (int) destX, (int) destY, brickList);
                 // Now get the first destination in the plan
                 nextStep = planner.getNextDestination();
@@ -85,12 +95,19 @@ public class GoToDestination extends Codelet {
                 // Already got there?
                 if (calculateDistance(crX, crY, nextStep[0], nextStep[1]) < MIN_DIST) {
                     // Go to the next step, then.
+                    System.out.println("GoToDestination Reached [" + nextStep[0] + "," + nextStep[1] + "]");
                     nextStep = planner.getNextDestination();
+                    // Stop the creature to wait for the next step.
+                    command = stopMove((int) crX, (int) crY);
+                    legsMO.setI(command);
+                    return;
                 }
             }
             if (nextStep[0] == -1) {
-                // No more steps
+                // Bad plan created
+                System.out.println("GoToDestination No Route to Destination");
             } else {
+                System.out.println("GoToDestination GoTo [" + nextStep[0] + "," + nextStep[1] + "]");
                 command = goMove(nextStep[0], nextStep[1], creatureBasicSpeed);
                 legsMO.setI(command);
             }
@@ -104,14 +121,19 @@ public class GoToDestination extends Codelet {
     }
 
     private double calculateDistance(double x1, double y1, double x2, double y2) {
-        return (Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2)));
+        Point2D p1 = new Point();
+        p1.setLocation(x1, y1);
+
+        Point2D p2 = new Point();
+        p2.setLocation(x2, y2);
+
+        return p2.distance(p1);
     }
 
     private String goMove(int x, int y, double speed) {
         JSONObject message = new JSONObject();
         // Instruct creature to follow the current step.
         try {
-            System.out.println("GoToDestination [" + x + "," + y + "]");
             message.put("ACTION", "GOTO");
             message.put("X", x);
             message.put("Y", y);

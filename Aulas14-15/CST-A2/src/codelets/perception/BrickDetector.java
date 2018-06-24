@@ -57,7 +57,7 @@ public class BrickDetector extends Codelet {
                     }
                 }
                 brickListMO.setI(myList);
-                newBrickFoundMO.setI(newBrickFound);
+                //newBrickFoundMO.setI(newBrickFound);
             }
         }
     }// end proc

@@ -1,3 +1,5 @@
+package main;
+
 /*****************************************************************************
  * Copyright 2007-2015 DCA-FEEC-UNICAMP
  *
@@ -17,6 +19,7 @@
  *    Klaus Raizer, Andre Paraense, Ricardo Ribeiro Gudwin
  *****************************************************************************/
 
+import main.Environment;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

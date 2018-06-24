@@ -37,7 +37,7 @@ public final class Pathfinder {
     private boolean hasPlan = false;
 
     // Factor to reduce the environment to a grid representation.
-    private static final int GRID_FACTOR = 5;
+    private static final int GRID_FACTOR = 20;
 
     public Pathfinder(int xDim, int yDim) {
 
@@ -46,14 +46,14 @@ public final class Pathfinder {
         xGrid = xDim / GRID_FACTOR;
         yGrid = yDim / GRID_FACTOR;
 
-        charMatrix = new char[xGrid][yGrid];
+        charMatrix = new char[yGrid][xGrid];
         reset();
     }
 
     private void resetGrid(int xDim, int yDim) {
         for (int i = 0; i < xDim; i++) {
             for (int j = 0; j < yDim; j++) {
-                charMatrix[i][j] = '.';
+                charMatrix[j][i] = '.';
             }
         }
     }
@@ -64,12 +64,12 @@ public final class Pathfinder {
         int y1Grid = y1 / GRID_FACTOR;
         int y2Grid = y2 / GRID_FACTOR;
 
-        for (int i = x1Grid - 2; i <= x2Grid + 2; i++) {
-            for (int j = y1Grid - 2; j <= y2Grid + 2; j++) {
+        for (int i = x1Grid - 1; i <= x2Grid + 1; i++) {
+            for (int j = y1Grid - 1; j <= y2Grid + 1; j++) {
                 // Sets bricks in the grid.
                 if (i >= 0 && j >= 0 && i < xGrid && j < yGrid) {
                     // to avoid running out of bounds.
-                    charMatrix[i][j] = 'b';
+                    charMatrix[j][i] = 'b';
                 }
             }
         }
@@ -114,6 +114,7 @@ public final class Pathfinder {
         for (Thing brick : l) {
             addBrick((int) brick.getX1(), (int) brick.getX2(), (int) brick.getY1(), (int) brick.getY2());
         }
+        System.out.println("Pathfinder New Route: [" + xOrg + "," + yOrg + "] => [" + xDest + "," + yDest + "]");
         findRoute(xOrg / GRID_FACTOR, yOrg / GRID_FACTOR, xDest / GRID_FACTOR, yDest / GRID_FACTOR);
         hasPlan = true;
     }
