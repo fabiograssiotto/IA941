@@ -232,9 +232,20 @@ public class AgentMind extends Mind {
 
         // sets a time step for running the codelets to avoid heating too much your machine
         for (Codelet c : this.getCodeRack().getAllCodelets()) {
-            c.setTimeStep(50);
+            String codeletClass = c.getClass().toString();
+            String pickupJewelClass = pickupJewel.getClass().toString();
+            String handsClass = hands.getClass().toString();
+            String removeObstacleClass = removeObstacle.getClass().toString();
+            String eatFoodClass = eatFood.getClass().toString();
+            if (codeletClass.equals(handsClass)
+                    || codeletClass.equals(pickupJewelClass)
+                    || codeletClass.equals(removeObstacleClass)
+                    || codeletClass.equals(eatFoodClass)) {
+                c.setTimeStep(20);
+            } else {
+                c.setTimeStep(200);
+            }
         }
-
         // Start Cognitive Cycle
         start();
     }

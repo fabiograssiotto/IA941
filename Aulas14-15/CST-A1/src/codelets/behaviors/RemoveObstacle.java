@@ -30,7 +30,6 @@ public class RemoveObstacle extends Codelet {
     CreatureInnerSense cis;
 
     public RemoveObstacle(int reachDistance) {
-        setTimeStep(50);
         this.reachDistance = reachDistance;
     }
 

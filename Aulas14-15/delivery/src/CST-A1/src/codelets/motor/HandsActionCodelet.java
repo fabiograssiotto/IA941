@@ -47,7 +47,6 @@ public class HandsActionCodelet extends Codelet {
 
     public HandsActionCodelet(Creature nc, Mind mind) {
         c = nc;
-        setTimeStep(25);
         this.mind = mind;
     }
 

@@ -49,7 +49,6 @@ public class LegsActionCodelet extends Codelet {
 
     public LegsActionCodelet(Creature nc) {
         c = nc;
-        setTimeStep(50);
     }
 
     @Override

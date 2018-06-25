@@ -25,7 +25,6 @@ public class PickupLeafletJewel extends Codelet {
     List<Thing> known;
 
     public PickupLeafletJewel(int reachDistance) {
-        setTimeStep(50);
         this.reachDistance = reachDistance;
     }
 

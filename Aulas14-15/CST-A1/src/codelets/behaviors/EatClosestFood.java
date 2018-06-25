@@ -25,7 +25,6 @@ public class EatClosestFood extends Codelet {
     List<Thing> known;
 
     public EatClosestFood(int reachDistance) {
-        setTimeStep(50);
         this.reachDistance = reachDistance;
     }
 
