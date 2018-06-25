@@ -1,0 +1,33 @@
+Descrição da Implementação - A1
+
+Para a implementação desta primeira atividade, o código da WS3DApp foi alterado para adicionar novos Memory Objects e Codelets.
+
+1. Memory Objects
+
+- Memória Sensorial:
+
+visionMO: Para acesso aos objetos na visão da criatura.
+innerSenseMO: Para acesso aos dados de posicionamento e combustível da criatura.
+
+- Memória Perceptual:
+
+knownFoodsMO: contém a lista de todos os objetos de ítens de comida no campo visual da criatura.
+closestFoodMO: contém o ítem da lista acima que se encontra mais próximo da criatura.
+knownJewelsMO: contém a lista de jóias no campo visual da criatura.
+leafletJewelMO: contém o ítem da lista acima que se encontra mais próximo da criatura e que faz parte dos requisitos dos leaflets.
+closestObstacleMO: contém o objeto no ambiente que se encontra mais próximo da criatura.
+leafletsDoneMO: indica que a criatura já coletou todas as jóias necessárias de acordo com as especificações dos leaflets.
+atDeliverySpotMO: indica que a criatura está na posição do Delivery Spot.
+
+- Memória Motora:
+
+legsMO: Para execução da movimentação da criatura.
+handsMO: Para execução de ações de coleta de jóias e consumo de comida.
+
+2. Memory Container
+
+Devido ao fato que mais de uma decisão relativa à movimentação da criatura ser possível, foi implementado um Memory Container (legsDecisionMC) para arbitrar qual conteúdo de memory object é escrito na memória motora de acordo com ítens de avaliação.
+        
+2. Codelets:
+
+Descrição da Implementação - A2
